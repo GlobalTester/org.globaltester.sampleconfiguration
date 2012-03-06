@@ -1,6 +1,7 @@
 package org.globaltester.cardconfiguration;
 
 import static org.junit.Assert.*;
+import static org.globaltester.cardconfiguration.CardConfigManager.DEFAULT_CARD_CONFIG;
 
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ public class CardConfigTest {
 
 	@Test
 	public void testGetMrz() {
-		assertEquals(DEFAULT_MRZ, new CardConfig().get("ICAO9303", "MRZ"));
+		assertEquals(DEFAULT_MRZ, CardConfigManager.get(DEFAULT_CARD_CONFIG).get("ICAO9303", "MRZ"));
 	}
 
 }
