@@ -8,10 +8,17 @@ public class CardConfigManager {
 	private static HashMap<String, CardConfig> configs = new HashMap<String, CardConfig>();
 	
 	//FIXME AMY replace the following stubs with a logic that stores/retrieves CardConfigs from workspace
-	public static String DEFAULT_CARD_CONFIG = "nPA mustermann Erika";
+	public static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
 	static {
 		CardConfig mustermannErika = createNewCardConfig(DEFAULT_CARD_CONFIG);
 		mustermannErika.put("ICAO9303", "MRZ", "P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
+		
+		
+		CardConfig rusoran = createNewCardConfig("ePassport DEUMAY MSQ244225");
+		rusoran.put("ICAO9303", "MRZ", "P<DEUMAY<<ALEXANDER<<<<<<<<<<<<<<<<<<<<<<<<<MSQ2442259DEU7001017M2111153123456789<<<<<79");
+		
+		CardConfig hunRusoran = createNewCardConfig("ePassport HUNRUSORAN 0002179");
+		hunRusoran.put("ICAO9303", "MRZ", "P<HUNRUSORAN<<GABRIELLA<<<<<<<<<<<<<<<<<<<<<0002179<<7HUN6506146F1602065<<<<<<<<<<<<<<02");
 
 	}
 	

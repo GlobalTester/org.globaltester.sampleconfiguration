@@ -38,4 +38,9 @@ public class CardConfig {
 		return name;
 	}
 
+	public void doSave() {
+		//FIXME AMY implement persistence for CardConfig
+		
+	}
+
 }
