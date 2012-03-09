@@ -79,10 +79,12 @@ public class CardConfigSelectionEditor {
 	
 	private void updateTabItemProtocols() {
 		String mrzString = (String) getSelectedConfig().get("ICAO9303", "MRZ");
-		//use methods from MRZ class after refactoring to protocol
-		mrz1.setText(mrzString.substring(0, 40));
-		mrz2.setText(mrzString.substring(41));
-		mrz3.setText("");
+		if (mrzString != null) {
+			// use methods from MRZ class after refactoring to protocol
+			mrz1.setText(mrzString.substring(0, 40));
+			mrz2.setText(mrzString.substring(41));
+			mrz3.setText("");
+		}
 	}
 
 	private void addTabItemGeneral(TabFolder tabFolder) {
