@@ -8,7 +8,7 @@ public class CardConfigManager {
 	private static HashMap<String, CardConfig> configs = new HashMap<String, CardConfig>();
 	
 	//FIXME AMY replace the following stubs with a logic that stores/retrieves CardConfigs from workspace
-	public static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
+	private static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
 	static {
 		CardConfig mustermannErika = createNewCardConfig(DEFAULT_CARD_CONFIG);
 		mustermannErika.put("ICAO9303", "MRZ", "P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
@@ -47,6 +47,10 @@ public class CardConfigManager {
 
 	public static Set<String> getAvailableConfigNames() {
 		return configs.keySet();
+	}
+
+	public static CardConfig getDefaultConfig() {
+		return get(DEFAULT_CARD_CONFIG);
 	}
 
 }
