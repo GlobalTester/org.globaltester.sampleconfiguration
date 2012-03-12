@@ -1,11 +1,8 @@
 package org.globaltester.cardconfiguration.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
@@ -14,43 +11,22 @@ import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.CardConfigManager;
 
-public class CardConfigSelectionEditor {
-
-	private ICardSelectionListener editor;
-
+public class CardConfigEditorWidget {
+	
 	private Composite parent;
-	private Combo configSelection;
+	private CardConfig cardConfig;
 	private TabFolder tabFolder;
 	private Text name;
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
 
-	private boolean dirty = false;
-
-	public CardConfigSelectionEditor(Composite parent,
-			ICardSelectionListener editor) {
+	public CardConfigEditorWidget(Composite parent) {
 		this.parent = parent;
-		this.editor = editor;
-
 		this.createPartControl();
 	}
 
 	private void createPartControl() {
-		configSelection = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		configSelection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1));
-		configSelection.setItems(CardConfigManager.getAvailableConfigNames()
-				.toArray(new String[] {}));
-		configSelection.select(0);
-		configSelection.setVisibleItemCount(5);
-		configSelection.addSelectionListener(new SelectionAdapter() {
-			
-		      public void widgetSelected(SelectionEvent e) {
-		          cardConfigSelectionChanged();
-		        }
-		      });
-
 		tabFolder = new TabFolder(parent, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				1, 1));
@@ -59,26 +35,24 @@ public class CardConfigSelectionEditor {
 		addTabItemCardReader(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		
-		//update all widgets with content from selected CardConfig
-		cardConfigSelectionChanged();
-
 	}
 
-	protected void cardConfigSelectionChanged() {
+	protected void updateContents() {
 		updateTabItemGeneral();
+		updateTabItemReader();
 		updateTabItemProtocols();
-		
-		//inform the editor about that change
-		editor.cardConfigSelectionChanged();
-		
 	}
 
 	private void updateTabItemGeneral() {
-		name.setText(getSelectedConfig().getName());
+		name.setText(getCardConfig().getName());
+	}
+	
+	private void updateTabItemReader() {
+		
 	}
 	
 	private void updateTabItemProtocols() {
-		String mrzString = (String) getSelectedConfig().get("ICAO9303", "MRZ");
+		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 			// use methods from MRZ class after refactoring to protocol
 			mrz1.setText(mrzString.substring(0, 40));
@@ -140,29 +114,34 @@ public class CardConfigSelectionEditor {
 
 	}
 
-	public CardConfig getSelectedConfig() {
-		return CardConfigManager.get(configSelection.getText());
+	public CardConfig getCardConfig() {
+		if (cardConfig == null) {
+			cardConfig = CardConfigManager.getDefaultConfig();
+		}
+		return cardConfig;
 	}
 
 	public void doSave() {
-		CardConfig curConfig = getSelectedConfig();
-
-		// flush all changes to the CardConfig object
+		
+		//TODO AMY CardConfig flush all changes to the CardConfig object
 		// curConfig.put("ICAO9303", "MRZ",
 		// mrz1.getText()+mrz2.getText()+mrz3.getText());
 
 		// save the CardConfig
-		curConfig.doSave();
+		cardConfig.doSave();
 
 	}
 
-	public boolean isDirty() {
-		return dirty ;
+	public void setEditable(boolean editable) {
+		name.setEditable(editable);
+		mrz1.setEditable(editable);
+		mrz2.setEditable(editable);
+		mrz3.setEditable(editable);
 	}
-	
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
-		editor.selectedCardConfigDirty(dirty);
+
+	public void setInput(CardConfig newInput) {
+		this.cardConfig = newInput;
+		updateContents();
 	}
 
 }
