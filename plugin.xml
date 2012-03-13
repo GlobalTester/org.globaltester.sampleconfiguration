@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.globaltester.cardconfiguration.gtCardConfigNature"
+         name="GT CardConfig Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.globaltester.cardconfiguration.GtCardConfigNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="org.globaltester.cardconfig.contenttypes.CardConfig"
+            name="GlobalTester CardConfig"
+            priority="normal">
+         <describer
+               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="CardConfig">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+</plugin>
