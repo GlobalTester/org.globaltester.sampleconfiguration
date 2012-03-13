@@ -15,7 +15,7 @@ import org.globaltester.logging.logger.GtErrorLogger;
 
 public class CardConfigEditorWidget {
 
-	private Composite parent;
+	private Composite mainComp;
 	private CardConfig cardConfig;
 	private TabFolder tabFolder;
 	private Text name;
@@ -24,13 +24,19 @@ public class CardConfigEditorWidget {
 	private Text mrz3;
 
 	public CardConfigEditorWidget(Composite parent) {
-		this.parent = parent;
-		this.createPartControl();
+		this.createPartControl(parent);
 	}
 
-	private void createPartControl() {
-		tabFolder = new TabFolder(parent, SWT.NONE);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+	private void createPartControl(Composite parent) {
+		mainComp = new Composite(parent, SWT.NONE);
+		mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		mainComp.setLayout(layout);
+		
+		tabFolder = new TabFolder(mainComp, SWT.NONE);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
 
 		addTabItemGeneral(tabFolder);
@@ -147,6 +153,10 @@ public class CardConfigEditorWidget {
 	public void setInput(CardConfig newInput) {
 		this.cardConfig = newInput;
 		updateContents();
+	}
+
+	public void setLayoutData(Object layoutData) {
+		mainComp.setLayoutData(layoutData);
 	}
 
 }

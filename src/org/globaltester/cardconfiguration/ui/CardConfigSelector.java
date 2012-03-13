@@ -1,6 +1,8 @@
 package org.globaltester.cardconfiguration.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -11,8 +13,8 @@ import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.CardConfigManager;
 
 public class CardConfigSelector {
-	
-	//TODO update contents of selection Combo on workspace refresh
+
+	// TODO update contents of selection Combo on workspace refresh
 
 	private Composite parent;
 	private Combo configSelection;
@@ -25,11 +27,12 @@ public class CardConfigSelector {
 
 	private void createPartControl() {
 		parent.setLayout(new GridLayout(4, false));
-		
+
 		Label lblSelectCardconfigTo = new Label(parent, SWT.NONE);
-		lblSelectCardconfigTo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblSelectCardconfigTo.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
+				false, false, 1, 1));
 		lblSelectCardconfigTo.setText("Select CardConfig to use:");
-		
+
 		configSelection = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		configSelection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
@@ -40,21 +43,25 @@ public class CardConfigSelector {
 
 		Button btnDetails = new Button(parent, SWT.NONE);
 		btnDetails.setText("Details");
-		//FIXME AMY CardConfig implement viewer for CardConfig here
-		
+		btnDetails.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				CardConfigViewerDialog dialog = new CardConfigViewerDialog(parent.getShell(), getSelectedConfig());
+				dialog.open();
+			}
+		});
+
 		Button btnEdit = new Button(parent, SWT.NONE);
 		btnEdit.setText("Edit");
-		//FIXME AMY CardConfig implement editor for CardConfig here
-		
+		// FIXME AMY CardConfig implement editor for CardConfig here
 
 	}
 
 	public CardConfig getSelectedConfig() {
 		configSelection.getDisplay().syncExec(new Runnable() {
-            public void run() {
-            	selectedConfigName = configSelection.getText();
-            }
-         });
+			public void run() {
+				selectedConfigName = configSelection.getText();
+			}
+		});
 		return CardConfigManager.get(selectedConfigName);
 	}
 
