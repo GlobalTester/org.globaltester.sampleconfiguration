@@ -43,7 +43,7 @@ public class GtCardConfigProject {
 			e.printStackTrace();
 			project = null;
 		}
-
+		
 		// refresh the workspace
 		try {
 			ResourcesPlugin.getWorkspace().getRoot()

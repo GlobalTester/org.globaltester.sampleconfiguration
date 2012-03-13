@@ -4,73 +4,73 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.globaltester.core.resources.GtResourceHelper;
 
+/**
+ * This class manages all mutable CardConfigurations stored in projects within
+ * the workspace.
+ * 
+ * @author amay
+ * 
+ */
 public class CardConfigManager {
 
 	private static HashMap<String, CardConfig> configs = new HashMap<String, CardConfig>();
-
-	// FIXME AMY replace the following stubs with a logic that stores/retrieves
-	// CardConfigs from workspace
-	private static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
 	static {
-		try {
-			CardConfig mustermannErika = createNewCardConfig(DEFAULT_CARD_CONFIG);
-			mustermannErika
-					.put("ICAO9303",
-							"MRZ",
-							"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
-			mustermannErika.saveToProject();
-
-			CardConfig deuMay = createNewCardConfig("ePassport DEUMAY MSQ244225");
-			deuMay.put(
-					"ICAO9303",
-					"MRZ",
-					"P<DEUMAY<<ALEXANDER<<<<<<<<<<<<<<<<<<<<<<<<<MSQ2442259DEU7001017M2111153123456789<<<<<79");
-			deuMay.saveToProject();
-
-			CardConfig hunRusoran = createNewCardConfig("ePassport HUNRUSORAN 0002179");
-			hunRusoran
-					.put("ICAO9303",
-							"MRZ",
-							"P<HUNRUSORAN<<GABRIELLA<<<<<<<<<<<<<<<<<<<<<0002179<<7HUN6506146F1602065<<<<<<<<<<<<<<02");
-			hunRusoran.saveToProject();
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (String curConfigName : getAvailableConfigNames()) {
+			IProject curProject = ResourcesPlugin.getWorkspace().getRoot()
+			.getProject(curConfigName);
+			CardConfig curConfig = new CardConfig(curProject);
+			configs.put(curConfigName, curConfig);
 		}
-
 	}
 
+	private static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
+
 	/**
-	 * Return the card config with the given name. creates it if it does not
+	 * Return the card config with the given name. 
+	 * Returns DEFAULT_CARD_CONFIG if not present.
 	 * exist yet
 	 * 
 	 * @param cardConfigName
 	 * @return
 	 */
 	public static CardConfig get(String cardConfigName) {
-		if (configs.containsKey(cardConfigName)) {
-			return configs.get(cardConfigName);
-		} else {
-			return createNewCardConfig(cardConfigName);
+		if (!configs.containsKey(cardConfigName)) {
+			return getDefaultConfig();
 		}
+		return configs.get(cardConfigName);
 	}
 
 	private static CardConfig createNewCardConfig(String cardConfigName) {
+		// FIXME AMY CardConfig remove the method CreateNewCardConfig and migrate it to a Wizard
 		IProject project = GtCardConfigProject.createProject(cardConfigName,
 				null);
 		CardConfig newConfig = new CardConfig(project);
-		configs.put(cardConfigName, newConfig);
 		return newConfig;
 	}
 
 	public static Set<String> getAvailableConfigNames() {
-		return configs.keySet();
+		return GtResourceHelper
+				.getProjectNamesWithNature(GtCardConfigNature.NATURE_ID);
 	}
 
 	public static CardConfig getDefaultConfig() {
+		if (!configs.containsKey(DEFAULT_CARD_CONFIG)) {
+			CardConfig newConfig = createNewCardConfig(DEFAULT_CARD_CONFIG);
+			// init the default card config with default values
+			newConfig
+					.put("ICAO9303",
+							"MRZ",
+							"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
+
+		}
 		return get(DEFAULT_CARD_CONFIG);
+	}
+
+	public static void register(CardConfig cardConfig) {
+		configs.put(cardConfig.getName(), cardConfig);
 	}
 
 }

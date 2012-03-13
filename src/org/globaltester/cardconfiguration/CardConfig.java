@@ -6,6 +6,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.globaltester.core.xml.XMLHelper;
+import org.globaltester.logging.logger.GtErrorLogger;
+import org.jdom.Document;
 import org.jdom.Element;
 
 public class CardConfig {
@@ -22,6 +24,27 @@ public class CardConfig {
 	public CardConfig(IProject proj) {
 		this.project = proj;
 		this.name = proj.getName();
+		
+		if (getCardConfigIfile().exists()){
+			initFromIFile();
+		} else {
+			try {
+				saveToProject();
+			} catch (CoreException e) {
+				GtErrorLogger.log(Activator.PLUGIN_ID, e);
+			}
+		}
+		
+		CardConfigManager.register(this);
+	}
+
+	private void initFromIFile() {
+		IFile iFile = getCardConfigIfile();
+		if (iFile.exists()) {
+			Document doc = XMLHelper.readDocument(iFile);
+			Element root = doc.getRootElement();
+			extractFromXml(root);
+		}
 	}
 
 	/**
