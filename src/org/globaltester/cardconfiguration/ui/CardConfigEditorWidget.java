@@ -1,5 +1,6 @@
 package org.globaltester.cardconfiguration.ui;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -10,9 +11,10 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.CardConfigManager;
+import org.globaltester.logging.logger.GtErrorLogger;
 
 public class CardConfigEditorWidget {
-	
+
 	private Composite parent;
 	private CardConfig cardConfig;
 	private TabFolder tabFolder;
@@ -34,7 +36,7 @@ public class CardConfigEditorWidget {
 		addTabItemGeneral(tabFolder);
 		addTabItemCardReader(tabFolder);
 		addTabItemsForProtocols(tabFolder);
-		
+
 	}
 
 	protected void updateContents() {
@@ -46,11 +48,11 @@ public class CardConfigEditorWidget {
 	private void updateTabItemGeneral() {
 		name.setText(getCardConfig().getName());
 	}
-	
+
 	private void updateTabItemReader() {
-		
+
 	}
-	
+
 	private void updateTabItemProtocols() {
 		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
@@ -122,13 +124,16 @@ public class CardConfigEditorWidget {
 	}
 
 	public void doSave() {
-		
-		//TODO AMY CardConfig flush all changes to the CardConfig object
-		// curConfig.put("ICAO9303", "MRZ",
-		// mrz1.getText()+mrz2.getText()+mrz3.getText());
+		// flush all changes to the CardConfig object
+		cardConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
+				+ mrz3.getText());
 
 		// save the CardConfig
-		cardConfig.doSave();
+		try {
+			cardConfig.saveToProject();
+		} catch (CoreException e) {
+			GtErrorLogger.log(Activator.PLUGIN_ID, e);
+		}
 
 	}
 
