@@ -38,6 +38,11 @@ public class CardConfig {
 		CardConfigManager.register(this);
 	}
 
+	public CardConfig(Element cardConfigElement) {
+		this.project = null;
+		extractFromXml(cardConfigElement);
+	}
+
 	private void initFromIFile() {
 		IFile iFile = getCardConfigIfile();
 		if (iFile.exists()) {
