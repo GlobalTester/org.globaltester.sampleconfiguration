@@ -1,7 +1,5 @@
 package org.globaltester.cardconfiguration;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.AssertionFailedException;
 import org.junit.Assert;
@@ -30,12 +28,6 @@ public class GtCardConfigProjectTest {
 		// check nature is added
 		Assert.assertTrue("GtCardConfigNature is not correctly added",
 				project.hasNature(GtCardConfigNature.NATURE_ID));
-
-		// check directory structure is created correctly
-//		File file = project.getLocation().append("cardconfig.xml").toFile();
-//		if (!file.exists()) {
-//			Assert.fail("cardconfig.xml does not exist.");
-//		}
 
 		// delete the project after the test
 		project.delete(true, null);
