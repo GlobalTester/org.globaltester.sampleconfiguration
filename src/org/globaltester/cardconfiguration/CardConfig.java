@@ -156,4 +156,10 @@ public class CardConfig {
 		}
 	}
 
+	public CardConfig getCloneForExecution() {
+		Element xmlRepresentation = new Element("CardConfiguration");
+		dumpToXml(xmlRepresentation);
+		return new CardConfig(xmlRepresentation);
+	}
+
 }
