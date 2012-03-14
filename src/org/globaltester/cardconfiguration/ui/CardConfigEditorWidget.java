@@ -59,8 +59,8 @@ public class CardConfigEditorWidget {
 		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 			// use methods from MRZ class after refactoring to protocol
-			mrz1.setText(mrzString.substring(0, 40));
-			mrz2.setText(mrzString.substring(41));
+			mrz1.setText(mrzString.substring(0, 43));
+			mrz2.setText(mrzString.substring(44));
 			mrz3.setText("");
 		}
 	}
