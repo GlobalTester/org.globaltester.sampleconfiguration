@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.globaltester.core.resources.GtResourceHelper;
 
 /**
@@ -64,6 +65,13 @@ public class CardConfigManager {
 					.put("ICAO9303",
 							"MRZ",
 							"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
+			
+			try {
+				newConfig.saveToProject();
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 		return get(DEFAULT_CARD_CONFIG);
