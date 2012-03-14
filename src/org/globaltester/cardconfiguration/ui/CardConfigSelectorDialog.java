@@ -4,6 +4,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -58,14 +59,25 @@ public class CardConfigSelectorDialog extends Dialog {
 	}
 
 	private void createSelector(Composite parent) {
-		selectorWidget = new CardConfigSelector(parent);
+		selectorWidget = new CardConfigSelector(parent, CardConfigSelector.BTN_NEW);
 		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		selectorWidget.addSelectionListener(new SelectionListener() {
+		      public void widgetSelected(SelectionEvent e) {
+		        editorWidget.setInput(selectorWidget.getSelectedConfig());
+		      }
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		    });
 	}
 
 	private void createEditorWidget(Composite parent) {
 		editorWidget = new CardConfigEditorWidget(parent);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		editorWidget.setEditable(false);
+		editorWidget.setInput(getSelectedCardConfig());
 	}
 
 	private void createButtons(Composite parent) {
