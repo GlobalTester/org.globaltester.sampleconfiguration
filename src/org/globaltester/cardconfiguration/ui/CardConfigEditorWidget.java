@@ -29,11 +29,7 @@ public class CardConfigEditorWidget {
 
 	private void createPartControl(Composite parent) {
 		mainComp = new Composite(parent, SWT.NONE);
-		mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		mainComp.setLayout(layout);
+		mainComp.setLayout(new GridLayout(2, false));
 		
 		tabFolder = new TabFolder(mainComp, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
