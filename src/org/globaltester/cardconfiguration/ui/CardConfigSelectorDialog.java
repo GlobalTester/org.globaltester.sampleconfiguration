@@ -71,6 +71,7 @@ public class CardConfigSelectorDialog extends Dialog {
 				widgetSelected(e);
 			}
 		    });
+		selectedConfig = selectorWidget.getSelectedConfig();
 	}
 
 	private void createEditorWidget(Composite parent) {
