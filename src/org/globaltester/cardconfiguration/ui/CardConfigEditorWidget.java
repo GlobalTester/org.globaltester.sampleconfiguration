@@ -41,7 +41,7 @@ public class CardConfigEditorWidget {
 
 	}
 
-	protected void updateContents() {
+	public void updateContents() {
 		updateTabItemGeneral();
 		updateTabItemReader();
 		updateTabItemProtocols();
@@ -144,6 +144,10 @@ public class CardConfigEditorWidget {
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
+	}
+
+	public void setNameEditable(boolean editable) {
+		name.setEditable(editable);
 	}
 
 	public void setInput(CardConfig newInput) {

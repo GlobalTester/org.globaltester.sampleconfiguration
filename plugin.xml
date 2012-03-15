@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.globaltester.core.ui.newWizards.category"
+            class="org.globaltester.cardconfiguration.ui.wizards.NewCardConfigWizard"
+            icon="icons/cardconfig.png"
+            id="org.globaltester.cardconfiguration.ui.wizards.newCardConfigWizard"
+            name="CardConfiguration"
+            project="true">
+      </wizard>
+   </extension>
+</plugin>
