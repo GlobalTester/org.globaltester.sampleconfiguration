@@ -21,11 +21,24 @@ public class CardConfig {
 	private IProject project;
 	private String name;
 
+	public CardConfig() {
+		this.project = null;
+		initWithDefaulValues();
+	}
+
+	private void initWithDefaulValues() {
+		name = "";
+		
+		configParams
+		.put("ICAO9303_MRZ",
+				"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
+	}
+
 	public CardConfig(IProject proj) {
 		this.project = proj;
 		this.name = proj.getName();
-		
-		if (getCardConfigIfile().exists()){
+
+		if (getCardConfigIfile().exists()) {
 			initFromIFile();
 		} else {
 			try {
@@ -34,12 +47,13 @@ public class CardConfig {
 				GtErrorLogger.log(Activator.PLUGIN_ID, e);
 			}
 		}
-		
+
 		CardConfigManager.register(this);
 	}
 
 	public CardConfig(Element cardConfigElement) {
-		this.project = null;
+		this();
+
 		extractFromXml(cardConfigElement);
 	}
 
@@ -141,14 +155,15 @@ public class CardConfig {
 	void extractFromXml(Element root) {
 		// extract name
 		this.name = root.getChildTextTrim(XML_TAG_NAME);
-		
-		//extract configParams
+
+		// extract configParams
 		Element paramsElem = root.getChild(XML_TAG_CONFIG_PARAMS);
 		if (paramsElem != null) {
 			for (Object curParamObj : paramsElem.getChildren(XML_TAG_PARAMETER)) {
-				if (curParamObj instanceof Element){
+				if (curParamObj instanceof Element) {
 					Element curParamElem = (Element) curParamObj;
-					String curParamName = curParamElem.getAttributeValue(XML_ATTRIB_PARAM_NAME);
+					String curParamName = curParamElem
+							.getAttributeValue(XML_ATTRIB_PARAM_NAME);
 					String curParamValue = curParamElem.getTextTrim();
 					configParams.put(curParamName, curParamValue);
 				}
@@ -160,6 +175,24 @@ public class CardConfig {
 		Element xmlRepresentation = new Element("CardConfiguration");
 		dumpToXml(xmlRepresentation);
 		return new CardConfig(xmlRepresentation);
+	}
+
+	public void setProject(IProject newProject) {
+		this.project = newProject;
+
+		setName(project.getName());
+	}
+
+	public void setName(String newName) {
+		if (!name.equals(newName)) {
+			CardConfigManager.remove(this);
+			this.name = newName;
+			CardConfigManager.register(this);
+		}
+	}
+
+	public boolean isStoredAsProject() {
+		return project != null;
 	}
 
 }

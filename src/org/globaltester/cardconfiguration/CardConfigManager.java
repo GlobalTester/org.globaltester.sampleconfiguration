@@ -64,6 +64,7 @@ public class CardConfigManager {
 	}
 
 	public static CardConfig getDefaultConfig() {
+		//FIXME AMY CardConfig remove the method getDefaultConfig()
 		if (!configs.containsKey(DEFAULT_CARD_CONFIG)) {
 			CardConfig newConfig = createNewCardConfig(DEFAULT_CARD_CONFIG);
 			// init the default card config with default values
@@ -84,7 +85,15 @@ public class CardConfigManager {
 	}
 
 	public static void register(CardConfig cardConfig) {
-		configs.put(cardConfig.getName(), cardConfig);
+		if (cardConfig.isStoredAsProject()){
+			configs.put(cardConfig.getName(), cardConfig);
+		}
+	}
+
+	public static void remove(CardConfig cardConfig) {
+		if (cardConfig.equals(configs.get(cardConfig.getName()))) {
+			configs.remove(cardConfig.getName());
+		}
 	}
 
 }
