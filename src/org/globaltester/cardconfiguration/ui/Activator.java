@@ -6,6 +6,7 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
 	public static final String PLUGIN_ID = "org.globaltester.cardconfiguration.ui";
+	public static final String NEW_CARDCONFIG_WIAZRD_ID = "org.globaltester.cardconfiguration.ui.wizards.newCardConfigWizard";
 	private static BundleContext context;
 
 	static BundleContext getContext() {

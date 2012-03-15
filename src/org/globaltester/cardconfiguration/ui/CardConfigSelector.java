@@ -1,5 +1,6 @@
 package org.globaltester.cardconfiguration.ui;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,6 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.CardConfigManager;
+import org.globaltester.core.ui.GtUiHelper;
+import org.globaltester.logging.logger.GtErrorLogger;
 
 public class CardConfigSelector {
 
@@ -19,9 +22,8 @@ public class CardConfigSelector {
 	public static final int BTN_EDIT = 2;
 	public static final int BTN_NEW = 4;
 	public static final int ALL_BUTTONS = 7;
-	
+
 	// TODO update contents of selection Combo on workspace refresh
-	
 
 	private Composite mainComp;
 	private Combo configSelection;
@@ -75,7 +77,19 @@ public class CardConfigSelector {
 		if ((availableButtons & BTN_NEW) == BTN_NEW) {
 			Button btnNew = new Button(mainComp, SWT.NONE);
 			btnNew.setText("New");
-			// FIXME AMY CardConfig implement new CardConfigWizard here
+			btnNew.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					try {
+						GtUiHelper
+								.openWizard(Activator.NEW_CARDCONFIG_WIAZRD_ID);
+					} catch (CoreException ex) {
+						GtErrorLogger.log(Activator.PLUGIN_ID, ex);
+					}
+					configSelection.setItems(CardConfigManager.getAvailableConfigNames()
+							.toArray(new String[] {}));
+					configSelection.select(0);
+				}
+			});
 		}
 	}
 
