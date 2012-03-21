@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
-import org.globaltester.cardconfiguration.CardConfigManager;
 import org.globaltester.logging.logger.GtErrorLogger;
 
 public class CardConfigEditorWidget {
@@ -119,9 +118,6 @@ public class CardConfigEditorWidget {
 	}
 
 	public CardConfig getCardConfig() {
-		if (cardConfig == null) {
-			cardConfig = CardConfigManager.getDefaultConfig();
-		}
 		return cardConfig;
 	}
 
