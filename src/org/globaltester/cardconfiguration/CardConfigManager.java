@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.globaltester.core.resources.GtResourceHelper;
 
 /**
@@ -27,11 +26,9 @@ public class CardConfigManager {
 		}
 	}
 
-	private static String DEFAULT_CARD_CONFIG = "Mustermann Erika";
-
 	/**
-	 * Return the card config with the given name. Returns DEFAULT_CARD_CONFIG
-	 * if not present. exist yet
+	 * Return the CardConfig with the given name, or null if this does not exists in the current
+	 * workspace.
 	 * 
 	 * @param cardConfigName
 	 * @return
@@ -42,20 +39,9 @@ public class CardConfigManager {
 				CardConfig newConfig = new CardConfig(ResourcesPlugin
 						.getWorkspace().getRoot().getProject(cardConfigName));
 				configs.put(cardConfigName, newConfig);
-			} else {
-				return getDefaultConfig();
-			}
+			} 
 		}
 		return configs.get(cardConfigName);
-	}
-
-	private static CardConfig createNewCardConfig(String cardConfigName) {
-		// FIXME AMY CardConfig remove the method CreateNewCardConfig and
-		// migrate it to a Wizard
-		IProject project = GtCardConfigProject.createProject(cardConfigName,
-				null);
-		CardConfig newConfig = new CardConfig(project);
-		return newConfig;
 	}
 
 	public static Set<String> getAvailableConfigNames() {
@@ -63,29 +49,8 @@ public class CardConfigManager {
 				.getProjectNamesWithNature(GtCardConfigNature.NATURE_ID);
 	}
 
-	public static CardConfig getDefaultConfig() {
-		//FIXME AMY CardConfig remove the method getDefaultConfig()
-		if (!configs.containsKey(DEFAULT_CARD_CONFIG)) {
-			CardConfig newConfig = createNewCardConfig(DEFAULT_CARD_CONFIG);
-			// init the default card config with default values
-			newConfig
-					.put("ICAO9303",
-							"MRZ",
-							"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
-
-			try {
-				newConfig.saveToProject();
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-		return get(DEFAULT_CARD_CONFIG);
-	}
-
 	public static void register(CardConfig cardConfig) {
-		if (cardConfig.isStoredAsProject()){
+		if (cardConfig.isStoredAsProject()) {
 			configs.put(cardConfig.getName(), cardConfig);
 		}
 	}

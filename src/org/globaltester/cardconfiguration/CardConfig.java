@@ -12,6 +12,8 @@ import org.jdom.Element;
 
 public class CardConfig {
 
+	public static final String DEFAULT_NAME = "Mustermann Erika";
+
 	private static final String XML_TAG_NAME = "Name";
 	private static final String XML_TAG_CONFIG_PARAMS = "ConfigurationParams";
 	private static final String XML_TAG_PARAMETER = "Parameter";
@@ -21,17 +23,21 @@ public class CardConfig {
 	private IProject project;
 	private String name;
 
+	/**
+	 * Creates a new instance which is populated with default values provided by
+	 * protocol implementations.
+	 */
 	public CardConfig() {
 		this.project = null;
 		initWithDefaulValues();
 	}
 
 	private void initWithDefaulValues() {
-		name = "";
-		
+		name = DEFAULT_NAME;
+
 		configParams
-		.put("ICAO9303_MRZ",
-				"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
+				.put("ICAO9303_MRZ",
+						"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
 	}
 
 	public CardConfig(IProject proj) {
