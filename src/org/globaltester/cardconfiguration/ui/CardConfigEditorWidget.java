@@ -148,7 +148,9 @@ public class CardConfigEditorWidget {
 
 	public void setInput(CardConfig newInput) {
 		this.cardConfig = newInput;
-		updateContents();
+		if (cardConfig != null){
+			updateContents();
+		}
 	}
 
 	public void setLayoutData(Object layoutData) {

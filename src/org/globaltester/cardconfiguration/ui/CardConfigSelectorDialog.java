@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.globaltester.cardconfiguration.CardConfig;
 
-public class CardConfigSelectorDialog extends Dialog {
+public class CardConfigSelectorDialog extends Dialog implements INewConfigWizardClosedListener{
 
 	private Shell dialog;
 	private CardConfigSelector selectorWidget;
 	private CardConfigEditorWidget editorWidget;
 	private int status;
 	protected CardConfig selectedConfig;
-	
+	private Button okButton;
 
 	public CardConfigSelectorDialog(Shell parentShell) {
 		super(parentShell);
@@ -30,6 +30,10 @@ public class CardConfigSelectorDialog extends Dialog {
 
 	public int open() {
 		createDialog();
+		
+		// get notified, if the new card configuration wizard is closed
+		selectorWidget.addNewCardConfigDoneListener(this);
+		
 		status = Window.CANCEL;
 
 		dialog.open();
@@ -49,7 +53,7 @@ public class CardConfigSelectorDialog extends Dialog {
 		createSelector(dialog);
 		createEditorWidget(dialog);
 		createButtons(dialog);
-		
+		update();
 	}
 
 	private void configureLayout(Composite parent) {
@@ -63,7 +67,7 @@ public class CardConfigSelectorDialog extends Dialog {
 		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		selectorWidget.addSelectionListener(new SelectionListener() {
 		      public void widgetSelected(SelectionEvent e) {
-		        editorWidget.setInput(selectorWidget.getSelectedConfig());
+		        update();
 		      }
 
 			@Override
@@ -78,13 +82,12 @@ public class CardConfigSelectorDialog extends Dialog {
 		editorWidget = new CardConfigEditorWidget(parent);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		editorWidget.setEditable(false);
-		editorWidget.setInput(getSelectedCardConfig());
 	}
 
 	private void createButtons(Composite parent) {
 		new Label(parent, SWT.NONE);
 		
-		Button okButton = new Button(parent, SWT.PUSH);
+		okButton = new Button(parent, SWT.PUSH);
 		okButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		okButton.setText("OK");
 		okButton.addSelectionListener(new SelectionAdapter() {
@@ -95,8 +98,26 @@ public class CardConfigSelectorDialog extends Dialog {
 			}
 		});
 	}
+	
+	/**
+	 * Update the buttons and editor widget
+	 */
+	private void update(){
+		selectedConfig = selectorWidget.getSelectedConfig();
+		if (getSelectedCardConfig() == null){
+			okButton.setEnabled(false);
+		} else {
+			okButton.setEnabled(true);
+		}
+		editorWidget.setInput(getSelectedCardConfig());
+	}
 
 	public CardConfig getSelectedCardConfig() {
 		return selectedConfig;
+	}
+
+	@Override
+	public void wizardClosed() {
+		update();
 	}
 }

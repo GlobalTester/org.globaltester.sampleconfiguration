@@ -1,5 +1,8 @@
 package org.globaltester.cardconfiguration.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -22,6 +25,7 @@ public class CardConfigSelector {
 	public static final int BTN_EDIT = 2;
 	public static final int BTN_NEW = 4;
 	public static final int ALL_BUTTONS = 7;
+	private List<INewConfigWizardClosedListener> configWizardDoneListener;
 
 	// TODO update contents of selection Combo on workspace refresh
 
@@ -31,6 +35,7 @@ public class CardConfigSelector {
 
 	public CardConfigSelector(Composite parent, int availableButtons) {
 		this.createPartControl(parent, availableButtons);
+		configWizardDoneListener = new ArrayList<INewConfigWizardClosedListener>();
 	}
 
 	private void createPartControl(Composite parent, int availableButtons) {
@@ -85,9 +90,13 @@ public class CardConfigSelector {
 					} catch (CoreException ex) {
 						GtErrorLogger.log(Activator.PLUGIN_ID, ex);
 					}
-					configSelection.setItems(CardConfigManager.getAvailableConfigNames()
-							.toArray(new String[] {}));
-					configSelection.select(0);
+					String[] configNames = CardConfigManager
+							.getAvailableConfigNames().toArray(new String[] {});
+					if (configNames.length > 0) {
+						configSelection.setItems(configNames);
+						configSelection.select(0);
+						informListeners();
+					}
 				}
 			});
 		}
@@ -110,4 +119,14 @@ public class CardConfigSelector {
 		configSelection.addSelectionListener(selectionListener);
 	}
 
+	private void informListeners(){
+		for (INewConfigWizardClosedListener listener: configWizardDoneListener){
+			listener.wizardClosed();
+		}
+	}
+	
+	public void addNewCardConfigDoneListener(INewConfigWizardClosedListener listener){
+		configWizardDoneListener.add(listener);
+	}
+	
 }
