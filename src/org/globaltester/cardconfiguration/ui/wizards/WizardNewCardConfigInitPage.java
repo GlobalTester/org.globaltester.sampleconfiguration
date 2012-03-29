@@ -39,6 +39,7 @@ public class WizardNewCardConfigInitPage extends WizardPage {
 	
 
 	public CardConfig getCardConfig() {
+		editorWidget.doSave();
 		return cardConfig;
 	}
 
