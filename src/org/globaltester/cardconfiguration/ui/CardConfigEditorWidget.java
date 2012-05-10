@@ -21,6 +21,7 @@ public class CardConfigEditorWidget {
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
+	private Text descr;
 
 	public CardConfigEditorWidget(Composite parent) {
 		this.createPartControl(parent);
@@ -37,6 +38,7 @@ public class CardConfigEditorWidget {
 		addTabItemGeneral(tabFolder);
 		addTabItemCardReader(tabFolder);
 		addTabItemsForProtocols(tabFolder);
+		new Label(mainComp, SWT.NONE);
 
 	}
 
@@ -48,6 +50,7 @@ public class CardConfigEditorWidget {
 
 	private void updateTabItemGeneral() {
 		name.setText(getCardConfig().getName());
+		descr.setText(getCardConfig().getDescription());
 	}
 
 	private void updateTabItemReader() {
@@ -79,6 +82,13 @@ public class CardConfigEditorWidget {
 		lblName.setText("Name:");
 		name = new Text(tabItemComp, SWT.BORDER);
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblDescription = new Label(tabItemComp, SWT.NONE);
+		lblDescription.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, true, 1, 1));
+		lblDescription.setText("Description:");
+		
+		descr = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+		descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 
 	private void addTabItemCardReader(TabFolder tabFolder) {
@@ -122,6 +132,8 @@ public class CardConfigEditorWidget {
 	}
 
 	public void doSave() {
+		cardConfig.setDescription(descr.getText());
+		
 		// flush all changes to the CardConfig object
 		cardConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
@@ -137,6 +149,7 @@ public class CardConfigEditorWidget {
 
 	public void setEditable(boolean editable) {
 		name.setEditable(editable);
+		descr.setEditable(editable);
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
