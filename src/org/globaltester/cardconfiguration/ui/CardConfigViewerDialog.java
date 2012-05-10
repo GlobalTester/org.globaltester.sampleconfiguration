@@ -38,12 +38,13 @@ public class CardConfigViewerDialog extends Dialog {
 	}
 
 	private void createDialog() {
-		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		dialog.setSize(400, 300);
+		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
+//		dialog.setSize(400, 300);
 		dialog.setText(cardConfig.getName());
 		configureLayout(dialog);
 		createEditorWidget(dialog);
 		createOkButton(dialog);
+		dialog.setSize(dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
 	}
 

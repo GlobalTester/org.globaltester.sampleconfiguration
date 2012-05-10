@@ -47,12 +47,12 @@ public class CardConfigSelectorDialog extends Dialog implements INewConfigWizard
 
 	private void createDialog() {
 		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		dialog.setSize(400, 300);
 		dialog.setText("Select CardConfig");
 		configureLayout(dialog);
 		createSelector(dialog);
 		createEditorWidget(dialog);
 		createButtons(dialog);
+		dialog.setSize(dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		update();
 	}
 

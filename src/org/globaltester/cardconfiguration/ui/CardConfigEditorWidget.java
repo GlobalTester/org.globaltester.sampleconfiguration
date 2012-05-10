@@ -111,20 +111,26 @@ public class CardConfigEditorWidget {
 				1, 1));
 		lblMrz1.setText("MRZ (line 1):");
 		mrz1 = new Text(tabItemComp, SWT.BORDER);
-		mrz1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gdMrz1.widthHint = 350;
+		mrz1.setLayoutData(gdMrz1);
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
 				1, 1));
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
-		mrz2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gdMrz2.widthHint = gdMrz1.widthHint;
+		mrz2.setLayoutData(gdMrz2);
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
 				1, 1));
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
-		mrz3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
+		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gdMrz3.widthHint = gdMrz1.widthHint;
+		mrz3.setLayoutData(gdMrz3);
+		
 	}
 
 	public CardConfig getCardConfig() {
