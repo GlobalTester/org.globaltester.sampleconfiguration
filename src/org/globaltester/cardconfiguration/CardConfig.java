@@ -15,6 +15,7 @@ public class CardConfig {
 	public static final String DEFAULT_NAME = "Mustermann Erika";
 
 	private static final String XML_TAG_NAME = "Name";
+	private static final String XML_TAG_DESCRIPTION = "Description";
 	private static final String XML_TAG_CONFIG_PARAMS = "ConfigurationParams";
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
@@ -22,6 +23,7 @@ public class CardConfig {
 	private HashMap<String, Object> configParams = new HashMap<String, Object>();
 	private IProject project;
 	private String name;
+	private String descr;
 
 	/**
 	 * Creates a new instance which is populated with default values provided by
@@ -34,6 +36,7 @@ public class CardConfig {
 
 	private void initWithDefaulValues() {
 		name = DEFAULT_NAME;
+		descr = "Defaul configuration";
 
 		configParams
 				.put("ICAO9303_MRZ",
@@ -43,6 +46,7 @@ public class CardConfig {
 	public CardConfig(IProject proj) {
 		this.project = proj;
 		this.name = proj.getName();
+		this.descr = "";
 
 		if (getCardConfigIfile().exists()) {
 			initFromIFile();
@@ -95,7 +99,17 @@ public class CardConfig {
 	}
 
 	public String getName() {
+		if (name == null){
+			name = "";
+		}
 		return name;
+	}
+
+	public String getDescription() {
+		if (descr == null) {
+			descr = "";
+		}
+		return descr;
 	}
 
 	public void saveToProject() throws CoreException {
@@ -138,9 +152,12 @@ public class CardConfig {
 	 */
 	public void dumpToXml(Element root) {
 		// add meta data
-		Element specNameElem = new Element(XML_TAG_NAME);
-		specNameElem.addContent(name);
-		root.addContent(specNameElem);
+		Element nameElem = new Element(XML_TAG_NAME);
+		nameElem.addContent(name);
+		root.addContent(nameElem);
+		Element descrElem = new Element(XML_TAG_DESCRIPTION);
+		descrElem.addContent(descr);
+		root.addContent(descrElem);
 
 		// add configParams
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
@@ -161,6 +178,7 @@ public class CardConfig {
 	void extractFromXml(Element root) {
 		// extract name
 		this.name = root.getChildTextTrim(XML_TAG_NAME);
+		this.descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
 
 		// extract configParams
 		Element paramsElem = root.getChild(XML_TAG_CONFIG_PARAMS);
@@ -195,6 +213,10 @@ public class CardConfig {
 			this.name = newName;
 			CardConfigManager.register(this);
 		}
+	}
+
+	public void setDescription(String newDescr) {
+		this.descr = newDescr;
 	}
 
 	public boolean isStoredAsProject() {
