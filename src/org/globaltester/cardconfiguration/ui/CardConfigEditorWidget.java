@@ -85,10 +85,13 @@ public class CardConfigEditorWidget {
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblDescription = new Label(tabItemComp, SWT.NONE);
+		lblDescription.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
 		lblDescription.setText("Description:");
 		
-		descr = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI);
-		descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		descr = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+		GridData lblDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		lblDescrGd.heightHint = 50;
+		descr.setLayoutData(lblDescrGd);
 	}
 
 //	private void addTabItemCardReader(TabFolder tabFolder) {
