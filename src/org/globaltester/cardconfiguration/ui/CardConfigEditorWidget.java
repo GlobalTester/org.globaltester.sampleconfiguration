@@ -18,10 +18,12 @@ public class CardConfigEditorWidget {
 	private CardConfig cardConfig;
 	private TabFolder tabFolder;
 	private Text name;
+	private Text descr;
+	private Text pin;
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
-	private Text descr;
+	
 
 	public CardConfigEditorWidget(Composite parent) {
 		this.createPartControl(parent);
@@ -36,7 +38,8 @@ public class CardConfigEditorWidget {
 				1, 1));
 
 		addTabItemGeneral(tabFolder);
-		addTabItemCardReader(tabFolder);
+//		addTabItemCardReader(tabFolder);
+		addTabItemPasswords(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
 
@@ -77,24 +80,39 @@ public class CardConfigEditorWidget {
 		tabItemComp.setLayout(new GridLayout(2, false));
 
 		Label lblName = new Label(tabItemComp, SWT.NONE);
-		lblName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
 		lblName.setText("Name:");
 		name = new Text(tabItemComp, SWT.BORDER);
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblDescription = new Label(tabItemComp, SWT.NONE);
-		lblDescription.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, true, 1, 1));
 		lblDescription.setText("Description:");
 		
 		descr = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 
-	private void addTabItemCardReader(TabFolder tabFolder) {
+//	private void addTabItemCardReader(TabFolder tabFolder) {
+//		// TODO Auto-generated method stub
+//		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
+//		tbtmNewItem.setText("Reader selection");
+//	}
+
+	private void addTabItemPasswords(TabFolder tabFolder) {
 		// TODO Auto-generated method stub
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("Reader selection");
+		tbtmNewItem.setText("Passwords");
+		
+		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
+		tbtmNewItem.setControl(tabItemComp);
+		tabItemComp.setLayout(new GridLayout(2, false));
+
+		Label lblPin = new Label(tabItemComp, SWT.NONE);
+		lblPin.setText("PIN:");
+		pin = new Text(tabItemComp, SWT.BORDER);
+		GridData gdPin = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gdPin.widthHint = 350; //TODO AMY: calculate this required width based on font width
+		pin.setLayoutData(gdPin);
+		
 	}
 
 	private void addTabItemsForProtocols(TabFolder tabFolder) {
@@ -107,24 +125,18 @@ public class CardConfigEditorWidget {
 		tabItemComp.setLayout(new GridLayout(2, false));
 
 		Label lblMrz1 = new Label(tabItemComp, SWT.NONE);
-		lblMrz1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
 		lblMrz1.setText("MRZ (line 1):");
 		mrz1 = new Text(tabItemComp, SWT.BORDER);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdMrz1.widthHint = 350;
+		gdMrz1.widthHint = 350; //TODO AMY: calculate this required width based on font width
 		mrz1.setLayoutData(gdMrz1);
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
-		lblMrz2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gdMrz2.widthHint = gdMrz1.widthHint;
 		mrz2.setLayoutData(gdMrz2);
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
-		lblMrz3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
