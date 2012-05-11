@@ -36,7 +36,7 @@ public class CardConfig {
 
 	private void initWithDefaulValues() {
 		name = DEFAULT_NAME;
-		descr = "Defaul configuration";
+		descr = "Default configuration";
 
 		configParams
 				.put("ICAO9303_MRZ",
