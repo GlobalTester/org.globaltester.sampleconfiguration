@@ -1,7 +1,11 @@
 package org.globaltester.cardconfiguration.ui;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -14,6 +18,8 @@ import org.globaltester.logging.logger.GtErrorLogger;
 
 public class CardConfigEditorWidget {
 
+	private static final Font monospacedFont = JFaceResources.getFont(JFaceResources.TEXT_FONT);
+	
 	private Composite mainComp;
 	private CardConfig cardConfig;
 	private TabFolder tabFolder;
@@ -48,6 +54,7 @@ public class CardConfigEditorWidget {
 	public void updateContents() {
 		updateTabItemGeneral();
 		updateTabItemReader();
+		updateTabItemPasswords();
 		updateTabItemProtocols();
 	}
 
@@ -60,12 +67,23 @@ public class CardConfigEditorWidget {
 
 	}
 
+	private void updateTabItemPasswords() {
+		String pinString = (String) getCardConfig().get("PASSWORDS", "PIN");
+		if (pinString != null) {
+			pin.setText(pinString);
+		}
+	}
+
 	private void updateTabItemProtocols() {
 		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 			// use methods from MRZ class after refactoring to protocol
 			mrz1.setText(mrzString.substring(0, 43));
 			mrz2.setText(mrzString.substring(44));
+			mrz3.setText("");
+		} else {
+			mrz1.setText("");
+			mrz2.setText("");
 			mrz3.setText("");
 		}
 	}
@@ -101,7 +119,6 @@ public class CardConfigEditorWidget {
 //	}
 
 	private void addTabItemPasswords(TabFolder tabFolder) {
-		// TODO Auto-generated method stub
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
 		tbtmNewItem.setText("Passwords");
 		
@@ -112,8 +129,8 @@ public class CardConfigEditorWidget {
 		Label lblPin = new Label(tabItemComp, SWT.NONE);
 		lblPin.setText("PIN:");
 		pin = new Text(tabItemComp, SWT.BORDER);
+		pin.setFont(monospacedFont);
 		GridData gdPin = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdPin.widthHint = 350; //TODO AMY: calculate this required width based on font width
 		pin.setLayoutData(gdPin);
 		
 	}
@@ -126,25 +143,34 @@ public class CardConfigEditorWidget {
 		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
 		tbtmNewItem.setControl(tabItemComp);
 		tabItemComp.setLayout(new GridLayout(2, false));
-
+		
 		Label lblMrz1 = new Label(tabItemComp, SWT.NONE);
 		lblMrz1.setText("MRZ (line 1):");
 		mrz1 = new Text(tabItemComp, SWT.BORDER);
+		mrz1.setFont(monospacedFont);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdMrz1.widthHint = 350; //TODO AMY: calculate this required width based on font width
 		mrz1.setLayoutData(gdMrz1);
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
+		mrz2.setFont(monospacedFont);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdMrz2.widthHint = gdMrz1.widthHint;
 		mrz2.setLayoutData(gdMrz2);
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
+		mrz3.setFont(monospacedFont);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdMrz3.widthHint = gdMrz1.widthHint;
 		mrz3.setLayoutData(gdMrz3);
+		
+		//calculate width hint
+		GC gc = new GC(mrz1);
+	    FontMetrics fm = gc.getFontMetrics();
+	    int charWidth = fm.getAverageCharWidth();
+	    gc.dispose();
+		gdMrz1.widthHint = charWidth * 45;
+		gdMrz2.widthHint = gdMrz1.widthHint;
+		gdMrz3.widthHint = gdMrz1.widthHint;
 		
 	}
 
@@ -156,6 +182,7 @@ public class CardConfigEditorWidget {
 		cardConfig.setDescription(descr.getText());
 		
 		// flush all changes to the CardConfig object
+		cardConfig.put("PASSWORDS", "PIN", pin.getText());
 		cardConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
 
@@ -171,6 +198,7 @@ public class CardConfigEditorWidget {
 	public void setEditable(boolean editable) {
 		name.setEditable(editable);
 		descr.setEditable(editable);
+		pin.setEditable(editable);
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
