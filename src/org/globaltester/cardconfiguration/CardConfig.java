@@ -131,7 +131,8 @@ public class CardConfig {
 		// convenience)
 	}
 
-	private IFile getCardConfigIfile() {
+	public IFile getCardConfigIfile() {
+		//TODO make this private once it is no onger needed for TextEditorInput
 		if (project != null) {
 			return project.getFile("cardconfig.xml");
 		} else {
@@ -222,5 +223,4 @@ public class CardConfig {
 	public boolean isStoredAsProject() {
 		return project != null;
 	}
-
 }
