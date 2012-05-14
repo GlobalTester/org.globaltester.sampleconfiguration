@@ -3,6 +3,7 @@ package org.globaltester.cardconfiguration.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,6 +15,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.CardConfigManager;
 import org.globaltester.core.ui.GtUiHelper;
@@ -76,7 +83,21 @@ public class CardConfigSelector {
 		if ((availableButtons & BTN_EDIT) == BTN_EDIT) {
 			Button btnEdit = new Button(mainComp, SWT.NONE);
 			btnEdit.setText("Edit");
-			// FIXME AMY CardConfig implement editor for CardConfig here
+			btnEdit.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					IFile fileToBeOpened = getSelectedConfig().getCardConfigIfile();
+					IEditorInput editorInput = new FileEditorInput(fileToBeOpened);
+					IWorkbenchWindow window=PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+					IWorkbenchPage page = window.getActivePage();
+					try {
+						page.openEditor(editorInput, CardConfigEditor.ID);
+					} catch (PartInitException ex) {
+						GtErrorLogger.log(Activator.PLUGIN_ID, ex);
+					}
+					
+				}
+			});
+			       
 		}
 
 		if ((availableButtons & BTN_NEW) == BTN_NEW) {
