@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.globaltester.core.xml.XMLHelper;
 import org.globaltester.logging.logger.GtErrorLogger;
+import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -165,7 +166,12 @@ public class CardConfig {
 		for (String curParam : configParams.keySet()) {
 			Element curParamElem = new Element(XML_TAG_PARAMETER);
 			curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curParam);
-			curParamElem.addContent((String) configParams.get(curParam));
+			String curParamValue = (String) configParams.get(curParam);
+			if (curParamValue.contains("<")){
+				curParamElem.addContent(new CDATA(curParamValue));
+			} else {
+				curParamElem.addContent(curParamValue);	
+			}
 			configParamsElem.addContent(curParamElem);
 		}
 		root.addContent(configParamsElem);
