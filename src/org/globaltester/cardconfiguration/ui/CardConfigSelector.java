@@ -149,5 +149,16 @@ public class CardConfigSelector {
 	public void addNewCardConfigDoneListener(INewConfigWizardClosedListener listener){
 		configWizardDoneListener.add(listener);
 	}
+
+	/**
+	 * If a cardConfig wit
+	 * @param cardConfig
+	 */
+	public void setSelection(CardConfig cardConfig) {
+		int index = configSelection.indexOf(cardConfig.getName());
+		if (index >= 0) {
+			configSelection.select(index);
+		}
+	}
 	
 }
