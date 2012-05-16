@@ -17,6 +17,7 @@ import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.GtCardConfigProject;
 import org.globaltester.cardconfiguration.ui.Activator;
 import org.globaltester.logging.logger.GtErrorLogger;
+import org.globaltester.cardconfiguration.ui.UiImages;
 
 public class NewCardConfigWizard extends Wizard implements INewWizard, IPageChangingListener {
 	
@@ -29,7 +30,8 @@ public class NewCardConfigWizard extends Wizard implements INewWizard, IPageChan
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// no initialization needed
+		setDefaultPageImageDescriptor(UiImages.CARDCONFIG_BANNER
+				.getImageDescriptor());
 	}
 
 	@Override

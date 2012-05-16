@@ -10,6 +10,9 @@
             id="org.globaltester.cardconfiguration.ui.wizards.newCardConfigWizard"
             name="CardConfiguration"
             project="true">
+         <description>
+            Create a new CardConfiguration project.
+         </description>
       </wizard>
    </extension>
 </plugin>
