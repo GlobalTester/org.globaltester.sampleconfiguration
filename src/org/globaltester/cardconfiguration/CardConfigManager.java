@@ -61,4 +61,8 @@ public class CardConfigManager {
 		}
 	}
 
+	public static boolean isAvailableAsProject(String cardConfigName) {
+		return getAvailableConfigNames().contains(cardConfigName);
+	}
+
 }
