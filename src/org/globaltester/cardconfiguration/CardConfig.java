@@ -4,6 +4,10 @@ import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.globaltester.core.xml.XMLHelper;
 import org.globaltester.logging.logger.GtErrorLogger;
@@ -11,7 +15,7 @@ import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 
-public class CardConfig {
+public class CardConfig implements IResourceChangeListener {
 
 	public static final String DEFAULT_NAME = "Mustermann Erika";
 
@@ -60,6 +64,8 @@ public class CardConfig {
 		}
 
 		CardConfigManager.register(this);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+			      this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	public CardConfig(Element cardConfigElement) {
@@ -133,7 +139,7 @@ public class CardConfig {
 	}
 
 	public IFile getCardConfigIfile() {
-		//TODO make this private once it is no onger needed for TextEditorInput
+		//TODO make this private once it is no longer needed for TextEditorInput
 		if (project != null) {
 			return project.getFile("cardconfig.xml");
 		} else {
@@ -228,5 +234,29 @@ public class CardConfig {
 
 	public boolean isStoredAsProject() {
 		return project != null;
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		IFile file = getCardConfigIfile();
+		if (file != null) {
+			IResourceDelta campaignExecutionDelta = event.getDelta()
+					.findMember(file.getFullPath());
+
+			if (campaignExecutionDelta != null) {
+				if (campaignExecutionDelta.getKind() == IResourceDelta.REMOVED) {
+					// remove this form CardConfigManager
+					CardConfigManager.remove(this);
+					
+					//remove this from Workspace
+					ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+					
+				} else {
+					// update the editor to reflect resource changes
+					initFromIFile();
+				}
+			}
+		}
+		
 	}
 }
