@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GlobalTester CardConfiguration UI Test
-Bundle-SymbolicName: org.globaltester.cardconfiguration.ui.test
+Bundle-SymbolicName: org.globaltester.cardconfiguration.ui.integrationtest
 Bundle-Version: 3.0.1
 Bundle-Vendor: HJP Consulting GmbH
 Fragment-Host: org.globaltester.cardconfiguration.ui;bundle-version="3.0.0"
