@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GlobalTester CardConfiguration UI
 Bundle-SymbolicName: org.globaltester.cardconfiguration.ui;singleton:=true
-Bundle-Version: 3.0.1.qualifier
+Bundle-Version: 3.0.1
 Bundle-Activator: org.globaltester.cardconfiguration.ui.Activator
 Bundle-Vendor: HJP Consulting GmbH
 Require-Bundle: org.eclipse.core.runtime,
@@ -11,8 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.globaltester.logging.legacy;bundle-version="3.0.0",
  org.eclipse.ui.ide;bundle-version="3.6.2",
  org.eclipse.core.resources;bundle-version="3.6.1",
- org.globaltester.core.ui;bundle-version="3.0.0",
- org.eclipse.wst.xml.ui;bundle-version="1.1.103"
+ org.globaltester.core.ui;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.globaltester.cardconfiguration.ui
