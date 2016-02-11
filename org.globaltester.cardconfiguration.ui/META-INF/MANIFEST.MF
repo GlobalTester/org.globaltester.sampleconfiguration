@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GlobalTester CardConfiguration UI
+Bundle-Name: GT CardConfig UI
 Bundle-SymbolicName: org.globaltester.cardconfiguration.ui;singleton:=true
 Bundle-Version: 3.0.3
 Bundle-Activator: org.globaltester.cardconfiguration.ui.Activator

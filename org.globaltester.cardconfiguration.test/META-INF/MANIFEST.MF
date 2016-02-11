@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GlobalTester CardConfiuration - Test
+Bundle-Name: GT CardConfig - Test
 Bundle-SymbolicName: org.globaltester.cardconfiguration.test
 Bundle-Version: 3.0.3
 Bundle-Vendor: HJP Consulting GmbH
