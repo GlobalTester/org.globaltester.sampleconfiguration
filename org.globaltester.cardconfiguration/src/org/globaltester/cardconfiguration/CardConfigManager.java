@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.globaltester.core.resources.GtResourceHelper;
+import org.globaltester.base.resources.GtResourceHelper;
 
 /**
  * This class manages all mutable CardConfigurations stored in projects within

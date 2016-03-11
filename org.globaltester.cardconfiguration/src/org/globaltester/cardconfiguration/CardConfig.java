@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.globaltester.core.xml.XMLHelper;
+import org.globaltester.base.xml.XMLHelper;
 import org.globaltester.logging.logger.GtErrorLogger;
 import org.jdom.CDATA;
 import org.jdom.Document;
