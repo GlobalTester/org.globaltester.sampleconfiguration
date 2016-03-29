@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.logging.logger.GtErrorLogger;
+import org.globaltester.protocol.ProtocolFactory;
+import org.globaltester.protocol.ProtocolParameterDescription;
+import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
 
 public class CardConfigEditorWidget {
 
@@ -46,6 +49,7 @@ public class CardConfigEditorWidget {
 		addTabItemGeneral(tabFolder);
 //		addTabItemCardReader(tabFolder);
 		addTabItemPasswords(tabFolder);
+		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
 
@@ -156,7 +160,7 @@ public class CardConfigEditorWidget {
 		
 	}
 
-	private void addTabItemsForProtocols(TabFolder tabFolder) {
+	private void addTabItemMrz(TabFolder tabFolder) {
 		// TODO extract TabFolder for different protocols
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
 		tbtmNewItem.setText("ICAO9303");
@@ -193,6 +197,37 @@ public class CardConfigEditorWidget {
 		gdMrz2.widthHint = gdMrz1.widthHint;
 		gdMrz3.widthHint = gdMrz1.widthHint;
 		
+	}
+
+	private void addTabItemsForProtocols(TabFolder tabFolder) {
+		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
+		
+		for (ProtocolFactory curProtocolFactory : pFactories) {
+			if (curProtocolFactory == null) continue;
+			
+			createProtcolTabItem(tabFolder, curProtocolFactory);
+		}		
+	}
+
+	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
+		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
+		curTabItem.setText(curProtocolFactory.getName());
+		
+		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
+		curTabItem.setControl(tabItemComp);
+		tabItemComp.setLayout(new GridLayout(2, false));
+		
+		
+		
+		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
+			if (curParamDescriptor != null) {
+				
+				ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
+				
+			}
+		}
+		
+		return curTabItem;
 	}
 
 	public CardConfig getCardConfig() {
