@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.logging.logger.GtErrorLogger;
 import org.globaltester.protocol.ProtocolFactory;
-import org.globaltester.protocol.ProtocolParameterDescription;
+import org.globaltester.protocol.parameter.ProtocolParameterDescription;
 import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
 
 public class CardConfigEditorWidget {
