@@ -1,5 +1,8 @@
 package org.globaltester.cardconfiguration.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -17,6 +20,7 @@ import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.logging.logger.GtErrorLogger;
 import org.globaltester.protocol.ProtocolFactory;
 import org.globaltester.protocol.parameter.ProtocolParameterDescription;
+import org.globaltester.protocol.ui.ProtocolParameterEditor;
 import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
 
 public class CardConfigEditorWidget {
@@ -32,6 +36,8 @@ public class CardConfigEditorWidget {
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
+
+	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
 	
 
 	public CardConfigEditorWidget(Composite parent) {
@@ -221,9 +227,7 @@ public class CardConfigEditorWidget {
 		
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
-				
-				ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
-				
+				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
 			}
 		}
 		
@@ -241,6 +245,17 @@ public class CardConfigEditorWidget {
 		cardConfig.put("PASSWORDS", "PIN", pin.getText());
 		cardConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
+		
+		//flush all ProtocolParameter values to the CardConfig object
+		for (ProtocolParameterEditor curParam : paramEditors) {
+			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
+			String paramName = curParam.getProtocolParameterDescription().getName();
+			String paramValue = curParam.getValue();
+			if (paramValue != null) {
+				cardConfig.put(protocolName, paramName, paramValue);
+			}
+		}
+		
 
 		// save the CardConfig
 		try {
