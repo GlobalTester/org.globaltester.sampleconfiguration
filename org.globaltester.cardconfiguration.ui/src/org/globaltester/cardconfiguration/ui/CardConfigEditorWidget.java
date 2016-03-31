@@ -65,7 +65,8 @@ public class CardConfigEditorWidget {
 		updateTabItemGeneral();
 		updateTabItemReader();
 		updateTabItemPasswords();
-		updateTabItemProtocols();
+		updateTabItemMrz();
+		updateProtocolParameterEditors();
 	}
 
 	private void updateTabItemGeneral() {
@@ -84,7 +85,53 @@ public class CardConfigEditorWidget {
 		}
 	}
 
-	private void updateTabItemProtocols() {
+	private void updateTabItemMrz() {
+		String mrzString = getCardConfig().get("ICAO9303", "MRZ");
+		if (mrzString != null) {
+
+			// TODO use methods from MRZ class after refactoring to protocol
+			switch (mrzString.length()) {
+			case 90: //ID-1 / TD-1
+				mrz1.setText(mrzString.substring(0, 30));
+				mrz2.setText(mrzString.substring(31, 60));
+				mrz3.setText(mrzString.substring(60));
+				break;
+			case 72: //ID-2 / TD-2
+				mrz1.setText(mrzString.substring(0, 36));
+				mrz2.setText(mrzString.substring(36));
+				mrz3.setText("");
+				break;
+			case 88: //ID-3 / TD-3
+				mrz1.setText(mrzString.substring(0, 44));
+				mrz2.setText(mrzString.substring(44));
+				mrz3.setText("");
+				break;
+
+			default: //unkown format
+				mrz1.setText(mrzString);
+				mrz2.setText("");
+				mrz3.setText("");
+				break;
+			}
+		} else {
+			mrz1.setText("");
+			mrz2.setText("");
+			mrz3.setText("");
+		}
+	}
+
+	private void updateProtocolParameterEditors() {
+		
+		for (ProtocolParameterEditor curParamEditor : paramEditors) {
+			String protocolName = curParamEditor.getProtocolParameterDescription().getProtocolName();
+			String paramName = curParamEditor.getProtocolParameterDescription().getName();
+			
+			String newValue = cardConfig.get(protocolName, paramName);
+			if (newValue != null) {
+				curParamEditor.setValue(newValue);
+			}
+		}
+		
 		String mrzString = getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 
