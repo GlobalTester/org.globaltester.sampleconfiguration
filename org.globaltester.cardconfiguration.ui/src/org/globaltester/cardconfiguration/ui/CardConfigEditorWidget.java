@@ -78,14 +78,14 @@ public class CardConfigEditorWidget {
 	}
 
 	private void updateTabItemPasswords() {
-		String pinString = (String) getCardConfig().get("PASSWORDS", "PIN");
+		String pinString = getCardConfig().get("PASSWORDS", "PIN");
 		if (pinString != null) {
 			pin.setText(pinString);
 		}
 	}
 
 	private void updateTabItemProtocols() {
-		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
+		String mrzString = getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 
 			// TODO use methods from MRZ class after refactoring to protocol
