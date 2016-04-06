@@ -1,5 +1,8 @@
 package org.globaltester.cardconfiguration.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -15,6 +18,10 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.logging.logger.GtErrorLogger;
+import org.globaltester.protocol.ProtocolFactory;
+import org.globaltester.protocol.parameter.ProtocolParameterDescription;
+import org.globaltester.protocol.ui.ProtocolParameterEditor;
+import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
 
 public class CardConfigEditorWidget {
 
@@ -29,6 +36,8 @@ public class CardConfigEditorWidget {
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
+
+	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
 	
 
 	public CardConfigEditorWidget(Composite parent) {
@@ -46,6 +55,7 @@ public class CardConfigEditorWidget {
 		addTabItemGeneral(tabFolder);
 //		addTabItemCardReader(tabFolder);
 		addTabItemPasswords(tabFolder);
+		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
 
@@ -55,7 +65,8 @@ public class CardConfigEditorWidget {
 		updateTabItemGeneral();
 		updateTabItemReader();
 		updateTabItemPasswords();
-		updateTabItemProtocols();
+		updateTabItemMrz();
+		updateProtocolParameterEditors();
 	}
 
 	private void updateTabItemGeneral() {
@@ -68,14 +79,14 @@ public class CardConfigEditorWidget {
 	}
 
 	private void updateTabItemPasswords() {
-		String pinString = (String) getCardConfig().get("PASSWORDS", "PIN");
+		String pinString = getCardConfig().get("PASSWORDS", "PIN");
 		if (pinString != null) {
 			pin.setText(pinString);
 		}
 	}
 
-	private void updateTabItemProtocols() {
-		String mrzString = (String) getCardConfig().get("ICAO9303", "MRZ");
+	private void updateTabItemMrz() {
+		String mrzString = getCardConfig().get("ICAO9303", "MRZ");
 		if (mrzString != null) {
 
 			// TODO use methods from MRZ class after refactoring to protocol
@@ -106,6 +117,19 @@ public class CardConfigEditorWidget {
 			mrz1.setText("");
 			mrz2.setText("");
 			mrz3.setText("");
+		}
+	}
+
+	private void updateProtocolParameterEditors() {
+		
+		for (ProtocolParameterEditor curParamEditor : paramEditors) {
+			String protocolName = curParamEditor.getProtocolParameterDescription().getProtocolName();
+			String paramName = curParamEditor.getProtocolParameterDescription().getName();
+			
+			String newValue = cardConfig.get(protocolName, paramName);
+			if (newValue != null) {
+				curParamEditor.setValue(newValue);
+			}
 		}
 	}
 
@@ -156,7 +180,7 @@ public class CardConfigEditorWidget {
 		
 	}
 
-	private void addTabItemsForProtocols(TabFolder tabFolder) {
+	private void addTabItemMrz(TabFolder tabFolder) {
 		// TODO extract TabFolder for different protocols
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
 		tbtmNewItem.setText("ICAO9303");
@@ -195,6 +219,35 @@ public class CardConfigEditorWidget {
 		
 	}
 
+	private void addTabItemsForProtocols(TabFolder tabFolder) {
+		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
+		
+		for (ProtocolFactory curProtocolFactory : pFactories) {
+			if (curProtocolFactory == null) continue;
+			
+			createProtcolTabItem(tabFolder, curProtocolFactory);
+		}		
+	}
+
+	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
+		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
+		curTabItem.setText(curProtocolFactory.getName());
+		
+		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
+		curTabItem.setControl(tabItemComp);
+		tabItemComp.setLayout(new GridLayout(2, false));
+		
+		
+		
+		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
+			if (curParamDescriptor != null) {
+				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
+			}
+		}
+		
+		return curTabItem;
+	}
+
 	public CardConfig getCardConfig() {
 		return cardConfig;
 	}
@@ -206,6 +259,17 @@ public class CardConfigEditorWidget {
 		cardConfig.put("PASSWORDS", "PIN", pin.getText());
 		cardConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
+		
+		//flush all ProtocolParameter values to the CardConfig object
+		for (ProtocolParameterEditor curParam : paramEditors) {
+			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
+			String paramName = curParam.getProtocolParameterDescription().getName();
+			String paramValue = curParam.getValue();
+			if (paramValue != null) {
+				cardConfig.put(protocolName, paramName, paramValue);
+			}
+		}
+		
 
 		// save the CardConfig
 		try {

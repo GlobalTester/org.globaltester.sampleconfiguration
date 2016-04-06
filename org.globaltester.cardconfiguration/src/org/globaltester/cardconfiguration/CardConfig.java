@@ -25,7 +25,7 @@ public class CardConfig implements IResourceChangeListener {
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
 
-	private HashMap<String, Object> configParams = new HashMap<String, Object>();
+	private HashMap<String, String> configParams = new HashMap<String, String>();
 	private IProject project;
 	private String name;
 	private String descr;
@@ -90,7 +90,7 @@ public class CardConfig implements IResourceChangeListener {
 	 * @param key
 	 * @return
 	 */
-	public Object get(String protocol, String key) {
+	public String get(String protocol, String key) {
 		return configParams.get(protocol + "_" + key);
 	}
 
@@ -101,7 +101,7 @@ public class CardConfig implements IResourceChangeListener {
 	 * @param key
 	 * @param value
 	 */
-	public void put(String protocol, String key, Object value) {
+	public void put(String protocol, String key, String value) {
 		configParams.put(protocol + "_" + key, value);
 	}
 
