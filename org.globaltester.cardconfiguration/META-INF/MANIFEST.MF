@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.globaltester.logging.legacy,
  org.globaltester.base,
  org.globaltester.lib.jdom
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.globaltester.cardconfiguration
