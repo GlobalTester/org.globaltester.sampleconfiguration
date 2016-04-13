@@ -8,7 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.globaltester.base.resources.GtResourceHelper;
-import org.globaltester.logging.logger.GtErrorLogger;
+import org.globaltester.logging.legacy.logger.GtErrorLogger;
 
 
 /**

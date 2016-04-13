@@ -16,8 +16,8 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.globaltester.cardconfiguration.CardConfig;
 import org.globaltester.cardconfiguration.GtCardConfigProject;
 import org.globaltester.cardconfiguration.ui.Activator;
-import org.globaltester.logging.logger.GtErrorLogger;
 import org.globaltester.cardconfiguration.ui.UiImages;
+import org.globaltester.logging.legacy.logger.GtErrorLogger;
 
 public class NewCardConfigWizard extends Wizard implements INewWizard, IPageChangingListener {
 	
