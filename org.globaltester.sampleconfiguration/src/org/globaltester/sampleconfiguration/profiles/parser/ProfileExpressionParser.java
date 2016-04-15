@@ -8,6 +8,7 @@ import org.globaltester.sampleconfiguration.profiles.expressions.AndProfileExpre
 import org.globaltester.sampleconfiguration.profiles.expressions.NotProfileExpression;
 import org.globaltester.sampleconfiguration.profiles.expressions.OrProfileExpression;
 import org.globaltester.sampleconfiguration.profiles.expressions.ProfileExpression;
+import org.globaltester.sampleconfiguration.profiles.expressions.ValueProfileExpression;
 
 public class ProfileExpressionParser {
 	
@@ -37,36 +38,6 @@ public class ProfileExpressionParser {
 		} while (openedGroups > 0 && offset < expressionString.length());
 		return offset - initialOffset;
 	}
-	
-//	private static ProfileExpression parseRecursive(String expressionString){
-//		String currentToken = "";
-//		
-//		
-//		for (int i = 0; i < expressionString.length(); i++){
-//			char currentChar = expressionString.charAt(i); 
-//			switch (currentChar){
-//			case '(':
-//				int length = getGroupLength(expressionString, i);
-//				if (expressionString.endsWith(")")){
-//					return new SubProfileExpression(parse(expressionString.substring(i+1, i+  length - 1)));
-//				} else {
-//					currentToken += expressionString.substring(i, i + length);
-//					i += length - 1;
-//				}
-//				break;
-//			case ')':
-//				break;
-//			case ',':
-//				return new AndProfileExpression(parse(expressionString.substring(0, i)), parse(expressionString.substring(i+1)));
-//			case '|':
-//				return new OrProfileExpression(parse(expressionString.substring(0, i)), parse(expressionString.substring(i+1)));
-//			default:
-//				currentToken += currentChar;
-//				break;
-//			}
-//		}
-//		return new Profile(currentToken);
-//	}
 	
 	private static ProfileExpression [] parseContent(String content){
 		List<ProfileExpression> expressions = new LinkedList<>();
@@ -116,6 +87,8 @@ public class ProfileExpressionParser {
 			return new OrProfileExpression(parseContent(content));
 		case "NOT":
 			return new NotProfileExpression(parseRecursive(content));
+		case "VALUE":
+			return new ValueProfileExpression(Boolean.parseBoolean(content));
 		default:
 			return null;
 		}
