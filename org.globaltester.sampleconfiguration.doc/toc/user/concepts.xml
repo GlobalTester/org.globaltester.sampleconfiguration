@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Concepts" link_to="/org.globaltester.base.doc/toc/user/toc.xml#concepts"> 
+	<topic label="SampleConfiguration"  href="html/user/concepts/sampleConfiguration.html">
+	</topic>
+</toc>
