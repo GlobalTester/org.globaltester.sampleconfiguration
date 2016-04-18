@@ -69,6 +69,10 @@ public class ProfileExpressionParser {
 	}
 	
 	private static ProfileExpression parseRecursive(String expressionString){
+		expressionString = expressionString.trim();
+		if (expressionString.isEmpty()){
+			return new ValueProfileExpression(true);
+		}
 		if (! expressionString.endsWith(")")){
 			if (expressionString.contains("(")){
 				throw new IllegalArgumentException("Found unexpected brace in expression leaf");

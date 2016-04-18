@@ -27,7 +27,7 @@ public class ProfileMapper {
 					if (! line.startsWith("#")){
 						if (line.equals(profiles)){
 							try{
-								return ProfileExpressionParser.parse(reader.readLine().trim());
+								return ProfileExpressionParser.parse(reader.readLine());
 							}catch(IllegalArgumentException e){
 								return new ValueProfileExpression(false);
 							}
