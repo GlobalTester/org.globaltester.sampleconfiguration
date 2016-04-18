@@ -11,7 +11,7 @@
             name="SampleConfiguration"
             project="true">
          <description>
-            Create a new SampleConfiguration project.
+            Create a SampleConfiguration project
          </description>
       </wizard>
    </extension>

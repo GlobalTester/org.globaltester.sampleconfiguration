@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.help.toc">
+      
+      <toc
+            file="toc/user/concepts.xml">
+      </toc>
+      <toc
+            file="toc/user/tasks.xml">
+      </toc>
+   </extension>
+   
+   
+   
+
+</plugin>
