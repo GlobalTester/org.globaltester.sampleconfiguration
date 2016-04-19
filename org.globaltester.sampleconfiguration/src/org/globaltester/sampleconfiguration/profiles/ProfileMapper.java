@@ -40,7 +40,7 @@ public class ProfileMapper {
 			}
 		}
 		
-		return null;
+		return ProfileExpressionParser.parse(profiles);
 	}
 
 	private static BufferedReader createReaderForFile(IFile file) throws FileNotFoundException{
