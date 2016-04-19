@@ -44,7 +44,7 @@ public class SampleConfig implements IResourceChangeListener {
 		descr = "Default configuration";
 
 		configParams
-				.put("ICAO9303_MRZ",
+				.put("MRZ_MRZ",
 						"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
 	}
 

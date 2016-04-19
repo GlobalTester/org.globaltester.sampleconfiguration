@@ -81,7 +81,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 	private void createEditorWidget(Composite parent) {
 		editorWidget = new SampleConfigEditorWidget(parent);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		editorWidget.setEditable(false);
+//		editorWidget.setEditable(false);
 	}
 
 	private void createButtons(Composite parent) {
@@ -94,6 +94,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			public void widgetSelected(SelectionEvent e) {
 				status = Window.OK;
 				selectedConfig = selectorWidget.getSelectedConfig();
+				editorWidget.doSave();
 				dialog.close();
 			}
 		});
