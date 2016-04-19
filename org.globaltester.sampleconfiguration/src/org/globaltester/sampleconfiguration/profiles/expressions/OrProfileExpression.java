@@ -2,6 +2,11 @@ package org.globaltester.sampleconfiguration.profiles.expressions;
 
 import org.globaltester.sampleconfiguration.SampleConfig;
 
+/**
+ * This represents a logical OR between given profiles.
+ * @author mboonk
+ *
+ */
 public class OrProfileExpression extends AbstractProfileExpression {
 
 	ProfileExpression [] expressions;

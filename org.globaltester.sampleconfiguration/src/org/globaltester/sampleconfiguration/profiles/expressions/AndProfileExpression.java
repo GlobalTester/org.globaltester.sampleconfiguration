@@ -2,6 +2,11 @@ package org.globaltester.sampleconfiguration.profiles.expressions;
 
 import org.globaltester.sampleconfiguration.SampleConfig;
 
+/**
+ * This represents a logical AND between given profiles.
+ * @author mboonk
+ *
+ */
 public class AndProfileExpression extends AbstractProfileExpression{
 
 	ProfileExpression [] expressions;
