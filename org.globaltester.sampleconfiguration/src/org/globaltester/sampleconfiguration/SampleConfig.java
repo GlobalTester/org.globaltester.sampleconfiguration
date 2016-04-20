@@ -42,10 +42,6 @@ public class SampleConfig implements IResourceChangeListener {
 	private void initWithDefaulValues() {
 		name = DEFAULT_NAME;
 		descr = "Default configuration";
-
-		configParams
-				.put("MRZ_MRZ",
-						"P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6");
 	}
 
 	public SampleConfig(IProject proj) {
