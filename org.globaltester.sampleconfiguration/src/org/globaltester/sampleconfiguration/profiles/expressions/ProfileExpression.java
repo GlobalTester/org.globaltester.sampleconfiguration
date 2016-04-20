@@ -17,7 +17,7 @@ public interface ProfileExpression {
 	 * 
 	 * @param config
 	 *            The {@link SampleConfig} to be used
-	 * @return true, iff the expression evaluates to true
+	 * @return true, if the expression evaluates to true
 	 */
 	public boolean evaluate(SampleConfig config);
 }
