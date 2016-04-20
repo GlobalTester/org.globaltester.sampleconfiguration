@@ -33,6 +33,8 @@ public class SampleConfigEditorWidget {
 	private Text name;
 	private Text descr;
 	private Text pin;
+	private Text puk;
+	private Text eSignPin;
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
@@ -58,7 +60,6 @@ public class SampleConfigEditorWidget {
 		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
-
 	}
 
 	public void updateContents() {
@@ -83,17 +84,27 @@ public class SampleConfigEditorWidget {
 		if (pinString != null) {
 			pin.setText(pinString);
 		}
+		
+		String pukString = getSampleConfig().get("PASSWORDS", "PUK");
+		if (pukString != null) {
+			puk.setText(pukString);
+		}
+		
+		String eSignPinString = getSampleConfig().get("PASSWORDS", "eSIGN_PIN");
+		if (eSignPinString != null) {
+			eSignPin.setText(eSignPinString);
+		}
 	}
 
 	private void updateTabItemMrz() {
-		String mrzString = getSampleConfig().get("ICAO9303", "MRZ");
+		String mrzString = getSampleConfig().get("MRZ", "MRZ");
 		if (mrzString != null) {
 
 			// TODO use methods from MRZ class after refactoring to protocol
 			switch (mrzString.length()) {
 			case 90: //ID-1 / TD-1
 				mrz1.setText(mrzString.substring(0, 30));
-				mrz2.setText(mrzString.substring(31, 60));
+				mrz2.setText(mrzString.substring(30, 60));
 				mrz3.setText(mrzString.substring(60));
 				break;
 			case 72: //ID-2 / TD-2
@@ -170,20 +181,31 @@ public class SampleConfigEditorWidget {
 		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
 		tbtmNewItem.setControl(tabItemComp);
 		tabItemComp.setLayout(new GridLayout(2, false));
+		GridData gdPassword = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 
 		Label lblPin = new Label(tabItemComp, SWT.NONE);
 		lblPin.setText("PIN:");
 		pin = new Text(tabItemComp, SWT.BORDER);
 		pin.setFont(monospacedFont);
-		GridData gdPin = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		pin.setLayoutData(gdPin);
+		pin.setLayoutData(gdPassword);
 		
+		Label lblPuk = new Label(tabItemComp, SWT.NONE);
+		lblPuk.setText("PUK:");
+		puk = new Text(tabItemComp, SWT.BORDER);
+		puk.setFont(monospacedFont);
+		puk.setLayoutData(gdPassword);
+		
+		Label lbleSignPin = new Label(tabItemComp, SWT.NONE);
+		lbleSignPin.setText("eSign-PIN:");
+		eSignPin = new Text(tabItemComp, SWT.BORDER);
+		eSignPin.setFont(monospacedFont);
+		eSignPin.setLayoutData(gdPassword);
 	}
 
 	private void addTabItemMrz(TabFolder tabFolder) {
 		// TODO extract TabFolder for different protocols
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("ICAO9303");
+		tbtmNewItem.setText("MRZ");
 
 		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
 		tbtmNewItem.setControl(tabItemComp);
@@ -216,7 +238,6 @@ public class SampleConfigEditorWidget {
 		gdMrz1.widthHint = charWidth * 45;
 		gdMrz2.widthHint = gdMrz1.widthHint;
 		gdMrz3.widthHint = gdMrz1.widthHint;
-		
 	}
 
 	private void addTabItemsForProtocols(TabFolder tabFolder) {
@@ -237,8 +258,6 @@ public class SampleConfigEditorWidget {
 		curTabItem.setControl(tabItemComp);
 		tabItemComp.setLayout(new GridLayout(2, false));
 		
-		
-		
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
 				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
@@ -257,7 +276,10 @@ public class SampleConfigEditorWidget {
 		
 		// flush all changes to the SampleConfig object
 		sampleConfig.put("PASSWORDS", "PIN", pin.getText());
-		sampleConfig.put("ICAO9303", "MRZ", mrz1.getText() + mrz2.getText()
+		sampleConfig.put("PASSWORDS", "PUK", puk.getText());
+		sampleConfig.put("PASSWORDS", "eSIGN_PIN", eSignPin.getText());
+		
+		sampleConfig.put("MRZ", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
 		
 		//flush all ProtocolParameter values to the SampleConfig object
