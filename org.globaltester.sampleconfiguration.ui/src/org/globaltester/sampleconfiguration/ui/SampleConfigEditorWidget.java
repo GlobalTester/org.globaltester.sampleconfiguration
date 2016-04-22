@@ -34,7 +34,6 @@ public class SampleConfigEditorWidget {
 	private Text descr;
 	private Text pin;
 	private Text puk;
-	private Text eSignPin;
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
@@ -88,11 +87,6 @@ public class SampleConfigEditorWidget {
 		String pukString = getSampleConfig().get("PASSWORDS", "PUK");
 		if (pukString != null) {
 			puk.setText(pukString);
-		}
-		
-		String eSignPinString = getSampleConfig().get("PASSWORDS", "eSIGN_PIN");
-		if (eSignPinString != null) {
-			eSignPin.setText(eSignPinString);
 		}
 	}
 
@@ -194,12 +188,6 @@ public class SampleConfigEditorWidget {
 		puk = new Text(tabItemComp, SWT.BORDER);
 		puk.setFont(monospacedFont);
 		puk.setLayoutData(gdPassword);
-		
-		Label lbleSignPin = new Label(tabItemComp, SWT.NONE);
-		lbleSignPin.setText("eSign-PIN:");
-		eSignPin = new Text(tabItemComp, SWT.BORDER);
-		eSignPin.setFont(monospacedFont);
-		eSignPin.setLayoutData(gdPassword);
 	}
 
 	private void addTabItemMrz(TabFolder tabFolder) {
@@ -277,7 +265,6 @@ public class SampleConfigEditorWidget {
 		// flush all changes to the SampleConfig object
 		sampleConfig.put("PASSWORDS", "PIN", pin.getText());
 		sampleConfig.put("PASSWORDS", "PUK", puk.getText());
-		sampleConfig.put("PASSWORDS", "eSIGN_PIN", eSignPin.getText());
 		
 		sampleConfig.put("MRZ", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
