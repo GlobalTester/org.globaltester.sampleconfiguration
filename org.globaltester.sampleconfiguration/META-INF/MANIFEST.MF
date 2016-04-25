@@ -13,4 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.globaltester.sampleconfiguration.doc;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.globaltester.sampleconfiguration
+Export-Package: org.globaltester.sampleconfiguration,
+ org.globaltester.sampleconfiguration.profiles,
+ org.globaltester.sampleconfiguration.profiles.expressions,
+ org.globaltester.sampleconfiguration.profiles.parser
