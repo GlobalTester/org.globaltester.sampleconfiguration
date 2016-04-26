@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Tasks" link_to="/org.globaltester.base.doc/toc/user/toc.xml#tasks"> 
+<toc label="Creation" link_to="/org.globaltester.base.doc/tocgettingstarted.xml#creation"> 
 	<topic label="Create a SampleConfiguration"  href="html/user/tasks/createSampleConfiguration.html">
 	</topic>
 </toc>

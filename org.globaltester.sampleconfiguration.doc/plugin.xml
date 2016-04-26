@@ -9,11 +9,8 @@
             file="toc/user/concepts.xml">
       </toc>
       <toc
-            file="toc/user/tasks.xml">
+            file="toc/user/createsample.xml">
       </toc>
    </extension>
-   
-   
-   
 
 </plugin>
