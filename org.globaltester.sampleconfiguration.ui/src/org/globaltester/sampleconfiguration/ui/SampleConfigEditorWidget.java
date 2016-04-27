@@ -293,9 +293,13 @@ public class SampleConfigEditorWidget {
 		name.setEditable(editable);
 		descr.setEditable(editable);
 		pin.setEditable(editable);
+		puk.setEditable(editable);
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
+		for (ProtocolParameterEditor curParam : paramEditors) {
+			curParam.setEditable(editable);
+		}
 	}
 
 	public void setNameEditable(boolean editable) {
