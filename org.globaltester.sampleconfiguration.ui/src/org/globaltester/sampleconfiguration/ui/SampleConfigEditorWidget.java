@@ -319,6 +319,8 @@ public class SampleConfigEditorWidget {
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
+		txtPlatformId.setEditable(editable);
+		txtSampleId.setEditable(editable);
 		for (ProtocolParameterEditor curParam : paramEditors) {
 			curParam.setEditable(editable);
 		}
