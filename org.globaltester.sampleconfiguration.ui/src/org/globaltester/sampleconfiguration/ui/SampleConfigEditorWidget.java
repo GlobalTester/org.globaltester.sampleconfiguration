@@ -264,7 +264,7 @@ public class SampleConfigEditorWidget {
 		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
 		curTabItem.setControl(tabItemComp);
 		tabItemComp.setLayout(new GridLayout(2, false));
-		
+			
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
 				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
@@ -309,6 +309,38 @@ public class SampleConfigEditorWidget {
 			GtErrorLogger.log(Activator.PLUGIN_ID, e);
 		}
 
+	}
+	
+	public boolean wasChanged(){
+		if(!sampleConfig.getDescription().equals(descr.getText())) {
+			return true;
+		}
+		if(!sampleConfig.get("PASSWORDS", "PIN").equals(pin.getText())) {
+			return true;
+		}
+		if(!sampleConfig.get("PASSWORDS", "PUK").equals(puk.getText())) {
+			return true;
+		}
+		if(!sampleConfig.get("MRZ", "MRZ").equals(mrz1.getText() + mrz2.getText() + mrz3.getText())) {
+			return true;
+		}
+		if(!sampleConfig.getDescription().equals(descr.getText())) {
+			return true;
+		}
+		for (ProtocolParameterEditor curParam : paramEditors) {
+			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
+			String paramName = curParam.getProtocolParameterDescription().getName();
+			String paramValue = curParam.getValue();
+			if (paramValue != null) {
+				String sampleConfigParameter = sampleConfig.get(protocolName, paramName);
+				
+				if(sampleConfigParameter != null && !sampleConfigParameter.equals(paramValue)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public void setEditable(boolean editable) {
