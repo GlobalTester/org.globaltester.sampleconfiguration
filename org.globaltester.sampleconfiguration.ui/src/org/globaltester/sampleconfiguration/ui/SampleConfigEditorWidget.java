@@ -310,7 +310,9 @@ public class SampleConfigEditorWidget {
 			String paramName = curParam.getProtocolParameterDescription().getName();
 			String paramValue = curParam.getValue();
 			if (paramValue != null) {
-				if(!sampleConfig.get(protocolName, paramName).equals(paramValue)) {
+				String sampleConfigParameter = sampleConfig.get(protocolName, paramName);
+				
+				if(sampleConfigParameter != null && !sampleConfigParameter.equals(paramValue)) {
 					return true;
 				}
 			}
