@@ -2,7 +2,10 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Concepts" link_to="/org.globaltester.base.doc/toc/user/toc.xml#concepts"> 
-	<topic label="SampleConfiguration"  href="html/user/concepts/sampleConfiguration.html">
+ <topic href="html/user/concepts/TestData.html" label="TestData">
+    <topic href="html/user/concepts/sampleConfiguration.html" label="SampleConfiguration">
+    </topic>
+    <anchor id="testdata"/>
     <anchor id="Concepts.SampleConfiguration"/>
 	</topic>
 </toc>
