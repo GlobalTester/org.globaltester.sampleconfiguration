@@ -280,7 +280,7 @@ public class SampleConfigEditorWidget {
 
 	public void doSave() {
 		sampleConfig.setDescription(descr.getText());
-		
+		sampleConfig.setName(name.getText());
 		sampleConfig.setSampleId(txtSampleId.getText());
 		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
@@ -324,7 +324,13 @@ public class SampleConfigEditorWidget {
 		if(!sampleConfig.get("MRZ", "MRZ").equals(mrz1.getText() + mrz2.getText() + mrz3.getText())) {
 			return true;
 		}
-		if(!sampleConfig.getDescription().equals(descr.getText())) {
+		if(!sampleConfig.getSampleId().equals(txtSampleId.getText())) {
+			return true;
+		}
+		if(!sampleConfig.getPlatformId().equals(txtPlatformId.getText())) {
+			return true;
+		}
+		if(!sampleConfig.getName().equals(name.getText())) {
 			return true;
 		}
 		for (ProtocolParameterEditor curParam : paramEditors) {
@@ -351,6 +357,8 @@ public class SampleConfigEditorWidget {
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);
+		txtPlatformId.setEditable(editable);
+		txtSampleId.setEditable(editable);
 		for (ProtocolParameterEditor curParam : paramEditors) {
 			curParam.setEditable(editable);
 		}
