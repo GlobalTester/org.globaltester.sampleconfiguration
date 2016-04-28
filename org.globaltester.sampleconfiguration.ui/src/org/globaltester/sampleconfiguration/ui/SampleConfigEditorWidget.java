@@ -31,6 +31,8 @@ public class SampleConfigEditorWidget {
 	private SampleConfig sampleConfig;
 	private TabFolder tabFolder;
 	private Text name;
+	private Text txtPlatformId;
+	private Text txtSampleId;
 	private Text descr;
 	private Text pin;
 	private Text puk;
@@ -72,6 +74,10 @@ public class SampleConfigEditorWidget {
 	private void updateTabItemGeneral() {
 		name.setText(getSampleConfig().getName());
 		descr.setText(getSampleConfig().getDescription());
+		if (getSampleConfig().getPlatformId() != null)
+			txtPlatformId.setText(getSampleConfig().getPlatformId());
+		if (getSampleConfig().getSampleId() != null)
+			txtSampleId.setText(getSampleConfig().getSampleId());
 	}
 
 	private void updateTabItemReader() {
@@ -151,6 +157,19 @@ public class SampleConfigEditorWidget {
 		lblName.setText("Name:");
 		name = new Text(tabItemComp, SWT.BORDER);
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		GridData gdReport = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
+		lblPlatformId.setText("Platform ID");
+		txtPlatformId = new Text(tabItemComp, SWT.BORDER);
+		txtPlatformId.setFont(monospacedFont);
+		txtPlatformId.setLayoutData(gdReport);
+		
+		Label lblSampleId = new Label(tabItemComp, SWT.NONE);
+		lblSampleId.setText("Sample ID");
+		txtSampleId = new Text(tabItemComp, SWT.BORDER);
+		txtSampleId.setFont(monospacedFont);
+		txtSampleId.setLayoutData(gdReport);
 		
 		Label lblDescription = new Label(tabItemComp, SWT.NONE);
 		lblDescription.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
@@ -261,6 +280,9 @@ public class SampleConfigEditorWidget {
 
 	public void doSave() {
 		sampleConfig.setDescription(descr.getText());
+		
+		sampleConfig.setSampleId(txtSampleId.getText());
+		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
 		// flush all changes to the SampleConfig object
 		sampleConfig.put("PASSWORDS", "PIN", pin.getText());

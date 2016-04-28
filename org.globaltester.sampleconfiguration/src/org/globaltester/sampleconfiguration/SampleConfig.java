@@ -21,6 +21,8 @@ public class SampleConfig implements IResourceChangeListener {
 
 	private static final String XML_TAG_NAME = "Name";
 	private static final String XML_TAG_DESCRIPTION = "Description";
+	private static final String XML_TAG_PLATFORM_ID = "PlatformId";
+	private static final String XML_TAG_SAMPLE_ID = "SampleId";
 	private static final String XML_TAG_CONFIG_PARAMS = "ConfigurationParams";
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
@@ -28,6 +30,8 @@ public class SampleConfig implements IResourceChangeListener {
 	private HashMap<String, String> configParams = new HashMap<String, String>();
 	private IProject project;
 	private String name;
+	private String platformId;
+	private String sampleId;
 	private String descr;
 
 	/**
@@ -42,12 +46,16 @@ public class SampleConfig implements IResourceChangeListener {
 	private void initWithDefaulValues() {
 		name = DEFAULT_NAME;
 		descr = "Default configuration";
+		platformId = "00";
+		sampleId = "12345";
 	}
 
 	public SampleConfig(IProject proj) {
 		this.project = proj;
 		this.name = proj.getName();
 		this.descr = "";
+		this.sampleId = "";
+		this.platformId = "";
 
 		if (getSampleConfigIfile().exists()) {
 			initFromIFile();
@@ -114,6 +122,20 @@ public class SampleConfig implements IResourceChangeListener {
 		}
 		return descr;
 	}
+	
+	public String getSampleId() {
+		if (sampleId == null) {
+			sampleId = "";
+		}
+		return sampleId;
+	}
+	
+	public String getPlatformId() {
+		if (platformId == null) {
+			platformId = "";
+		}
+		return platformId;
+	}
 
 	public void saveToProject() throws CoreException {
 		// do not save if project is not defined
@@ -162,6 +184,12 @@ public class SampleConfig implements IResourceChangeListener {
 		Element descrElem = new Element(XML_TAG_DESCRIPTION);
 		descrElem.addContent(descr);
 		root.addContent(descrElem);
+		Element platformElem = new Element(XML_TAG_PLATFORM_ID);
+		platformElem.addContent(platformId);
+		root.addContent(platformElem);
+		Element sampleElem = new Element(XML_TAG_SAMPLE_ID);
+		sampleElem.addContent(sampleId);
+		root.addContent(sampleElem);
 
 		// add configParams
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
@@ -188,7 +216,9 @@ public class SampleConfig implements IResourceChangeListener {
 		// extract name
 		this.name = root.getChildTextTrim(XML_TAG_NAME);
 		this.descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
-
+		this.platformId = root.getChildTextTrim(XML_TAG_PLATFORM_ID);
+		this.sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
+		
 		// extract configParams
 		Element paramsElem = root.getChild(XML_TAG_CONFIG_PARAMS);
 		if (paramsElem != null) {
@@ -202,6 +232,14 @@ public class SampleConfig implements IResourceChangeListener {
 				}
 			}
 		}
+	}
+
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
+	}
+
+	public void setSampleId(String sampleId) {
+		this.sampleId = sampleId;
 	}
 
 	public SampleConfig getCloneForExecution() {
