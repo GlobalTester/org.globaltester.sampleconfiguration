@@ -2,6 +2,7 @@ package org.globaltester.sampleconfiguration.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -105,17 +106,20 @@ public class SampleConfigSelector {
 			btnNew.setText("New");
 			btnNew.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
+					Set<String> configs = SampleConfigManager.getAvailableConfigNames();
 					try {
 						GtUiHelper
 								.openWizard(Activator.NEW_SAMPLECONFIG_WIAZRD_ID);
 					} catch (CoreException ex) {
 						GtErrorLogger.log(Activator.PLUGIN_ID, ex);
 					}
-					String[] configNames = SampleConfigManager
-							.getAvailableConfigNames().toArray(new String[] {});
+					Set<String> configsWithNewElement = SampleConfigManager.getAvailableConfigNames();
+					String[] configNames = configsWithNewElement.toArray(new String[] {});
+					
+					configsWithNewElement.removeAll(configs);
 					if (configNames.length > 0) {
 						configSelection.setItems(configNames);
-						configSelection.select(0);
+						setSelection(configsWithNewElement.iterator().next());
 						informListeners();
 					}
 				}
@@ -151,7 +155,11 @@ public class SampleConfigSelector {
 	}
 
 	public void setSelection(SampleConfig sampleConfig) {
-		int index = configSelection.indexOf(sampleConfig.getName());
+		setSelection(sampleConfig.getName());
+	}
+	
+	public void setSelection(String sampleConfigName) {
+		int index = configSelection.indexOf(sampleConfigName);
 		if (index >= 0) {
 			configSelection.select(index);
 		}
