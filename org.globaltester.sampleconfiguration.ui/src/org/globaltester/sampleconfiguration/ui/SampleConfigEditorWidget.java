@@ -1,6 +1,8 @@
 package org.globaltester.sampleconfiguration.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -249,6 +251,14 @@ public class SampleConfigEditorWidget {
 
 	private void addTabItemsForProtocols(TabFolder tabFolder) {
 		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
+		
+		//sort protocol factories by name
+		Arrays.sort(pFactories, new Comparator<ProtocolFactory>() {
+			@Override
+			public int compare(ProtocolFactory factory1, ProtocolFactory factory2) {
+				return factory1.getName().compareToIgnoreCase(factory2.getName());
+			}
+		});
 		
 		for (ProtocolFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
