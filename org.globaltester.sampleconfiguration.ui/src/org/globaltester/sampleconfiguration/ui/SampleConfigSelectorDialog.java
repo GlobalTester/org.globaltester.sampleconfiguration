@@ -1,5 +1,6 @@
 package org.globaltester.sampleconfiguration.ui;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -17,6 +18,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.globaltester.sampleconfiguration.SampleConfig;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 public class SampleConfigSelectorDialog extends Dialog implements INewConfigWizardClosedListener{
 
@@ -94,7 +97,14 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 				widgetSelected(e);
 			}
 		    });
-		selectedConfig = selectorWidget.getSelectedConfig();
+		String lastConfig = getLastConfig();
+		if(lastConfig == "default") {
+			selectedConfig = selectorWidget.getSelectedConfig();
+			storeSelectedConfig();
+		} else {
+			selectorWidget.setSelection(lastConfig);
+			selectedConfig = selectorWidget.getSelectedConfig();
+		}
 	}
 
 	private void createEditorWidget(Composite parent) {
@@ -117,6 +127,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		runButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				selectedConfig = selectorWidget.getSelectedConfig();
+				storeSelectedConfig();
 				if(editorWidget.wasChanged()) {
 					int returnCode = openSaveDialog(parent, "Your SampleConfiguration has been changed.\n"
 							+ "Would you like to save your changes to the SampleConfiguration?");
@@ -166,6 +177,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 	 */
 	private void update(){
 		selectedConfig = selectorWidget.getSelectedConfig();
+		storeSelectedConfig();
 		if (getSelectedSampleConfig() == null){
 			runButton.setEnabled(false);
 			saveButton.setEnabled(false);
@@ -192,4 +204,19 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
             update();
         }
     }
+	
+	private void storeSelectedConfig() {
+		Preferences preferences = InstanceScope.INSTANCE.getNode("org.globaltester.sampleconfiguration.ui");
+		preferences.put("lastSelection", selectedConfig.getName());
+		try {
+			 preferences.flush();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private String getLastConfig() {
+		Preferences preferences = InstanceScope.INSTANCE.getNode("org.globaltester.sampleconfiguration.ui");
+		return preferences.get("lastSelection", "default");
+	}
 }
