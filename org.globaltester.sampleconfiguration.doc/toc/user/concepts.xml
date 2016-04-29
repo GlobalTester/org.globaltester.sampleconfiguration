@@ -3,5 +3,6 @@
 
 <toc label="Concepts" link_to="/org.globaltester.base.doc/toc/user/toc.xml#concepts"> 
 	<topic label="SampleConfiguration"  href="html/user/concepts/sampleConfiguration.html">
+    <anchor id="Concepts.SampleConfiguration"/>
 	</topic>
 </toc>
