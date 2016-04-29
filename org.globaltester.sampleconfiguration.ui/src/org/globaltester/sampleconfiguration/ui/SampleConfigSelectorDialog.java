@@ -206,12 +206,14 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
     }
 	
 	private void storeSelectedConfig() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.globaltester.sampleconfiguration.ui");
-		preferences.put("lastSelection", selectedConfig.getName());
-		try {
-			 preferences.flush();
-		} catch (BackingStoreException e) {
-			e.printStackTrace();
+		if(selectedConfig != null) {
+			Preferences preferences = InstanceScope.INSTANCE.getNode("org.globaltester.sampleconfiguration.ui");
+			preferences.put("lastSelection", selectedConfig.getName());
+			try {
+				 preferences.flush();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
