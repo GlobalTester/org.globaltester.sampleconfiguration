@@ -4,8 +4,8 @@
 <toc label="Concepts" link_to="/org.globaltester.base.doc/toc/user/toc.xml#concepts"> 
  <topic href="html/user/concepts/TestData.html" label="TestData">
     <topic href="html/user/concepts/sampleConfiguration.html" label="SampleConfiguration">
-    </topic>
-    <anchor id="testdata"/>
-    <anchor id="Concepts.SampleConfiguration"/>
+        <anchor id="Concepts.SampleConfiguration"/>
 	</topic>
+	<anchor id="testdata"/>
+    </topic>
 </toc>
