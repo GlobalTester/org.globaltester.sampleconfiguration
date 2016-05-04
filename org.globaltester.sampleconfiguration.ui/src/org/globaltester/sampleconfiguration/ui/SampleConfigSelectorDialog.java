@@ -63,7 +63,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		createEditorWidget(dialog);
 		createButtons(dialog);
 		Point size = dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		dialog.setSize(size.x > 1000 ? 1000 : size.x, size.y);
+		dialog.setSize(size.x > 1000 ? 1000 : size.x, size.y > 600 ? 600 : size.y);
 		
 		dialog.addListener(SWT.Close, new Listener() {
 			@Override
