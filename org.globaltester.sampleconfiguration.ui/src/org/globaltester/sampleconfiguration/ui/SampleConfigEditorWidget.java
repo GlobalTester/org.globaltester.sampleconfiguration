@@ -39,8 +39,6 @@ public class SampleConfigEditorWidget {
 	private Text txtPlatformId;
 	private Text txtSampleId;
 	private Text descr;
-	private Text pin;
-	private Text puk;
 	private Text mrz1;
 	private Text mrz2;
 	private Text mrz3;
@@ -61,8 +59,6 @@ public class SampleConfigEditorWidget {
 				1, 1));
 
 		addTabItemGeneral(tabFolder);
-//		addTabItemCardReader(tabFolder);
-		addTabItemPasswords(tabFolder);
 		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
@@ -70,8 +66,6 @@ public class SampleConfigEditorWidget {
 
 	public void updateContents() {
 		updateTabItemGeneral();
-		updateTabItemReader();
-		updateTabItemPasswords();
 		updateTabItemMrz();
 		updateProtocolParameterEditors();
 	}
@@ -83,22 +77,6 @@ public class SampleConfigEditorWidget {
 			txtPlatformId.setText(getSampleConfig().getPlatformId());
 		if (getSampleConfig().getSampleId() != null)
 			txtSampleId.setText(getSampleConfig().getSampleId());
-	}
-
-	private void updateTabItemReader() {
-
-	}
-
-	private void updateTabItemPasswords() {
-		String pinString = getSampleConfig().get("PASSWORDS", "PIN");
-		if (pinString != null) {
-			pin.setText(pinString);
-		}
-		
-		String pukString = getSampleConfig().get("PASSWORDS", "PUK");
-		if (pukString != null) {
-			puk.setText(pukString);
-		}
 	}
 
 	private void updateTabItemMrz() {
@@ -188,47 +166,6 @@ public class SampleConfigEditorWidget {
 		GridData lblDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		lblDescrGd.heightHint = 50;
 		descr.setLayoutData(lblDescrGd);
-		
-		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		
-		tabFolder.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				scroller.setFocus();
-			}
-		});
-	}
-
-//	private void addTabItemCardReader(TabFolder tabFolder) {
-//		// TODO Auto-generated method stub
-//		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-//		tbtmNewItem.setText("Reader selection");
-//	}
-
-	private void addTabItemPasswords(TabFolder tabFolder) {
-		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
-		curTabItem.setText("Passwords");
-		
-		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
-		Composite tabItemComp = new Composite(scroller, SWT.NONE);
-		scroller.setContent(tabItemComp);
-		scroller.setExpandVertical(true);
-		scroller.setExpandHorizontal(true);
-		curTabItem.setControl(scroller);
-		tabItemComp.setLayout(new GridLayout(2, false));
-		
-		GridData gdPassword = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-
-		Label lblPin = new Label(tabItemComp, SWT.NONE);
-		lblPin.setText("PIN:");
-		pin = new Text(tabItemComp, SWT.BORDER);
-		pin.setFont(monospacedFont);
-		pin.setLayoutData(gdPassword);
-		
-		Label lblPuk = new Label(tabItemComp, SWT.NONE);
-		lblPuk.setText("PUK:");
-		puk = new Text(tabItemComp, SWT.BORDER);
-		puk.setFont(monospacedFont);
-		puk.setLayoutData(gdPassword);
 		
 		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
@@ -335,8 +272,6 @@ public class SampleConfigEditorWidget {
 		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
 		// flush all changes to the SampleConfig object
-		sampleConfig.put("PASSWORDS", "PIN", pin.getText());
-		sampleConfig.put("PASSWORDS", "PUK", puk.getText());
 		
 		sampleConfig.put("MRZ", "MRZ", mrz1.getText() + mrz2.getText()
 				+ mrz3.getText());
@@ -363,12 +298,6 @@ public class SampleConfigEditorWidget {
 	
 	public boolean wasChanged(){
 		if(!sampleConfig.getDescription().equals(descr.getText())) {
-			return true;
-		}
-		if(!sampleConfig.get("PASSWORDS", "PIN").equals(pin.getText())) {
-			return true;
-		}
-		if(!sampleConfig.get("PASSWORDS", "PUK").equals(puk.getText())) {
 			return true;
 		}
 		if(!sampleConfig.get("MRZ", "MRZ").equals(mrz1.getText() + mrz2.getText() + mrz3.getText())) {
@@ -402,8 +331,6 @@ public class SampleConfigEditorWidget {
 	public void setEditable(boolean editable) {
 		name.setEditable(editable);
 		descr.setEditable(editable);
-		pin.setEditable(editable);
-		puk.setEditable(editable);
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
 		mrz3.setEditable(editable);

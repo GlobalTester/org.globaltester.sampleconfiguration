@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,7 +62,9 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		createSelector(dialog);
 		createEditorWidget(dialog);
 		createButtons(dialog);
-		dialog.setSize(dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		Point size = dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		dialog.setSize(size.x > 1000 ? 1000 : size.x, size.y > 600 ? 600 : size.y);
+		
 		dialog.addListener(SWT.Close, new Listener() {
 			@Override
 			public void handleEvent(Event event) {

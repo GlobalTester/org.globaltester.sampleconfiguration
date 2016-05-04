@@ -293,4 +293,12 @@ public class SampleConfig implements IResourceChangeListener {
 		}
 		
 	}
+
+	@Override
+	public String toString() {
+		return "SampleConfig [configParams=" + configParams + ", project=" + project + ", name=" + name
+				+ ", platformId=" + platformId + ", sampleId=" + sampleId + ", descr=" + descr + "]";
+	}
+	
+	
 }
