@@ -55,7 +55,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 	}
 
 	private void createDialog() {
-		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
 		dialog.setText("Select SampleConfig");
 		configureLayout(dialog);
 		createSelector(dialog);
@@ -86,7 +86,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 
 	private void createSelector(Composite parent) {
 		selectorWidget = new SampleConfigSelector(parent, SampleConfigSelector.BTN_NEW);
-		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		selectorWidget.addSelectionListener(new SelectionListener() {
 		      public void widgetSelected(SelectionEvent e) {
 		        update();

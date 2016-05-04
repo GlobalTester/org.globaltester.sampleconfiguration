@@ -8,6 +8,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
@@ -148,11 +151,15 @@ public class SampleConfigEditorWidget {
 
 	private void addTabItemGeneral(TabFolder tabFolder) {
 		// TODO Auto-generated method stub
-		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("General");
-
-		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(tabItemComp);
+		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
+		curTabItem.setText("General");
+		
+		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+		Composite tabItemComp = new Composite(scroller, SWT.NONE);
+		scroller.setContent(tabItemComp);
+		scroller.setExpandVertical(true);
+		scroller.setExpandHorizontal(true);
+		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
 
 		Label lblName = new Label(tabItemComp, SWT.NONE);
@@ -181,6 +188,14 @@ public class SampleConfigEditorWidget {
 		GridData lblDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		lblDescrGd.heightHint = 50;
 		descr.setLayoutData(lblDescrGd);
+		
+		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				scroller.setFocus();
+			}
+		});
 	}
 
 //	private void addTabItemCardReader(TabFolder tabFolder) {
@@ -190,12 +205,17 @@ public class SampleConfigEditorWidget {
 //	}
 
 	private void addTabItemPasswords(TabFolder tabFolder) {
-		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("Passwords");
+		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
+		curTabItem.setText("Passwords");
 		
-		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(tabItemComp);
+		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+		Composite tabItemComp = new Composite(scroller, SWT.NONE);
+		scroller.setContent(tabItemComp);
+		scroller.setExpandVertical(true);
+		scroller.setExpandHorizontal(true);
+		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
+		
 		GridData gdPassword = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 
 		Label lblPin = new Label(tabItemComp, SWT.NONE);
@@ -209,6 +229,14 @@ public class SampleConfigEditorWidget {
 		puk = new Text(tabItemComp, SWT.BORDER);
 		puk.setFont(monospacedFont);
 		puk.setLayoutData(gdPassword);
+		
+		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				scroller.setFocus();
+			}
+		});
 	}
 
 	private void addTabItemMrz(TabFolder tabFolder) {
@@ -271,8 +299,12 @@ public class SampleConfigEditorWidget {
 		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
 		curTabItem.setText(curProtocolFactory.getName());
 		
-		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
-		curTabItem.setControl(tabItemComp);
+		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+		Composite tabItemComp = new Composite(scroller, SWT.NONE);
+		scroller.setContent(tabItemComp);
+		scroller.setExpandVertical(true);
+		scroller.setExpandHorizontal(true);
+		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
 			
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
@@ -280,6 +312,14 @@ public class SampleConfigEditorWidget {
 				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
 			}
 		}
+		
+		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				scroller.setFocus();
+			}
+		});
 		
 		return curTabItem;
 	}
