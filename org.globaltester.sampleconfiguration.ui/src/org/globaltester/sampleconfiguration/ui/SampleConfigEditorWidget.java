@@ -11,9 +11,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -57,6 +59,23 @@ public class SampleConfigEditorWidget {
 		tabFolder = new TabFolder(mainComp, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
+		tabFolder.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+//				if (e.widget == tabFolder) {
+					tabFolder.redraw();
+//				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 
 		addTabItemGeneral(tabFolder);
 		addTabItemMrz(tabFolder);
@@ -241,8 +260,11 @@ public class SampleConfigEditorWidget {
 		scroller.setContent(tabItemComp);
 		scroller.setExpandVertical(true);
 		scroller.setExpandHorizontal(true);
+		scroller.setLayout(new FillLayout());
 		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
+//		GridData gdTabItem = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		tabItemComp.setLayoutData(gdTabItem);
 			
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
@@ -250,14 +272,16 @@ public class SampleConfigEditorWidget {
 			}
 		}
 		
-		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scroller.setMinHeight(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				scroller.setFocus();
 			}
 		});
-		
+
+		tabItemComp.pack();
+
 		return curTabItem;
 	}
 
