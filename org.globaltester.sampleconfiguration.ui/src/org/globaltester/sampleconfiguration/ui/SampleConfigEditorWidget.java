@@ -321,19 +321,19 @@ public class SampleConfigEditorWidget {
 	}
 	
 	public boolean wasChanged(){
-		if(!sampleConfig.getDescription().equals(descr.getText())) {
+		if(!descr.getText().equals(sampleConfig.getDescription())) {
 			return true;
 		}
-		if(!sampleConfig.get("MRZ", "MRZ").equals(mrz1.getText() + mrz2.getText() + mrz3.getText())) {
+		if(!(mrz1.getText() + mrz2.getText() + mrz3.getText()).equals(sampleConfig.get("MRZ", "MRZ"))) {
 			return true;
 		}
-		if(!sampleConfig.getSampleId().equals(txtSampleId.getText())) {
+		if(!txtSampleId.getText().equals(sampleConfig.getSampleId())) {
 			return true;
 		}
-		if(!sampleConfig.getPlatformId().equals(txtPlatformId.getText())) {
+		if(!txtPlatformId.getText().equals(sampleConfig.getPlatformId())) {
 			return true;
 		}
-		if(!sampleConfig.getName().equals(name.getText())) {
+		if(!name.getText().equals(sampleConfig.getName())) {
 			return true;
 		}
 		for (ProtocolParameterEditor curParam : paramEditors) {
@@ -343,7 +343,7 @@ public class SampleConfigEditorWidget {
 			if (paramValue != null) {
 				String sampleConfigParameter = sampleConfig.get(protocolName, paramName);
 				
-				if(sampleConfigParameter != null && !sampleConfigParameter.equals(paramValue)) {
+				if(!paramValue.equals(sampleConfigParameter)) {
 					return true;
 				}
 			}
