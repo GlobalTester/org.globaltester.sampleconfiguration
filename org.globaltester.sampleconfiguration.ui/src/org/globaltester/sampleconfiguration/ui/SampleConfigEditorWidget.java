@@ -321,6 +321,10 @@ public class SampleConfigEditorWidget {
 	}
 	
 	public boolean wasChanged(){
+		if (sampleConfig == null){
+			return false;
+		}
+		
 		if(!descr.getText().equals(sampleConfig.getDescription())) {
 			return true;
 		}
