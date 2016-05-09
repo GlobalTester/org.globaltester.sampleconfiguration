@@ -21,7 +21,7 @@ public class OrProfileExpression extends AbstractProfileExpression {
 	@Override
 	public boolean evaluate(SampleConfig config) {
 		for (ProfileExpression current : expressions){
-			if (current.evaluate(config) == false){
+			if (current.evaluate(config) == true){
 				return true;
 			}
 		}
