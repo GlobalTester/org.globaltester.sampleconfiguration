@@ -21,7 +21,7 @@ public class Profile extends AbstractProfileExpression{
 		int protocolDividerPosition = profile.indexOf('_');
 		
 		if (protocolDividerPosition < 0){
-			throw new IllegalArgumentException("Profiles need to contain a '_' to divide the protocol name");
+			throw new IllegalArgumentException("Profiles need to contain a '_' to divide the protocol name, offending profile string: " + profile);
 		}
 		
 		this.protocol = profile.substring(0, protocolDividerPosition);
