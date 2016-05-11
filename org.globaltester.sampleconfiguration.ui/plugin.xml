@@ -15,4 +15,25 @@
          </description>
       </wizard>
    </extension>
+<extension
+      point="org.eclipse.ui.editors">
+   <editor
+         class="org.globaltester.sampleconfiguration.ui.SampleConfigEditor"
+         icon="icons/sampleconfig.png"
+         id="org.globaltester.sampleconfiguration.ui.SampleConfigEditor"
+         name="GT SampleConfig Editor">
+      <contentTypeBinding
+            contentTypeId="org.globaltester.sampleconfiguration.ui.contenttypes.SampleConfiguration">
+      </contentTypeBinding>
+   </editor>
+</extension>
+<extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="gtconfig"
+            id="org.globaltester.sampleconfiguration.ui.contenttypes.SampleConfiguration"
+            name="GlobalTester SampleConfiguration"
+            priority="normal">
+      </content-type>
+   </extension>
 </plugin>
