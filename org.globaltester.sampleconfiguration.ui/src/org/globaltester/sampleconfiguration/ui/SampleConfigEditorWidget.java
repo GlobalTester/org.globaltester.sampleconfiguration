@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -46,9 +47,15 @@ public class SampleConfigEditorWidget {
 	private Text mrz3;
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
-	
 
+	private Listener listener;
+	
 	public SampleConfigEditorWidget(Composite parent) {
+		this.createPartControl(parent);
+	}
+	
+	public SampleConfigEditorWidget(Composite parent, Listener listener) {
+		this.listener = listener;
 		this.createPartControl(parent);
 	}
 
@@ -76,7 +83,7 @@ public class SampleConfigEditorWidget {
 			}
 			
 		});
-
+		
 		addTabItemGeneral(tabFolder);
 		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
@@ -163,6 +170,9 @@ public class SampleConfigEditorWidget {
 		lblName.setText("Name:");
 		name = new Text(tabItemComp, SWT.BORDER);
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		if(listener != null) {
+			name.addListener(SWT.Modify, listener);
+		}
 		
 		GridData gdReport = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
@@ -170,12 +180,18 @@ public class SampleConfigEditorWidget {
 		txtPlatformId = new Text(tabItemComp, SWT.BORDER);
 		txtPlatformId.setFont(monospacedFont);
 		txtPlatformId.setLayoutData(gdReport);
+		if(listener != null) {
+			txtPlatformId.addListener(SWT.Modify, listener);
+		}
 		
 		Label lblSampleId = new Label(tabItemComp, SWT.NONE);
 		lblSampleId.setText("Sample ID");
 		txtSampleId = new Text(tabItemComp, SWT.BORDER);
 		txtSampleId.setFont(monospacedFont);
 		txtSampleId.setLayoutData(gdReport);
+		if(listener != null) {
+			txtSampleId.addListener(SWT.Modify, listener);
+		}
 		
 		Label lblDescription = new Label(tabItemComp, SWT.NONE);
 		lblDescription.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
@@ -185,6 +201,9 @@ public class SampleConfigEditorWidget {
 		GridData lblDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		lblDescrGd.heightHint = 50;
 		descr.setLayoutData(lblDescrGd);
+		if(listener != null) {
+			descr.addListener(SWT.Modify, listener);
+		}
 		
 		scroller.setMinSize(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
@@ -210,18 +229,21 @@ public class SampleConfigEditorWidget {
 		mrz1.setFont(monospacedFont);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz1.setLayoutData(gdMrz1);
+		mrz1.addListener(SWT.Modify, listener);
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
 		mrz2.setFont(monospacedFont);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz2.setLayoutData(gdMrz2);
+		mrz2.addListener(SWT.Modify, listener);
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
 		mrz3.setFont(monospacedFont);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz3.setLayoutData(gdMrz3);
+		mrz3.addListener(SWT.Modify, listener);
 		
 		//calculate width hint
 		GC gc = new GC(mrz1);
@@ -268,7 +290,12 @@ public class SampleConfigEditorWidget {
 			
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
-				paramEditors.add(ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor));
+				ProtocolParameterEditor editor = ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
+				if(listener != null) {
+					editor.addListener(SWT.Selection, listener);
+					editor.addListener(SWT.Modify, listener);
+				}
+				paramEditors.add(editor);
 			}
 		}
 		
