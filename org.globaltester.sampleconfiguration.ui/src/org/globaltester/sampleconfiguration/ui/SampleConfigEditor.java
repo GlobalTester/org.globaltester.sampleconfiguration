@@ -11,6 +11,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -26,10 +28,12 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 	private SampleConfigEditorWidget widget;
 	private Composite mainComposite;
 	private SampleConfig config;
+	private boolean dirty;
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		widget.doSave();
+		setDirty(false);
 	}
 
 	@Override
@@ -60,10 +64,11 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 	
 	@Override
 	public boolean isDirty() {
-		return widget.wasChanged();
+		return dirty;
 	}
 	
 	private void setDirty(boolean isDirty) {
+		dirty = isDirty;
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 
@@ -79,12 +84,21 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 		mainComposite = new Composite(parent, SWT.NONE);
 		mainComposite.setLayout(new GridLayout(1, false));
 		mainComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-
-		widget = new SampleConfigEditorWidget(mainComposite);
+		
+		Listener listener = new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				setDirty(true);
+			}
+		};
+		
+		widget = new SampleConfigEditorWidget(mainComposite, listener);
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		widget.setEditable(true);
 		widget.setInput(getConfig());
 		
+		setDirty(false);
 	}
 	
 	private SampleConfig getConfig() {
