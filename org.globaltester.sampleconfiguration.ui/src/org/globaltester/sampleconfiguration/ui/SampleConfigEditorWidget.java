@@ -353,42 +353,6 @@ public class SampleConfigEditorWidget {
 
 	}
 	
-	public boolean wasChanged(){
-		if (sampleConfig == null){
-			return false;
-		}
-		
-		if(!descr.getText().equals(sampleConfig.getDescription())) {
-			return true;
-		}
-		if(!(mrz1.getText() + mrz2.getText() + mrz3.getText()).equals(sampleConfig.get("MRZ", "MRZ"))) {
-			return true;
-		}
-		if(!txtSampleId.getText().equals(sampleConfig.getSampleId())) {
-			return true;
-		}
-		if(!txtPlatformId.getText().equals(sampleConfig.getPlatformId())) {
-			return true;
-		}
-		if(!name.getText().equals(sampleConfig.getName())) {
-			return true;
-		}
-		for (ProtocolParameterEditor curParam : paramEditors) {
-			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
-			String paramName = curParam.getProtocolParameterDescription().getName();
-			String paramValue = curParam.getValue();
-			if (paramValue != null) {
-				String sampleConfigParameter = sampleConfig.get(protocolName, paramName);
-				
-				if(!paramValue.equals(sampleConfigParameter)) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
 	public void setEditable(boolean editable) {
 		name.setEditable(editable);
 		descr.setEditable(editable);
