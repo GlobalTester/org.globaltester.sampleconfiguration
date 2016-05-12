@@ -229,21 +229,27 @@ public class SampleConfigEditorWidget {
 		mrz1.setFont(monospacedFont);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz1.setLayoutData(gdMrz1);
-		mrz1.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz1.addListener(SWT.Modify, listener);
+		}
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
 		mrz2.setFont(monospacedFont);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz2.setLayoutData(gdMrz2);
-		mrz2.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz2.addListener(SWT.Modify, listener);
+		}
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
 		mrz3.setFont(monospacedFont);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz3.setLayoutData(gdMrz3);
-		mrz3.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz3.addListener(SWT.Modify, listener);
+		}
 		
 		//calculate width hint
 		GC gc = new GC(mrz1);
