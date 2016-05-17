@@ -33,6 +33,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 	private Button saveButton;
 	private Button cancelButton;
 	private boolean isValid;
+	private boolean dirty;
 
 	public SampleConfigSelectorDialog(Shell parentShell) {
 		super(parentShell);
@@ -68,9 +69,8 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		dialog.addListener(SWT.Close, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				if(editorWidget.wasChanged()) {
-					int returnCode = openSaveDialog(dialog, "Your SampleConfiguration has been changed.\n"
-							+ "Would you like to save your changes to the SampleConfiguration?");
+				if(isDirty()) {
+					int returnCode = openSaveDialog(dialog);
 					if(returnCode == SWT.YES) {
 						status = Window.CANCEL;
 						editorWidget.doSave();
@@ -79,6 +79,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			}
 		});
 		update();
+		setDirty(false);
 	}
 
 	private void configureLayout(Composite parent) {
@@ -91,9 +92,16 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		selectorWidget = new SampleConfigSelector(parent, SampleConfigSelector.BTN_NEW);
 		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		selectorWidget.addSelectionListener(new SelectionListener() {
-		      public void widgetSelected(SelectionEvent e) {
-		        update();
-		      }
+			public void widgetSelected(SelectionEvent e) {
+				if(isDirty()){
+					int returnCode = openSaveDialog(parent);
+					if(returnCode == SWT.YES) {
+						editorWidget.doSave();
+					}
+				} 
+				update();
+				setDirty(false);
+			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -111,10 +119,27 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 	}
 
 	private void createEditorWidget(Composite parent) {
-		editorWidget = new SampleConfigEditorWidget(parent);
+		Listener listener = new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				setDirty(true);
+			}
+		};
+		editorWidget = new SampleConfigEditorWidget(parent, listener);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 	}
 
+	private void setDirty(boolean dirty) {
+		if(saveButton!=null)
+			saveButton.setEnabled(dirty);
+		this.dirty = dirty;
+	}
+	
+	private boolean isDirty() {
+		return dirty;
+	}
+	
 	private void createButtons(Composite parent) {
 		new Label(parent, SWT.NONE);
 		Composite buttonComposite = new Composite(parent, SWT.NONE);
@@ -131,9 +156,8 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			public void widgetSelected(SelectionEvent e) {
 				selectedConfig = selectorWidget.getSelectedConfig();
 				storeSelectedConfig();
-				if(editorWidget.wasChanged()) {
-					int returnCode = openSaveDialog(parent, "Your SampleConfiguration has been changed.\n"
-							+ "Would you like to save your changes to the SampleConfiguration?");
+				if(isDirty()) {
+					int returnCode = openSaveDialog(parent);
 					if(returnCode == SWT.YES) {
 						status = Window.OK;
 						editorWidget.doSave();
@@ -151,9 +175,10 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		saveButton.setText("Save");
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				int returnCode = openSaveDialog(parent, "Would you like to save your changes to the SampleConfiguration?");
+				int returnCode = openSaveDialog(parent);
 				if(returnCode == SWT.YES) {
 					editorWidget.doSave();
+					setDirty(false);
 				}
 			}
 		});
@@ -168,10 +193,10 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		});
 	}
 	
-	private int openSaveDialog(Composite parent, String message) {
+	private int openSaveDialog(Composite parent) {
 		MessageBox mb = new MessageBox(parent.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 		mb.setText("Save SampleConfiguration");
-		mb.setMessage(message);
+		mb.setMessage("'"+selectedConfig.getName()+"' has been modified. Save changes?");
 		return mb.open();
 	}
 	

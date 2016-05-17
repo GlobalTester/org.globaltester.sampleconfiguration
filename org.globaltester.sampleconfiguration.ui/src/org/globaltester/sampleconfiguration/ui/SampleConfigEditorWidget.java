@@ -229,21 +229,27 @@ public class SampleConfigEditorWidget {
 		mrz1.setFont(monospacedFont);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz1.setLayoutData(gdMrz1);
-		mrz1.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz1.addListener(SWT.Modify, listener);
+		}
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
 		mrz2.setFont(monospacedFont);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz2.setLayoutData(gdMrz2);
-		mrz2.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz2.addListener(SWT.Modify, listener);
+		}
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
 		mrz3.setFont(monospacedFont);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz3.setLayoutData(gdMrz3);
-		mrz3.addListener(SWT.Modify, listener);
+		if(listener != null) {
+			mrz3.addListener(SWT.Modify, listener);
+		}
 		
 		//calculate width hint
 		GC gc = new GC(mrz1);
@@ -347,42 +353,6 @@ public class SampleConfigEditorWidget {
 
 	}
 	
-	public boolean wasChanged(){
-		if (sampleConfig == null){
-			return false;
-		}
-		
-		if(!descr.getText().equals(sampleConfig.getDescription())) {
-			return true;
-		}
-		if(!(mrz1.getText() + mrz2.getText() + mrz3.getText()).equals(sampleConfig.get("MRZ", "MRZ"))) {
-			return true;
-		}
-		if(!txtSampleId.getText().equals(sampleConfig.getSampleId())) {
-			return true;
-		}
-		if(!txtPlatformId.getText().equals(sampleConfig.getPlatformId())) {
-			return true;
-		}
-		if(!name.getText().equals(sampleConfig.getName())) {
-			return true;
-		}
-		for (ProtocolParameterEditor curParam : paramEditors) {
-			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
-			String paramName = curParam.getProtocolParameterDescription().getName();
-			String paramValue = curParam.getValue();
-			if (paramValue != null) {
-				String sampleConfigParameter = sampleConfig.get(protocolName, paramName);
-				
-				if(!paramValue.equals(sampleConfigParameter)) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
 	public void setEditable(boolean editable) {
 		name.setEditable(editable);
 		descr.setEditable(editable);
