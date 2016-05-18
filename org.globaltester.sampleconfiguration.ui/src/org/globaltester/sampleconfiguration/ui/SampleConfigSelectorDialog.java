@@ -72,7 +72,6 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 				if(isDirty()) {
 					int returnCode = openSaveDialog(dialog);
 					if(returnCode == SWT.YES) {
-						status = Window.CANCEL;
 						editorWidget.doSave();
 					}
 				}
@@ -97,6 +96,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 					int returnCode = openSaveDialog(parent);
 					if(returnCode == SWT.YES) {
 						editorWidget.doSave();
+						setDirty(false);
 					}
 				} 
 				update();
@@ -161,6 +161,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 					if(returnCode == SWT.YES) {
 						status = Window.OK;
 						editorWidget.doSave();
+						setDirty(false);
 						dialog.close();
 					}
 				} else {
