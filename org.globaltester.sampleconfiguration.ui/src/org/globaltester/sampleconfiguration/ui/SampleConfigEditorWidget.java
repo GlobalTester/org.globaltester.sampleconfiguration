@@ -2,7 +2,10 @@ package org.globaltester.sampleconfiguration.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,8 +30,10 @@ import org.eclipse.swt.widgets.Text;
 import org.globaltester.logging.legacy.logger.GtErrorLogger;
 import org.globaltester.protocol.ProtocolFactory;
 import org.globaltester.protocol.parameter.ProtocolParameterDescription;
+import org.globaltester.protocol.parameter.StringProtocolParameter;
 import org.globaltester.protocol.ui.ProtocolParameterEditor;
 import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
+import org.globaltester.protocol.ui.StringProtocolParameterEditor;
 import org.globaltester.sampleconfiguration.SampleConfig;
 
 public class SampleConfigEditorWidget {
@@ -48,8 +53,12 @@ public class SampleConfigEditorWidget {
 	private Text mrz3;
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
+	private HashMap<String, HashMap<String, ProtocolParameterEditor>> unsupportedParamEditors = new HashMap<>();
 
 	private Listener listener;
+
+	private TabItem unsupportedTabItem;
+	private Composite unsupportedTabItemComp;
 	
 	public SampleConfigEditorWidget(Composite parent) {
 		this.createPartControl(parent);
@@ -144,14 +153,40 @@ public class SampleConfigEditorWidget {
 	}
 
 	private void updateProtocolParameterEditors() {
-		
+		HashSet<String> parameterNames = new HashSet<>();
 		for (ProtocolParameterEditor curParamEditor : paramEditors) {
 			String protocolName = curParamEditor.getProtocolParameterDescription().getProtocolName();
 			String paramName = curParamEditor.getProtocolParameterDescription().getName();
 			
+			parameterNames.add(protocolName + "_" + paramName);
+			
 			String newValue = sampleConfig.get(protocolName, paramName);
 			if (newValue != null) {
 				curParamEditor.setValue(newValue);
+			}
+		}
+		
+		for (String protocol : sampleConfig.getStoredProtocols()){
+			for (String parameter : sampleConfig.getStoredParameters(protocol)){
+				if (parameterNames.contains(protocol + "_" + parameter)){
+					continue;
+				}
+				if (!unsupportedParamEditors.containsKey(protocol)){
+					unsupportedParamEditors.put(protocol, new HashMap<>());
+				}
+				if (!unsupportedParamEditors.get(protocol).containsKey(parameter)){
+					unsupportedParamEditors.get(protocol).put(parameter, new StringProtocolParameterEditor(unsupportedTabItemComp, new StringProtocolParameter(protocol, parameter, protocol + "_" + parameter)));
+				}
+				ProtocolParameterEditor editor = unsupportedParamEditors.get(protocol).get(parameter);
+				if(listener != null) {
+					editor.addListener(SWT.Selection, listener);
+					editor.addListener(SWT.Modify, listener);
+				}
+				
+				String newValue = sampleConfig.get(protocol, parameter);
+				if (newValue != null) {
+					editor.setValue(newValue);
+				}
 			}
 		}
 	}
@@ -273,11 +308,29 @@ public class SampleConfigEditorWidget {
 			}
 		});
 		
+		Collection<ProtocolParameterDescription> parameters = new HashSet<>();
+		
 		for (ProtocolFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
-			
+			parameters.addAll(curProtocolFactory.getParameterDescriptors());
 			createProtcolTabItem(tabFolder, curProtocolFactory);
-		}		
+		}
+		
+		createRemainingTabItem(tabFolder, parameters);
+	}
+
+	private void createRemainingTabItem(TabFolder tabFolder, Collection<ProtocolParameterDescription> parameters) {
+		unsupportedTabItem = new TabItem(tabFolder, SWT.NONE);
+		unsupportedTabItem.setText("Unsupported");
+		
+		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+		unsupportedTabItemComp = new Composite(scroller, SWT.NONE);
+		scroller.setContent(unsupportedTabItemComp);
+		scroller.setExpandVertical(true);
+		scroller.setExpandHorizontal(true);
+		scroller.setLayout(new FillLayout());
+		unsupportedTabItem.setControl(scroller);
+		unsupportedTabItemComp.setLayout(new GridLayout(2, false));
 	}
 
 	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
