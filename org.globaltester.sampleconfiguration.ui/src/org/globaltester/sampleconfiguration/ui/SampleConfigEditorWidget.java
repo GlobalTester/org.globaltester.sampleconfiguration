@@ -38,6 +38,7 @@ public class SampleConfigEditorWidget {
 	private Composite mainComp;
 	private SampleConfig sampleConfig;
 	private TabFolder tabFolder;
+	Label lblName;
 	private Text name;
 	private Text txtPlatformId;
 	private Text txtSampleId;
@@ -97,7 +98,9 @@ public class SampleConfigEditorWidget {
 	}
 
 	private void updateTabItemGeneral() {
+		if (!name.isDisposed()) {
 		name.setText(getSampleConfig().getName());
+		}
 		descr.setText(getSampleConfig().getDescription());
 		if (getSampleConfig().getPlatformId() != null)
 			txtPlatformId.setText(getSampleConfig().getPlatformId());
@@ -165,14 +168,12 @@ public class SampleConfigEditorWidget {
 		scroller.setExpandHorizontal(true);
 		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
-
-		Label lblName = new Label(tabItemComp, SWT.NONE);
+		
+		lblName = new Label(tabItemComp, SWT.NONE);
 		lblName.setText("Name:");
 		name = new Text(tabItemComp, SWT.BORDER);
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if(listener != null) {
-			name.addListener(SWT.Modify, listener);
-		}
+		name.setEditable(false);
 		
 		GridData gdReport = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
@@ -324,7 +325,6 @@ public class SampleConfigEditorWidget {
 
 	public void doSave() {
 		sampleConfig.setDescription(descr.getText());
-		sampleConfig.setName(name.getText());
 		sampleConfig.setSampleId(txtSampleId.getText());
 		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
@@ -354,7 +354,6 @@ public class SampleConfigEditorWidget {
 	}
 	
 	public void setEditable(boolean editable) {
-		name.setEditable(editable);
 		descr.setEditable(editable);
 		mrz1.setEditable(editable);
 		mrz2.setEditable(editable);
@@ -366,10 +365,6 @@ public class SampleConfigEditorWidget {
 		}
 	}
 
-	public void setNameEditable(boolean editable) {
-		name.setEditable(editable);
-	}
-
 	public void setInput(SampleConfig newInput) {
 		this.sampleConfig = newInput;
 		if (sampleConfig != null){
@@ -379,6 +374,11 @@ public class SampleConfigEditorWidget {
 
 	public void setLayoutData(Object layoutData) {
 		mainComp.setLayoutData(layoutData);
+	}
+
+	public void hideName() {
+		lblName.dispose();
+		name.dispose();
 	}
 
 }

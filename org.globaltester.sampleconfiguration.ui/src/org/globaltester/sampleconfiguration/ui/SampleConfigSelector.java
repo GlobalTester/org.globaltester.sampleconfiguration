@@ -1,6 +1,7 @@
 package org.globaltester.sampleconfiguration.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -58,8 +59,10 @@ public class SampleConfigSelector {
 		configSelection = new Combo(mainComp, SWT.DROP_DOWN | SWT.READ_ONLY);
 		configSelection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		configSelection.setItems(SampleConfigManager.getAvailableConfigNames()
-				.toArray(new String[] {}));
+		String[] configs = SampleConfigManager.getAvailableConfigNames()
+				.toArray(new String[] {});
+		Arrays.sort(configs);
+		configSelection.setItems(configs);
 		configSelection.select(0);
 		configSelection.setVisibleItemCount(5);
 

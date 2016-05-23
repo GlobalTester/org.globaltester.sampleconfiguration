@@ -17,9 +17,6 @@ import org.jdom.Element;
 
 public class SampleConfig implements IResourceChangeListener {
 
-	public static final String DEFAULT_NAME = "Mustermann Erika";
-
-	private static final String XML_TAG_NAME = "Name";
 	private static final String XML_TAG_DESCRIPTION = "Description";
 	private static final String XML_TAG_PLATFORM_ID = "PlatformId";
 	private static final String XML_TAG_SAMPLE_ID = "SampleId";
@@ -29,7 +26,6 @@ public class SampleConfig implements IResourceChangeListener {
 
 	private HashMap<String, String> configParams = new HashMap<String, String>();
 	private IProject project;
-	private String name;
 	private String platformId;
 	private String sampleId;
 	private String descr;
@@ -44,7 +40,6 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	private void initWithDefaulValues() {
-		name = DEFAULT_NAME;
 		descr = "Default configuration";
 		platformId = "00";
 		sampleId = "12345";
@@ -52,7 +47,6 @@ public class SampleConfig implements IResourceChangeListener {
 
 	public SampleConfig(IProject proj) {
 		this.project = proj;
-		this.name = proj.getName();
 		this.descr = "";
 		this.sampleId = "";
 		this.platformId = "";
@@ -108,12 +102,9 @@ public class SampleConfig implements IResourceChangeListener {
 	public void put(String protocol, String key, String value) {
 		configParams.put(protocol + "_" + key, value);
 	}
-
+	
 	public String getName() {
-		if (name == null){
-			name = "";
-		}
-		return name;
+		return project != null ? project.getName() : "";
 	}
 
 	public String getDescription() {
@@ -178,9 +169,6 @@ public class SampleConfig implements IResourceChangeListener {
 	 */
 	public void dumpToXml(Element root) {
 		// add meta data
-		Element nameElem = new Element(XML_TAG_NAME);
-		nameElem.addContent(name);
-		root.addContent(nameElem);
 		Element descrElem = new Element(XML_TAG_DESCRIPTION);
 		descrElem.addContent(descr);
 		root.addContent(descrElem);
@@ -214,7 +202,6 @@ public class SampleConfig implements IResourceChangeListener {
 
 	void extractFromXml(Element root) {
 		// extract name
-		this.name = root.getChildTextTrim(XML_TAG_NAME);
 		this.descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
 		this.platformId = root.getChildTextTrim(XML_TAG_PLATFORM_ID);
 		this.sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
@@ -250,16 +237,6 @@ public class SampleConfig implements IResourceChangeListener {
 
 	public void setProject(IProject newProject) {
 		this.project = newProject;
-
-		setName(project.getName());
-	}
-
-	public void setName(String newName) {
-		if (!name.equals(newName)) {
-			SampleConfigManager.remove(this);
-			this.name = newName;
-			SampleConfigManager.register(this);
-		}
 	}
 
 	public void setDescription(String newDescr) {
@@ -296,7 +273,7 @@ public class SampleConfig implements IResourceChangeListener {
 
 	@Override
 	public String toString() {
-		return "SampleConfig [configParams=" + configParams + ", project=" + project + ", name=" + name
+		return "SampleConfig [configParams=" + configParams + ", project=" + project 
 				+ ", platformId=" + platformId + ", sampleId=" + sampleId + ", descr=" + descr + "]";
 	}
 	

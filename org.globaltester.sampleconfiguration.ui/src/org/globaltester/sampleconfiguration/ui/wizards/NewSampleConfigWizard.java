@@ -63,17 +63,12 @@ public class NewSampleConfigWizard extends Wizard implements INewWizard, IPageCh
 	    sampleConfigInitPage = new WizardNewSampleConfigInitPage("GlobalTester SampleConfiguration Project Wizard");
 	    sampleConfigInitPage.setTitle("GlobalTester SampleConfiguration Project");
 	    sampleConfigInitPage.setDescription("Create a new GlobalTester SampleConfiguration");
-	    sampleConfigInitPage.setProjectCreationPage(projectCreationPage);
 	    addPage(sampleConfigInitPage);
 
 	}
 	
 	@Override
 	public void handlePageChanging(PageChangingEvent event) {
-		
-		if (event.getTargetPage().equals(sampleConfigInitPage)){
-			sampleConfigInitPage.setSampleConfigName(projectCreationPage.getProjectName());
-		}
 	}
 
 	@Override
