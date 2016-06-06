@@ -258,11 +258,11 @@ public class SampleConfigEditorWidget {
 		for (ProtocolFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
 			parameters.addAll(curProtocolFactory.getParameterDescriptors());
-			createProtcolTabItem(tabFolder, curProtocolFactory);
+			createProtocolTabItem(tabFolder, curProtocolFactory);
 		}
 	}
 
-	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
+	private TabItem createProtocolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
 		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
 		curTabItem.setText(curProtocolFactory.getName());
 		
