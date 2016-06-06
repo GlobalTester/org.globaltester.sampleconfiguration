@@ -59,6 +59,8 @@ public class SampleConfigEditorWidget {
 
 	private TabItem unsupportedTabItem;
 	private Composite unsupportedTabItemComp;
+	private ScrolledComposite unsupportedTabItemScroller;
+	
 	
 	public SampleConfigEditorWidget(Composite parent) {
 		this.createPartControl(parent);
@@ -189,6 +191,9 @@ public class SampleConfigEditorWidget {
 				}
 			}
 		}
+		
+		unsupportedTabItemScroller.setMinHeight(unsupportedTabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+		unsupportedTabItemComp.pack();
 	}
 
 	private void addTabItemGeneral(TabFolder tabFolder) {
@@ -323,14 +328,20 @@ public class SampleConfigEditorWidget {
 		unsupportedTabItem = new TabItem(tabFolder, SWT.NONE);
 		unsupportedTabItem.setText("Unsupported");
 		
-		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
-		unsupportedTabItemComp = new Composite(scroller, SWT.NONE);
-		scroller.setContent(unsupportedTabItemComp);
-		scroller.setExpandVertical(true);
-		scroller.setExpandHorizontal(true);
-		scroller.setLayout(new FillLayout());
-		unsupportedTabItem.setControl(scroller);
+		unsupportedTabItemScroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+		unsupportedTabItemComp = new Composite(unsupportedTabItemScroller, SWT.NONE);
+		unsupportedTabItemScroller.setContent(unsupportedTabItemComp);
+		unsupportedTabItemScroller.setExpandVertical(true);
+		unsupportedTabItemScroller.setExpandHorizontal(true);
+		unsupportedTabItemScroller.setLayout(new FillLayout());
+		unsupportedTabItem.setControl(unsupportedTabItemScroller);
 		unsupportedTabItemComp.setLayout(new GridLayout(2, false));
+		
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				unsupportedTabItemScroller.setFocus();
+			}
+		});
 	}
 
 	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
@@ -345,8 +356,6 @@ public class SampleConfigEditorWidget {
 		scroller.setLayout(new FillLayout());
 		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
-//		GridData gdTabItem = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-//		tabItemComp.setLayoutData(gdTabItem);
 			
 		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
