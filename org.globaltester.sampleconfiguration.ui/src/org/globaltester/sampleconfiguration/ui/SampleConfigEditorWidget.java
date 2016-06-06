@@ -9,13 +9,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
@@ -37,8 +35,6 @@ import org.globaltester.protocol.ui.StringProtocolParameterEditor;
 import org.globaltester.sampleconfiguration.SampleConfig;
 
 public class SampleConfigEditorWidget {
-
-	private static final Font monospacedFont = JFaceResources.getFont(JFaceResources.TEXT_FONT);
 	
 	private Composite mainComp;
 	private SampleConfig sampleConfig;
@@ -219,7 +215,7 @@ public class SampleConfigEditorWidget {
 		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
 		lblPlatformId.setText("Platform ID");
 		txtPlatformId = new Text(tabItemComp, SWT.BORDER);
-		txtPlatformId.setFont(monospacedFont);
+		txtPlatformId.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
 		txtPlatformId.setLayoutData(gdReport);
 		if(listener != null) {
 			txtPlatformId.addListener(SWT.Modify, listener);
@@ -228,7 +224,7 @@ public class SampleConfigEditorWidget {
 		Label lblSampleId = new Label(tabItemComp, SWT.NONE);
 		lblSampleId.setText("Sample ID");
 		txtSampleId = new Text(tabItemComp, SWT.BORDER);
-		txtSampleId.setFont(monospacedFont);
+		txtSampleId.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
 		txtSampleId.setLayoutData(gdReport);
 		if(listener != null) {
 			txtSampleId.addListener(SWT.Modify, listener);
@@ -267,7 +263,7 @@ public class SampleConfigEditorWidget {
 		Label lblMrz1 = new Label(tabItemComp, SWT.NONE);
 		lblMrz1.setText("MRZ (line 1):");
 		mrz1 = new Text(tabItemComp, SWT.BORDER);
-		mrz1.setFont(monospacedFont);
+		mrz1.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
 		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz1.setLayoutData(gdMrz1);
 		if(listener != null) {
@@ -276,7 +272,7 @@ public class SampleConfigEditorWidget {
 		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
 		lblMrz2.setText("MRZ (line 2):");
 		mrz2 = new Text(tabItemComp, SWT.BORDER);
-		mrz2.setFont(monospacedFont);
+		mrz2.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
 		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz2.setLayoutData(gdMrz2);
 		if(listener != null) {
@@ -285,7 +281,7 @@ public class SampleConfigEditorWidget {
 		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
 		lblMrz3.setText("MRZ (line 3):");
 		mrz3 = new Text(tabItemComp, SWT.BORDER);
-		mrz3.setFont(monospacedFont);
+		mrz3.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
 		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		mrz3.setLayoutData(gdMrz3);
 		if(listener != null) {
