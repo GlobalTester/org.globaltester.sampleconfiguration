@@ -90,6 +90,9 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @return
 	 */
 	public String get(String protocol, String key) {
+		if (!configParams.containsKey(protocol)){
+			return null;
+		}
 		return configParams.get(protocol).get(key);
 	}
 	
