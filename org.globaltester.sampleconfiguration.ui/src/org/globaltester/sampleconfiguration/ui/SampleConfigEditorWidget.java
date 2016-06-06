@@ -44,13 +44,9 @@ public class SampleConfigEditorWidget {
 	private Text descr;
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
-	private HashMap<String, HashMap<String, ProtocolParameterEditor>> unsupportedParamEditors = new HashMap<>();
 
 	private Listener listener;
-
 	private TabItem unsupportedTabItem;
-	private Composite unsupportedTabItemComp;
-	private ScrolledComposite unsupportedTabItemScroller;
 	
 	
 	public SampleConfigEditorWidget(Composite parent) {
@@ -122,6 +118,9 @@ public class SampleConfigEditorWidget {
 			}
 		}
 		
+
+		HashMap<String, HashMap<String, ProtocolParameterDescription>> unsupportedParamEditors = new HashMap<>();
+		
 		for (String protocol : sampleConfig.getStoredProtocols()){
 			for (String parameter : sampleConfig.getStoredParameters(protocol)){
 				if (parameterNames.contains(protocol + "_" + parameter)){
@@ -131,23 +130,57 @@ public class SampleConfigEditorWidget {
 					unsupportedParamEditors.put(protocol, new HashMap<>());
 				}
 				if (!unsupportedParamEditors.get(protocol).containsKey(parameter)){
-					unsupportedParamEditors.get(protocol).put(parameter, new StringProtocolParameterEditor(unsupportedTabItemComp, new StringProtocolParameter(protocol, parameter, protocol + "_" + parameter)));
-				}
-				ProtocolParameterEditor editor = unsupportedParamEditors.get(protocol).get(parameter);
-				if(listener != null) {
-					editor.addListener(SWT.Selection, listener);
-					editor.addListener(SWT.Modify, listener);
-				}
-				
-				String newValue = sampleConfig.get(protocol, parameter);
-				if (newValue != null) {
-					editor.setValue(newValue);
+					unsupportedParamEditors.get(protocol).put(parameter, new StringProtocolParameter(protocol, parameter, protocol + "_" + parameter));
 				}
 			}
+		}	
+
+		
+		if (unsupportedTabItem != null){
+			unsupportedTabItem.dispose();
+			unsupportedTabItem = null;
 		}
 		
-		unsupportedTabItemScroller.setMinHeight(unsupportedTabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-		unsupportedTabItemComp.pack();
+		if (!unsupportedParamEditors.isEmpty()){
+			Composite unsupportedTabItemComp;
+			ScrolledComposite unsupportedTabItemScroller;
+			
+
+			unsupportedTabItem = new TabItem(tabFolder, SWT.NONE);
+			unsupportedTabItem.setText("Unsupported");
+			
+			unsupportedTabItemScroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
+			unsupportedTabItemComp = new Composite(unsupportedTabItemScroller, SWT.NONE);
+			unsupportedTabItemScroller.setContent(unsupportedTabItemComp);
+			unsupportedTabItemScroller.setExpandVertical(true);
+			unsupportedTabItemScroller.setExpandHorizontal(true);
+			unsupportedTabItemScroller.setLayout(new FillLayout());
+			unsupportedTabItem.setControl(unsupportedTabItemScroller);
+			unsupportedTabItemComp.setLayout(new GridLayout(2, false));
+			
+			tabFolder.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					unsupportedTabItemScroller.setFocus();
+				}
+			});
+			
+			for (String protocol : unsupportedParamEditors.keySet()){
+				for (String parameter : unsupportedParamEditors.get(protocol).keySet()){
+					ProtocolParameterEditor editor = new StringProtocolParameterEditor(unsupportedTabItemComp, unsupportedParamEditors.get(protocol).get(parameter));
+					if(listener != null) {
+						editor.addListener(SWT.Selection, listener);
+						editor.addListener(SWT.Modify, listener);
+					}
+					String newValue = sampleConfig.get(protocol, parameter);
+					if (newValue != null) {
+						editor.setValue(newValue);
+					}
+				}
+			}
+			
+			unsupportedTabItemScroller.setMinHeight(unsupportedTabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+			unsupportedTabItemComp.pack();
+		}
 	}
 
 	private void addTabItemGeneral(TabFolder tabFolder) {
@@ -227,28 +260,6 @@ public class SampleConfigEditorWidget {
 			parameters.addAll(curProtocolFactory.getParameterDescriptors());
 			createProtcolTabItem(tabFolder, curProtocolFactory);
 		}
-		
-		createRemainingTabItem(tabFolder, parameters);
-	}
-
-	private void createRemainingTabItem(TabFolder tabFolder, Collection<ProtocolParameterDescription> parameters) {
-		unsupportedTabItem = new TabItem(tabFolder, SWT.NONE);
-		unsupportedTabItem.setText("Unsupported");
-		
-		unsupportedTabItemScroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
-		unsupportedTabItemComp = new Composite(unsupportedTabItemScroller, SWT.NONE);
-		unsupportedTabItemScroller.setContent(unsupportedTabItemComp);
-		unsupportedTabItemScroller.setExpandVertical(true);
-		unsupportedTabItemScroller.setExpandHorizontal(true);
-		unsupportedTabItemScroller.setLayout(new FillLayout());
-		unsupportedTabItem.setControl(unsupportedTabItemScroller);
-		unsupportedTabItemComp.setLayout(new GridLayout(2, false));
-		
-		tabFolder.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				unsupportedTabItemScroller.setFocus();
-			}
-		});
 	}
 
 	private TabItem createProtcolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
