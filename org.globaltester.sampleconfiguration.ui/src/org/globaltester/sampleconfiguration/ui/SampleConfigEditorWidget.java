@@ -14,8 +14,6 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,9 +42,6 @@ public class SampleConfigEditorWidget {
 	private Text txtPlatformId;
 	private Text txtSampleId;
 	private Text descr;
-	private Text mrz1;
-	private Text mrz2;
-	private Text mrz3;
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
 	private HashMap<String, HashMap<String, ProtocolParameterEditor>> unsupportedParamEditors = new HashMap<>();
@@ -93,14 +88,12 @@ public class SampleConfigEditorWidget {
 		});
 		
 		addTabItemGeneral(tabFolder);
-		addTabItemMrz(tabFolder);
 		addTabItemsForProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
 	}
 
 	public void updateContents() {
 		updateTabItemGeneral();
-		updateTabItemMrz();
 		updateProtocolParameterEditors();
 	}
 
@@ -113,41 +106,6 @@ public class SampleConfigEditorWidget {
 			txtPlatformId.setText(getSampleConfig().getPlatformId());
 		if (getSampleConfig().getSampleId() != null)
 			txtSampleId.setText(getSampleConfig().getSampleId());
-	}
-
-	private void updateTabItemMrz() {
-		String mrzString = getSampleConfig().get("MRZ", "MRZ");
-		if (mrzString != null) {
-
-			// TODO use methods from MRZ class after refactoring to protocol
-			switch (mrzString.length()) {
-			case 90: //ID-1 / TD-1
-				mrz1.setText(mrzString.substring(0, 30));
-				mrz2.setText(mrzString.substring(30, 60));
-				mrz3.setText(mrzString.substring(60));
-				break;
-			case 72: //ID-2 / TD-2
-				mrz1.setText(mrzString.substring(0, 36));
-				mrz2.setText(mrzString.substring(36));
-				mrz3.setText("");
-				break;
-			case 88: //ID-3 / TD-3
-				mrz1.setText(mrzString.substring(0, 44));
-				mrz2.setText(mrzString.substring(44));
-				mrz3.setText("");
-				break;
-
-			default: //unkown format
-				mrz1.setText(mrzString);
-				mrz2.setText("");
-				mrz3.setText("");
-				break;
-			}
-		} else {
-			mrz1.setText("");
-			mrz2.setText("");
-			mrz3.setText("");
-		}
 	}
 
 	private void updateProtocolParameterEditors() {
@@ -251,53 +209,6 @@ public class SampleConfigEditorWidget {
 		});
 	}
 
-	private void addTabItemMrz(TabFolder tabFolder) {
-		// TODO extract TabFolder for different protocols
-		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("MRZ");
-
-		Composite tabItemComp = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(tabItemComp);
-		tabItemComp.setLayout(new GridLayout(2, false));
-		
-		Label lblMrz1 = new Label(tabItemComp, SWT.NONE);
-		lblMrz1.setText("MRZ (line 1):");
-		mrz1 = new Text(tabItemComp, SWT.BORDER);
-		mrz1.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
-		GridData gdMrz1 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		mrz1.setLayoutData(gdMrz1);
-		if(listener != null) {
-			mrz1.addListener(SWT.Modify, listener);
-		}
-		Label lblMrz2 = new Label(tabItemComp, SWT.NONE);
-		lblMrz2.setText("MRZ (line 2):");
-		mrz2 = new Text(tabItemComp, SWT.BORDER);
-		mrz2.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
-		GridData gdMrz2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		mrz2.setLayoutData(gdMrz2);
-		if(listener != null) {
-			mrz2.addListener(SWT.Modify, listener);
-		}
-		Label lblMrz3 = new Label(tabItemComp, SWT.NONE);
-		lblMrz3.setText("MRZ (line 3):");
-		mrz3 = new Text(tabItemComp, SWT.BORDER);
-		mrz3.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
-		GridData gdMrz3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		mrz3.setLayoutData(gdMrz3);
-		if(listener != null) {
-			mrz3.addListener(SWT.Modify, listener);
-		}
-		
-		//calculate width hint
-		GC gc = new GC(mrz1);
-	    FontMetrics fm = gc.getFontMetrics();
-	    int charWidth = fm.getAverageCharWidth();
-	    gc.dispose();
-		gdMrz1.widthHint = charWidth * 45;
-		gdMrz2.widthHint = gdMrz1.widthHint;
-		gdMrz3.widthHint = gdMrz1.widthHint;
-	}
-
 	private void addTabItemsForProtocols(TabFolder tabFolder) {
 		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
 		
@@ -386,11 +297,6 @@ public class SampleConfigEditorWidget {
 		sampleConfig.setSampleId(txtSampleId.getText());
 		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
-		// flush all changes to the SampleConfig object
-		
-		sampleConfig.put("MRZ", "MRZ", mrz1.getText() + mrz2.getText()
-				+ mrz3.getText());
-		
 		//flush all ProtocolParameter values to the SampleConfig object
 		for (ProtocolParameterEditor curParam : paramEditors) {
 			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
@@ -413,9 +319,6 @@ public class SampleConfigEditorWidget {
 	
 	public void setEditable(boolean editable) {
 		descr.setEditable(editable);
-		mrz1.setEditable(editable);
-		mrz2.setEditable(editable);
-		mrz3.setEditable(editable);
 		txtPlatformId.setEditable(editable);
 		txtSampleId.setEditable(editable);
 		for (ProtocolParameterEditor curParam : paramEditors) {
