@@ -1,6 +1,7 @@
 package org.globaltester.sampleconfiguration;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -24,7 +25,7 @@ public class SampleConfig implements IResourceChangeListener {
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
 
-	private HashMap<String, String> configParams = new HashMap<String, String>();
+	private HashMap<String, HashMap<String, String>> configParams = new HashMap<>();
 	private IProject project;
 	private String platformId;
 	private String sampleId;
@@ -89,7 +90,14 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @return
 	 */
 	public String get(String protocol, String key) {
-		return configParams.get(protocol + "_" + key);
+		if (!configParams.containsKey(protocol)){
+			return null;
+		}
+		return configParams.get(protocol).get(key);
+	}
+	
+	public Set<String> getStored(){
+		return configParams.keySet();
 	}
 
 	/**
@@ -100,7 +108,10 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @param value
 	 */
 	public void put(String protocol, String key, String value) {
-		configParams.put(protocol + "_" + key, value);
+		if (!configParams.containsKey(protocol)){
+			configParams.put(protocol, new HashMap<>());
+		}
+		configParams.get(protocol).put(key, value);
 	}
 	
 	public String getName() {
@@ -181,16 +192,18 @@ public class SampleConfig implements IResourceChangeListener {
 
 		// add configParams
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
-		for (String curParam : configParams.keySet()) {
-			Element curParamElem = new Element(XML_TAG_PARAMETER);
-			curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curParam);
-			String curParamValue = (String) configParams.get(curParam);
-			if (curParamValue.contains("<")){
-				curParamElem.addContent(new CDATA(curParamValue));
-			} else {
-				curParamElem.addContent(curParamValue);	
+		for (String curProtocol : configParams.keySet()) {
+			for (String curParam : configParams.get(curProtocol).keySet()){
+				Element curParamElem = new Element(XML_TAG_PARAMETER);
+				curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curProtocol + "_" + curParam);
+				String curParamValue = (String) configParams.get(curProtocol).get(curParam);
+				if (curParamValue.contains("<")){
+					curParamElem.addContent(new CDATA(curParamValue));
+				} else {
+					curParamElem.addContent(curParamValue);	
+				}
+				configParamsElem.addContent(curParamElem);	
 			}
-			configParamsElem.addContent(curParamElem);
 		}
 		root.addContent(configParamsElem);
 
@@ -215,7 +228,14 @@ public class SampleConfig implements IResourceChangeListener {
 					String curParamName = curParamElem
 							.getAttributeValue(XML_ATTRIB_PARAM_NAME);
 					String curParamValue = curParamElem.getTextTrim();
-					configParams.put(curParamName, curParamValue);
+					
+					int divider = curParamName.indexOf("_");
+					String protocolName = curParamName.substring(0, divider);
+					String parameterName = curParamName.substring(divider + 1);
+					if (!configParams.containsKey(protocolName)){
+						configParams.put(protocolName, new HashMap<>());
+					}
+					configParams.get(protocolName).put(parameterName, curParamValue);
 				}
 			}
 		}
@@ -275,6 +295,17 @@ public class SampleConfig implements IResourceChangeListener {
 	public String toString() {
 		return "SampleConfig [configParams=" + configParams + ", project=" + project 
 				+ ", platformId=" + platformId + ", sampleId=" + sampleId + ", descr=" + descr + "]";
+	}
+
+	public Set<String> getStoredProtocols() {
+		return configParams.keySet();
+	}
+
+	public Set<String> getStoredParameters(String protocol) {
+		if (!configParams.containsKey(protocol)){
+			throw new IllegalArgumentException("This protocol is not part of this sample config");
+		}
+		return configParams.get(protocol).keySet();
 	}
 	
 	
