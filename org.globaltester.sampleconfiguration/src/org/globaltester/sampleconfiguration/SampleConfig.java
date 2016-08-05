@@ -95,6 +95,17 @@ public class SampleConfig implements IResourceChangeListener {
 		}
 		return configParams.get(protocol).get(key);
 	}
+
+	/**
+	 * Returns a single parameter from this {@link SampleConfig} converted to boolean.
+	 * 
+	 * @param protocol
+	 * @param key
+	 * @return
+	 */
+	public boolean getBoolean(String protocol, String key) {
+		return Boolean.parseBoolean(get(protocol, key));
+	}
 	
 	public Set<String> getStored(){
 		return configParams.keySet();
