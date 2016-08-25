@@ -30,6 +30,9 @@ public class Profile extends AbstractProfileExpression{
 	
 	@Override
 	public boolean evaluate(SampleConfig config){
+		if (config == null){
+			return false;
+		}
 		return Boolean.parseBoolean(config.get(protocol, name));
 	}
 	
