@@ -164,13 +164,9 @@ public class SampleConfig implements IResourceChangeListener {
 
 		// write to file
 		XMLHelper.saveDoc(iFile, root);
-
-		// TODO extract/display contained data to individual files (for user
-		// convenience)
 	}
 
 	public IFile getSampleConfigIfile() {
-		//TODO make this private once it is no longer needed for TextEditorInput
 		if (project != null) {
 			return project.getFile("sample.gtconfig");
 		} else {

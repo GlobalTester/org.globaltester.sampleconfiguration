@@ -69,15 +69,11 @@ public class SampleConfigEditorWidget {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-//				if (e.widget == tabFolder) {
-					tabFolder.redraw();
-//				}
+				tabFolder.redraw();
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 			
@@ -184,7 +180,6 @@ public class SampleConfigEditorWidget {
 	}
 
 	private void addTabItemGeneral(TabFolder tabFolder) {
-		// TODO Auto-generated method stub
 		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
 		curTabItem.setText("General");
 		

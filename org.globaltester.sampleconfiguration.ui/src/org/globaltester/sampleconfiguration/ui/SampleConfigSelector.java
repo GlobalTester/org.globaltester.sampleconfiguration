@@ -36,8 +36,6 @@ public class SampleConfigSelector {
 	public static final int ALL_BUTTONS = 7;
 	private List<INewConfigWizardClosedListener> configWizardDoneListener;
 
-	// TODO update contents of selection Combo on workspace refresh
-
 	private Composite mainComp;
 	private Combo configSelection;
 	private String selectedConfigName;
