@@ -38,7 +38,7 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 
 	@Override
 	public void doSaveAs() {
-		// XXX implement save as dialog
+		// IMPL implement save as dialog
 	}
 
 	@Override
