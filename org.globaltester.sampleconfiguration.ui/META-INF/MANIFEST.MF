@@ -4,7 +4,7 @@ Bundle-Name: GT SampleConfig UI
 Bundle-SymbolicName: org.globaltester.sampleconfiguration.ui;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.globaltester.sampleconfiguration.ui.Activator
-Bundle-Vendor: HJP Consulting GmbH
+Bundle-Vendor: secunet Security Networks AG
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.globaltester.sampleconfiguration,
