@@ -299,6 +299,9 @@ public class SampleConfigEditorWidget {
 	}
 
 	public void doSave() {
+		if (sampleConfig == null){
+			return;
+		}
 		sampleConfig.setDescription(descr.getText());
 		sampleConfig.setSampleId(txtSampleId.getText());
 		sampleConfig.setPlatformId(txtPlatformId.getText());
