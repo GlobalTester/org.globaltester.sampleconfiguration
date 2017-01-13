@@ -16,9 +16,9 @@ public class ProfileMapper {
 	public static final String MAPPING_FILE_NAME = "profiles." + MAPPING_FILE_SUFFIX;
 
 	public static ProfileExpression parse(String profiles, IFile ... propertyFiles){
+		
 		for (int i = propertyFiles.length-1; i >=0; i--){
-			try {
-				BufferedReader reader = createReaderForFile(propertyFiles[i]);
+			try (BufferedReader reader = createReaderForFile(propertyFiles[i])){
 				String line;
 				while ((line = reader.readLine()) != null){
 					if (line.isEmpty()){
@@ -44,6 +44,7 @@ public class ProfileMapper {
 
 	private static BufferedReader createReaderForFile(IFile file) throws FileNotFoundException{
 		if (!file.exists()){
+			System.gc();
 			throw new IllegalArgumentException("Can not create reader for not existing file");
 		}
 		return new BufferedReader(new FileReader(file.getLocation().toOSString()));
