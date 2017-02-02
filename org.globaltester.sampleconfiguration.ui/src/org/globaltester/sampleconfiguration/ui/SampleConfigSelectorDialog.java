@@ -176,11 +176,8 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		saveButton.setText("Save");
 		saveButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				int returnCode = openSaveDialog(parent);
-				if(returnCode == SWT.YES) {
-					editorWidget.doSave();
-					setDirty(false);
-				}
+				editorWidget.doSave();
+				setDirty(false);
 			}
 		});
 		
