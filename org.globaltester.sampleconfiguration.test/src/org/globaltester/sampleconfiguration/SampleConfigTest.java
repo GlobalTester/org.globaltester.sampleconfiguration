@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class SampleConfigTest {
 	
-	private final String DEFAULT_MRZ = "P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F1310317<<<<<<<<<<<<<<<6";
+	private final String DEFAULT_MRZ = "P<D<<MUSTERMANN<<ERIKA<<<<<<<<<<<<<<<<<<<<<<C11T002JM4D<<9608122F2310314<<<<<<<<<<<<<<<4";
 
 	@Test
 	public void testGetMrz() {
