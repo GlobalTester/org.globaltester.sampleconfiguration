@@ -168,7 +168,7 @@ public class SampleConfigEditorWidget {
 			for (String protocol : unsupportedParamEditors.keySet()){
 				for (String parameter : unsupportedParamEditors.get(protocol).keySet()){
 					ProtocolParameterEditor editor = new StringProtocolParameterEditor(unsupportedTabItemComp, unsupportedParamEditors.get(protocol).get(parameter));
-					editor.setEditable(active);
+					editor.setActive(active);
 					if(listener != null) {
 						editor.addListener(SWT.Selection, listener);
 						editor.addListener(SWT.Modify, listener);
@@ -333,10 +333,10 @@ public class SampleConfigEditorWidget {
 
 	}
 	
-	private void setActive(boolean editable, Text ... texts){
+	private void setActive(boolean active, Text ... texts){
 		for (Text text : texts){
-			text.setEnabled(editable);
-			text.setEditable(editable);
+			text.setEnabled(active);
+			text.setEditable(active);
 		}
 	}
 	
@@ -351,11 +351,11 @@ public class SampleConfigEditorWidget {
 		setActive(active, descr, name, txtPlatformId, txtSampleId);
 		
 		for (ProtocolParameterEditor curParam : paramEditors) {
-			curParam.setEditable(active);
+			curParam.setActive(active);
 		}
 		
 		for (ProtocolParameterEditor curParam : unsupportedTabEditors) {
-			curParam.setEditable(active);
+			curParam.setActive(active);
 		}
 	}
 
