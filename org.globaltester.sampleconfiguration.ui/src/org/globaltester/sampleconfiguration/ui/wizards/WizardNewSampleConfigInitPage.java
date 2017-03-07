@@ -28,7 +28,7 @@ public class WizardNewSampleConfigInitPage extends WizardPage {
 
 		editorWidget = new SampleConfigEditorWidget(container);
 		editorWidget.hideName();
-		editorWidget.setEditable(true);
+		editorWidget.setActive(true);
 		editorWidget.setInput(sampleConfig);
 	}
 	

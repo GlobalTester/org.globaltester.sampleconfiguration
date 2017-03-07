@@ -95,7 +95,7 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 		
 		widget = new SampleConfigEditorWidget(mainComposite, listener);
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		widget.setEditable(true);
+		widget.setActive(true);
 		widget.setInput(getConfig());
 		
 		setDirty(false);

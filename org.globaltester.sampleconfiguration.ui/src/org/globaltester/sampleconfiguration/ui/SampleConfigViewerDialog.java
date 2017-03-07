@@ -57,7 +57,7 @@ public class SampleConfigViewerDialog extends Dialog {
 		editorWidget = new SampleConfigEditorWidget(parent);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		editorWidget.setInput(sampleConfig);
-		editorWidget.setEditable(false);
+		editorWidget.setActive(false);
 	}
 
 	private void createOkButton(Composite parent) {

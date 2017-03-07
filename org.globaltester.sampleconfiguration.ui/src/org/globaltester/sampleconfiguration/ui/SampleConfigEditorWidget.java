@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -44,9 +45,11 @@ public class SampleConfigEditorWidget {
 	private Text descr;
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
+	private List<ProtocolParameterEditor> unsupportedTabEditors = new LinkedList<>();
 
 	private Listener listener;
 	private TabItem unsupportedTabItem;
+	private boolean active = true;
 	
 	
 	public SampleConfigEditorWidget(Composite parent) {
@@ -101,6 +104,8 @@ public class SampleConfigEditorWidget {
 	}
 
 	private void updateProtocolParameterEditors() {
+		unsupportedTabEditors.clear();
+		
 		HashSet<String> parameterNames = new HashSet<>();
 		for (ProtocolParameterEditor curParamEditor : paramEditors) {
 			String protocolName = curParamEditor.getProtocolParameterDescription().getProtocolName();
@@ -163,6 +168,7 @@ public class SampleConfigEditorWidget {
 			for (String protocol : unsupportedParamEditors.keySet()){
 				for (String parameter : unsupportedParamEditors.get(protocol).keySet()){
 					ProtocolParameterEditor editor = new StringProtocolParameterEditor(unsupportedTabItemComp, unsupportedParamEditors.get(protocol).get(parameter));
+					editor.setEditable(active);
 					if(listener != null) {
 						editor.addListener(SWT.Selection, listener);
 						editor.addListener(SWT.Modify, listener);
@@ -171,6 +177,7 @@ public class SampleConfigEditorWidget {
 					if (newValue != null) {
 						editor.setValue(newValue);
 					}
+					unsupportedTabEditors.add(editor);
 				}
 			}
 			
@@ -326,12 +333,29 @@ public class SampleConfigEditorWidget {
 
 	}
 	
-	public void setEditable(boolean editable) {
-		descr.setEditable(editable);
-		txtPlatformId.setEditable(editable);
-		txtSampleId.setEditable(editable);
+	private void setActive(boolean editable, Text ... texts){
+		for (Text text : texts){
+			text.setEnabled(editable);
+			text.setEditable(editable);
+		}
+	}
+	
+	/**
+	 * Sets the active state. This controls if the receiver is able to be edited
+	 * and potentially visual representation.
+	 * 
+	 * @param active
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+		setActive(active, descr, name, txtPlatformId, txtSampleId);
+		
 		for (ProtocolParameterEditor curParam : paramEditors) {
-			curParam.setEditable(editable);
+			curParam.setEditable(active);
+		}
+		
+		for (ProtocolParameterEditor curParam : unsupportedTabEditors) {
+			curParam.setEditable(active);
 		}
 	}
 
