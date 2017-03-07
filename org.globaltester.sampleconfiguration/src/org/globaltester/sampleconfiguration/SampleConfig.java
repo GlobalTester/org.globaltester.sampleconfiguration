@@ -18,6 +18,7 @@ import org.jdom.Element;
 
 public class SampleConfig implements IResourceChangeListener {
 
+	private static final String XML_ATTRIB_ORIGINAL_NAME = "originalName";
 	private static final String XML_TAG_DESCRIPTION = "Description";
 	private static final String XML_TAG_PLATFORM_ID = "PlatformId";
 	private static final String XML_TAG_SAMPLE_ID = "SampleId";
@@ -25,8 +26,11 @@ public class SampleConfig implements IResourceChangeListener {
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
 
+	private static final String UNKNOWN = "_unknown_";
+
 	private HashMap<String, HashMap<String, String>> configParams = new HashMap<>();
 	private IProject project;
+	private String originalName;
 	private String platformId;
 	private String sampleId;
 	private String descr;
@@ -126,7 +130,7 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 	
 	public String getName() {
-		return project != null ? project.getName() : "";
+		return project != null ? project.getName() : originalName;
 	}
 
 	public String getDescription() {
@@ -187,6 +191,7 @@ public class SampleConfig implements IResourceChangeListener {
 	 */
 	public void dumpToXml(Element root) {
 		// add meta data
+		root.setAttribute(XML_ATTRIB_ORIGINAL_NAME, getName());
 		Element descrElem = new Element(XML_TAG_DESCRIPTION);
 		descrElem.addContent(descr);
 		root.addContent(descrElem);
@@ -221,10 +226,12 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	void extractFromXml(Element root) {
-		// extract name
-		this.descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
-		this.platformId = root.getChildTextTrim(XML_TAG_PLATFORM_ID);
-		this.sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
+		// extract meta data
+		originalName = root.getAttributeValue(XML_ATTRIB_ORIGINAL_NAME);
+		originalName = originalName == null ? UNKNOWN : originalName;
+		descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
+		platformId = root.getChildTextTrim(XML_TAG_PLATFORM_ID);
+		sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
 		
 		// extract configParams
 		Element paramsElem = root.getChild(XML_TAG_CONFIG_PARAMS);
