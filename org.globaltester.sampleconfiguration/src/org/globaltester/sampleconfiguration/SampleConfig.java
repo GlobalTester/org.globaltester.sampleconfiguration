@@ -256,12 +256,6 @@ public class SampleConfig implements IResourceChangeListener {
 		this.sampleId = sampleId;
 	}
 
-	public SampleConfig getCloneForExecution() {
-		Element xmlRepresentation = new Element("SampleConfiguration");
-		dumpToXml(xmlRepresentation);
-		return new SampleConfig(xmlRepresentation);
-	}
-
 	public void setProject(IProject newProject) {
 		this.project = newProject;
 	}
