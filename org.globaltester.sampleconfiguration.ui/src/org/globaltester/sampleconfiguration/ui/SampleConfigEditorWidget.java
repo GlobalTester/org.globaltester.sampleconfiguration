@@ -161,7 +161,9 @@ public class SampleConfigEditorWidget {
 			
 			tabFolder.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
-					unsupportedTabItemScroller.setFocus();
+					if (unsupportedTabItemScroller!= null && !unsupportedTabItemScroller.isDisposed()){
+						unsupportedTabItemScroller.setFocus();	
+					}
 				}
 			});
 			
