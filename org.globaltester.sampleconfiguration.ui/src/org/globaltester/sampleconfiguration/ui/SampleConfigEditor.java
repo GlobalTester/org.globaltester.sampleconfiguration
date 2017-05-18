@@ -17,6 +17,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.globaltester.sampleconfiguration.SampleConfig;
@@ -97,8 +98,20 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 		widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		widget.setActive(true);
 		widget.setInput(getConfig());
-		
 		setDirty(false);
+
+		// update editor contents once UI is ready (hopefully this is late enough for all ProtocolFactories to be present)
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				//do nothing if widgets are already disposed
+				if (widget == null) {
+					return;
+				}
+				widget.updateContents();
+				setDirty(false);
+			}
+		});
 	}
 	
 	private SampleConfig getConfig() {
@@ -112,7 +125,7 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-//		widget.setInput(getConfig());
+		//SampleConfig is managed mostly in memory
 	}
 
 }
