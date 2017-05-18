@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
@@ -46,6 +47,7 @@ public class SampleConfigEditorWidget {
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
 	private List<ProtocolParameterEditor> unsupportedTabEditors = new LinkedList<>();
+	private Map<String, ProtocolParameterEditor> protocolTabItems = new HashMap<>();
 
 	private Listener listener;
 	private TabItem unsupportedTabItem;
@@ -83,7 +85,7 @@ public class SampleConfigEditorWidget {
 		});
 		
 		addTabItemGeneral(tabFolder);
-		addTabItemsForProtocols(tabFolder);
+		addTabItemsForNewProtocols(tabFolder);
 		new Label(mainComp, SWT.NONE);
 	}
 
@@ -105,6 +107,8 @@ public class SampleConfigEditorWidget {
 
 	private void updateProtocolParameterEditors() {
 		unsupportedTabEditors.clear();
+		
+		addTabItemsForNewProtocols(tabFolder);
 		
 		HashSet<String> parameterNames = new HashSet<>();
 		for (ProtocolParameterEditor curParamEditor : paramEditors) {
@@ -246,7 +250,7 @@ public class SampleConfigEditorWidget {
 		});
 	}
 
-	private void addTabItemsForProtocols(TabFolder tabFolder) {
+	private void addTabItemsForNewProtocols(TabFolder tabFolder) {
 		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
 		
 		//sort protocol factories by name
@@ -261,6 +265,7 @@ public class SampleConfigEditorWidget {
 		
 		for (ProtocolFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
+			if (protocolTabItems.get(curProtocolFactory.getName()) != null) continue;
 			parameters.addAll(curProtocolFactory.getParameterDescriptors());
 			createProtocolTabItem(tabFolder, curProtocolFactory);
 		}
