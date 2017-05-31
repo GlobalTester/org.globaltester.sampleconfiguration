@@ -128,6 +128,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		};
 		editorWidget = new SampleConfigEditorWidget(parent, listener);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		editorWidget.setActive(false);
 	}
 
 	private void setDirty(boolean dirty) {
@@ -211,7 +212,9 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			runButton.setEnabled(true);
 			saveButton.setEnabled(true);
 		}
+		
 		editorWidget.setInput(getSelectedSampleConfig());
+		editorWidget.setActive(getSelectedSampleConfig() != null);
 	}
 
 	public SampleConfig getSelectedSampleConfig() {
