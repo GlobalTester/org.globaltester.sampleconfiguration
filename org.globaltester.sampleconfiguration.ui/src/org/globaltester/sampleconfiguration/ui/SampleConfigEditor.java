@@ -20,6 +20,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.globaltester.logging.legacy.logger.GtErrorLogger;
 import org.globaltester.sampleconfiguration.SampleConfig;
 import org.globaltester.sampleconfiguration.SampleConfigManager;
 
@@ -104,6 +105,11 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					GtErrorLogger.log(Activator.PLUGIN_ID, e);
+				}
 				//do nothing if widgets are already disposed
 				if (widget == null) {
 					return;

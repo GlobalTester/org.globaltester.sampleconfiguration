@@ -2,7 +2,6 @@ package org.globaltester.sampleconfiguration.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +46,7 @@ public class SampleConfigEditorWidget {
 
 	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
 	private List<ProtocolParameterEditor> unsupportedTabEditors = new LinkedList<>();
-	private Map<String, ProtocolParameterEditor> protocolTabItems = new HashMap<>();
+	private Map<String, TabItem> protocolTabItems = new HashMap<>();
 
 	private Listener listener;
 	private TabItem unsupportedTabItem;
@@ -261,18 +260,17 @@ public class SampleConfigEditorWidget {
 			}
 		});
 		
-		Collection<ProtocolParameterDescription> parameters = new HashSet<>();
-		
 		for (ProtocolFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
-			if (protocolTabItems.get(curProtocolFactory.getName()) != null) continue;
-			parameters.addAll(curProtocolFactory.getParameterDescriptors());
-			createProtocolTabItem(tabFolder, curProtocolFactory);
+			getProtocolTabItem(tabFolder, curProtocolFactory);
 		}
 	}
 
-	private TabItem createProtocolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
-		TabItem curTabItem = new TabItem(tabFolder, SWT.NONE);
+	private synchronized TabItem getProtocolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
+		TabItem curTabItem = protocolTabItems.get(curProtocolFactory.getName()); 
+		if ( curTabItem != null) return curTabItem;
+		
+		curTabItem = new TabItem(tabFolder, SWT.NONE);
 		curTabItem.setText(curProtocolFactory.getName());
 		
 		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
@@ -305,6 +303,8 @@ public class SampleConfigEditorWidget {
 
 		tabItemComp.pack();
 
+		protocolTabItems.put(curProtocolFactory.getName(), curTabItem);
+		
 		return curTabItem;
 	}
 
