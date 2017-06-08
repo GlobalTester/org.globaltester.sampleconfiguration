@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.globaltester.logging.legacy.logger.GtErrorLogger;
 import org.globaltester.sampleconfiguration.SampleConfig;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -81,7 +82,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		setDirty(false);
 	}
 
-	private void configureLayout(Composite parent) {
+	private static void configureLayout(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		parent.setLayout(layout);
@@ -91,6 +92,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		selectorWidget = new SampleConfigSelector(parent, SampleConfigSelector.BTN_NEW);
 		selectorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		selectorWidget.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(isDirty()){
 					int returnCode = openSaveDialog(parent);
@@ -128,6 +130,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		};
 		editorWidget = new SampleConfigEditorWidget(parent, listener);
 		editorWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		editorWidget.setActive(false);
 	}
 
 	private void setDirty(boolean dirty) {
@@ -153,6 +156,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		runButton.setLayoutData(buttonLayoutData);
 		runButton.setText("Run");
 		runButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectedConfig = selectorWidget.getSelectedConfig();
 				storeSelectedConfig();
@@ -175,6 +179,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		saveButton.setLayoutData(buttonLayoutData);
 		saveButton.setText("Save");
 		saveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editorWidget.doSave();
 				setDirty(false);
@@ -185,6 +190,7 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 		cancelButton.setLayoutData(buttonLayoutData);
 		cancelButton.setText("Cancel");
 		cancelButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				dialog.close();
 			}
@@ -211,7 +217,9 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			runButton.setEnabled(true);
 			saveButton.setEnabled(true);
 		}
+		
 		editorWidget.setInput(getSelectedSampleConfig());
+		editorWidget.setActive(getSelectedSampleConfig() != null);
 	}
 
 	public SampleConfig getSelectedSampleConfig() {
@@ -238,12 +246,12 @@ public class SampleConfigSelectorDialog extends Dialog implements INewConfigWiza
 			try {
 				 preferences.flush();
 			} catch (BackingStoreException e) {
-				e.printStackTrace();
+				GtErrorLogger.log(Activator.PLUGIN_ID, e);
 			}
 		}
 	}
 	
-	private String getLastConfig() {
+	private static String getLastConfig() {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("org.globaltester.sampleconfiguration.ui");
 		return preferences.get("lastSelection", "default");
 	}
