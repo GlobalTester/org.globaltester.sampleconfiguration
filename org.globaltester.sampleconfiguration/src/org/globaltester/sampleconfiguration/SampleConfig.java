@@ -1,5 +1,9 @@
 package org.globaltester.sampleconfiguration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -152,6 +156,10 @@ public class SampleConfig implements IResourceChangeListener {
 			platformId = "";
 		}
 		return platformId;
+	}
+
+	public IProject getProject() {
+		return project;
 	}
 
 	public void saveToProject() throws CoreException {
@@ -314,6 +322,45 @@ public class SampleConfig implements IResourceChangeListener {
 			throw new IllegalArgumentException("This protocol is not part of this sample config");
 		}
 		return configParams.get(protocol).keySet();
+	}
+
+	/**
+	 * Store binaryData within the 
+	 * @param fileName
+	 * @param value
+	 * @throws IOException 
+	 */
+	public void storeBinaryData(String fileName, byte[] bytes) throws IOException {
+		if (project == null) return;
+		
+		IFile iFile = project.getFile(fileName);
+		Path file = iFile.getLocation().toFile().toPath();
+		Files.createDirectories(file.getParent());
+		Files.write(file, bytes);
+		
+	}
+	
+	/**
+	 * Returns a single parameter from this {@link SampleConfig} converted as
+	 * absolute path.
+	 * 
+	 * @param protocol
+	 * @param key
+	 * @return the absolute path as string for this protocol and key or null if not available
+	 */
+	public String getAbsolutePath(String protocol, String key) {
+		String configValue = get(protocol, key);
+		if (configValue == null) {
+			return null;
+		}
+		
+		Path path = Paths.get(configValue); 
+		if (!path.isAbsolute()){
+			//resolve against sample config project directory if relative path given
+			IProject sampleConfigProject = getSampleConfigIfile().getProject();
+			path = Paths.get(sampleConfigProject.getLocation().append(path.toString()).toOSString());
+		}
+		return path.toFile().getAbsolutePath();
 	}
 	
 	
