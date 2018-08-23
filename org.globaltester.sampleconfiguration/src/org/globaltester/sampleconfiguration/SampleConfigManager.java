@@ -16,13 +16,13 @@ import org.globaltester.base.resources.GtResourceHelper;
  */
 public class SampleConfigManager {
 
-	private static HashMap<String, SampleConfig> configs = new HashMap<String, SampleConfig>();
+//	private static HashMap<String, SampleConfig> configs = new HashMap<String, SampleConfig>();
 	static {
 		for (String curConfigName : getAvailableConfigNames()) {
 			IProject curProject = ResourcesPlugin.getWorkspace().getRoot()
 					.getProject(curConfigName);
 			SampleConfig curConfig = new SampleConfig(curProject);
-			configs.put(curConfigName, curConfig);
+//			configs.put(curConfigName, curConfig);
 		}
 	}
 
@@ -34,14 +34,16 @@ public class SampleConfigManager {
 	 * @return
 	 */
 	public static SampleConfig get(String sampleConfigName) {
-		if (!configs.containsKey(sampleConfigName)) {
+//		if (!configs.containsKey(sampleConfigName)) {
 			if (getAvailableConfigNames().contains(sampleConfigName)) {
 				SampleConfig newConfig = new SampleConfig(ResourcesPlugin
 						.getWorkspace().getRoot().getProject(sampleConfigName));
-				configs.put(sampleConfigName, newConfig);
+//				configs.put(sampleConfigName, newConfig);
+				return newConfig;
 			} 
-		}
-		return configs.get(sampleConfigName);
+			return null;
+//		}
+//		return configs.get(sampleConfigName);
 	}
 
 	public static Set<String> getAvailableConfigNames() {
@@ -50,15 +52,15 @@ public class SampleConfigManager {
 	}
 
 	public static void register(SampleConfig sampleConfig) {
-		if (sampleConfig.isStoredAsProject()) {
-			configs.put(sampleConfig.getName(), sampleConfig);
-		}
+//		if (sampleConfig.isStoredAsProject()) {
+//			configs.put(sampleConfig.getName(), sampleConfig);
+//		}
 	}
 
 	public static void remove(SampleConfig sampleConfig) {
-		if (sampleConfig.equals(configs.get(sampleConfig.getName()))) {
-			configs.remove(sampleConfig.getName());
-		}
+//		if (sampleConfig.equals(configs.get(sampleConfig.getName()))) {
+//			configs.remove(sampleConfig.getName());
+//		}
 	}
 
 	public static boolean isAvailableAsProject(String sampleConfigName) {

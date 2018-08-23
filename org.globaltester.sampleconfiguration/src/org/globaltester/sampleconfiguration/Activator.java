@@ -16,6 +16,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
 	public static final String PLUGIN_ID = "org.globaltester.sampleconfiguration";
+	
 	private static Activator defaultInstance;
 	private static BundleContext context;
 	private static ServiceTracker<CategoryFactory, CategoryFactory> factoryTracker;
@@ -62,7 +63,7 @@ public class Activator implements BundleActivator {
 		CategoryFactory[] emptyArray = new CategoryFactory[0];
 		if (factoryTracker == null) {
 			return emptyArray;
-		}
+	}
 
 		return factoryTracker.getServices(emptyArray);
 	}
@@ -81,8 +82,8 @@ public class Activator implements BundleActivator {
 			if (categoryName.equals(currentFactory.getName())) {
 				return currentFactory;
 			}
-		}
-		
+	}
+
 		return null;
 	}
 

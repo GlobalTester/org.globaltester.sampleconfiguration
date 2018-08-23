@@ -66,7 +66,7 @@ public class SampleConfig implements IResourceChangeListener {
 		if (getSampleConfigIfile().exists()) {
 			initFromIFile();
 		} else {
-			saveToProject();
+				saveToProject();
 		}
 
 		SampleConfigManager.register(this);
@@ -188,15 +188,15 @@ public class SampleConfig implements IResourceChangeListener {
 
 		IFile iFile = getSampleConfigIfile();
 		try {
-			if (!iFile.exists()) {
-				iFile.create(null, false, null);
-			}
+		if (!iFile.exists()) {
+			iFile.create(null, false, null);
+		}
 
 			Element root;
 			root = getXmlRepresentation();
 
-			// write to file
-			XMLHelper.saveDoc(iFile, root);
+		// write to file
+		XMLHelper.saveDoc(iFile, root);
 		} catch (CoreException e) {
 			BasicLogger.logException(getClass(),  "Saving the sample config failed", e);
 		}
