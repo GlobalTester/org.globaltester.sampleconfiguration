@@ -1,32 +1,82 @@
 package org.globaltester.sampleconfiguration;
 
+import java.util.Collection;
+
+import org.globaltester.sampleconfiguration.category.CategoryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
+/**
+ * Handles the category service
+ * 
+ * @author amay
+ *
+ */
 public class Activator implements BundleActivator {
 
 	public static final String PLUGIN_ID = "org.globaltester.sampleconfiguration";
-	
+	private static Activator defaultInstance;
 	private static BundleContext context;
+	private static ServiceTracker<CategoryFactory, CategoryFactory> factoryTracker;
 
-	static BundleContext getContext() {
+	@Override
+	public void start(BundleContext bundleContext) throws Exception {
+		context = bundleContext;
+		defaultInstance = this;
+		factoryTracker = new ServiceTracker<>(context, CategoryFactory.class, null);
+		factoryTracker.open();
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception {
+		if (factoryTracker != null) {
+			factoryTracker.close();
+			factoryTracker = null;
+		}
+		defaultInstance = null;
+		context = null;
+	}
+
+	public static BundleContext getContext() {
 		return context;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/**
+	 * Returns a {@link Collection} of available {@link CategoryFactory}
+	 * objects. One for each registered OSGi service.
+	 * 
+	 * @return
 	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+	public static CategoryFactory[] getAvailableCategoryFactories() {
+		CategoryFactory[] emptyArray = new CategoryFactory[0];
+		if (factoryTracker == null) {
+			return emptyArray;
+		}
+
+		return factoryTracker.getServices(emptyArray);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	/**
+	 * @return a {@link CategoryFactory} that produces Categorys with the
+	 *         provided categoryName or null if none is available
 	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+	public static CategoryFactory getCategoryFactoriesForName(String categoryName) {
+		if (categoryName == null) return null;
+		
+		
+		CategoryFactory[] availableFactories = getAvailableCategoryFactories();
+		
+		for (CategoryFactory currentFactory : availableFactories) {
+			if (categoryName.equals(currentFactory.getName())) {
+				return currentFactory;
+			}
+		}
+		
+		return null;
 	}
 
+	public static Activator getDefault() {
+		return defaultInstance;
+	}
 }

@@ -10,10 +10,13 @@ Require-Bundle: org.eclipse.core.runtime,
  org.globaltester.logging.legacy,
  org.globaltester.base,
  org.globaltester.lib.domparser,
- org.globaltester.sampleconfiguration.doc;resolution:=optional
+ org.globaltester.sampleconfiguration.doc;resolution:=optional,
+ org.globaltester.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.globaltester.sampleconfiguration,
+ org.globaltester.sampleconfiguration.category,
+ org.globaltester.sampleconfiguration.category.parameter,
  org.globaltester.sampleconfiguration.profiles,
  org.globaltester.sampleconfiguration.profiles.expressions,
  org.globaltester.sampleconfiguration.profiles.parser

@@ -17,6 +17,6 @@ public class ValueProfileExpression extends AbstractProfileExpression {
 
 	@Override
 	public String toString() {
-		return "VALUE(" + Boolean.toString(value) + ")";
+		return Boolean.toString(value);
 	}
 }

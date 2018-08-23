@@ -3,6 +3,7 @@ package org.globaltester.sampleconfiguration.profiles;
 import org.globaltester.sampleconfiguration.SampleConfig;
 import org.globaltester.sampleconfiguration.profiles.expressions.AbstractProfileExpression;
 import org.globaltester.sampleconfiguration.profiles.expressions.ProfileExpression;
+import org.globaltester.sampleconfiguration.profiles.parser.ParseException;
 
 /**
  * This is the leaf {@link ProfileExpression} that represents a single profile
@@ -15,17 +16,17 @@ import org.globaltester.sampleconfiguration.profiles.expressions.ProfileExpressi
  */
 public class Profile extends AbstractProfileExpression{
 	private String name;
-	private String protocol;
+	private String category;
 	
-	public Profile(String profile) {
-		int protocolDividerPosition = profile.indexOf('_');
+	public Profile(String profile) throws ParseException {
+		int categoryDividerPosition = profile.indexOf('_');
 		
-		if (protocolDividerPosition < 0){
-			throw new IllegalArgumentException("Profiles need to contain a '_' to divide the protocol name, offending profile string: " + profile);
+		if (categoryDividerPosition < 0){
+			throw new ParseException("Profiles need to contain a '_' to divide the category name, offending profile string: " + profile);
 		}
 		
-		this.protocol = profile.substring(0, protocolDividerPosition);
-		this.name = profile.substring(protocolDividerPosition + 1);
+		this.category = profile.substring(0, categoryDividerPosition);
+		this.name = profile.substring(categoryDividerPosition + 1);
 	}
 	
 	@Override
@@ -33,11 +34,11 @@ public class Profile extends AbstractProfileExpression{
 		if (config == null){
 			return false;
 		}
-		return Boolean.parseBoolean(config.get(protocol, name));
+		return Boolean.parseBoolean(config.get(category, name));
 	}
 	
 	@Override
 	public String toString() {
-		return protocol + "_" + name;
+		return category + "_" + name;
 	}
 }

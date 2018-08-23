@@ -12,8 +12,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.core.resources,
  org.globaltester.base.ui,
- org.globaltester.protocol,
- org.globaltester.protocol.ui
+ org.globaltester.sampleconfiguration.ui,
+ org.globaltester.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.globaltester.sampleconfiguration.ui
+Export-Package: org.globaltester.sampleconfiguration.ui,
+ org.globaltester.sampleconfiguration.ui.editors

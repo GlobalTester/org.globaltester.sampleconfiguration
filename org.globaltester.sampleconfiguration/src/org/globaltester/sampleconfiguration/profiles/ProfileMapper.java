@@ -6,15 +6,23 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
+import org.globaltester.logging.BasicLogger;
 import org.globaltester.sampleconfiguration.profiles.expressions.ProfileExpression;
-import org.globaltester.sampleconfiguration.profiles.expressions.ValueProfileExpression;
 import org.globaltester.sampleconfiguration.profiles.parser.ProfileExpressionParser;
+import org.globaltester.sampleconfiguration.profiles.parser.UnparseableProfileExpression;
 
 public class ProfileMapper {
 
 	public static final String MAPPING_FILE_SUFFIX = "gtmapping";
 	public static final String MAPPING_FILE_NAME = "profiles." + MAPPING_FILE_SUFFIX;
 
+	/**
+	 * This parses a profile expression from a profile string using the given property files.
+	 * @param profiles the profile string to parse
+	 * @param propertyFiles the property files to use
+	 * @return the resulting {@link ProfileExpression}
+	 * @throws IOException when the property files are not readable
+	 */
 	public static ProfileExpression parse(String profiles, IFile ... propertyFiles){
 		
 		for (int i = propertyFiles.length-1; i >=0; i--){
@@ -26,16 +34,13 @@ public class ProfileMapper {
 					}
 					if (! line.startsWith("#")){
 						if (line.equals(profiles)){
-							try{
-								return ProfileExpressionParser.parse(reader.readLine());
-							}catch(IllegalArgumentException e){
-								return new ValueProfileExpression(false);
-							}
+							return ProfileExpressionParser.parse(reader.readLine());
 						}
 					}
 				}
 			} catch (IOException e) {
-				throw new IllegalArgumentException("The given mapping " + propertyFiles[i] + " file is not readable");
+				BasicLogger.logException(ProfileMapper.class, "Error while parsing property file " + propertyFiles[i], e);
+				return new UnparseableProfileExpression(e.getMessage());
 			}
 		}
 		
@@ -45,7 +50,7 @@ public class ProfileMapper {
 	private static BufferedReader createReaderForFile(IFile file) throws FileNotFoundException{
 		if (!file.exists()){
 			System.gc();
-			throw new IllegalArgumentException("Can not create reader for not existing file");
+			throw new FileNotFoundException("Can not create reader for not existing file");
 		}
 		return new BufferedReader(new FileReader(file.getLocation().toOSString()));
 	}

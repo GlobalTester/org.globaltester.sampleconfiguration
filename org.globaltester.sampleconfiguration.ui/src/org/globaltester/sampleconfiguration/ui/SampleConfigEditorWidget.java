@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,14 +23,16 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.globaltester.logging.legacy.logger.GtErrorLogger;
-import org.globaltester.protocol.ProtocolFactory;
-import org.globaltester.protocol.parameter.ProtocolParameterDescription;
-import org.globaltester.protocol.parameter.StringProtocolParameter;
-import org.globaltester.protocol.ui.ProtocolParameterEditor;
-import org.globaltester.protocol.ui.ProtocolParameterEditorFactory;
-import org.globaltester.protocol.ui.StringProtocolParameterEditor;
+import org.globaltester.logging.BasicLogger;
+import org.globaltester.logging.tags.LogLevel;
 import org.globaltester.sampleconfiguration.SampleConfig;
+import org.globaltester.sampleconfiguration.category.CategoryFactory;
+import org.globaltester.sampleconfiguration.category.parameter.CategoryParameterDescription;
+import org.globaltester.sampleconfiguration.category.parameter.StringCategoryParameter;
+import org.globaltester.sampleconfiguration.ui.editors.CategoryParameterEditor;
+import org.globaltester.sampleconfiguration.ui.editors.CategoryParameterEditorFactory;
+import org.globaltester.sampleconfiguration.ui.editors.HiddenCategoryParameterEditor;
+import org.globaltester.sampleconfiguration.ui.editors.StringCategoryParameterEditor;
 
 public class SampleConfigEditorWidget {
 	
@@ -44,8 +45,8 @@ public class SampleConfigEditorWidget {
 	private Text txtSampleId;
 	private Text descr;
 
-	private List<ProtocolParameterEditor> paramEditors = new ArrayList<>();
-	private List<ProtocolParameterEditor> unsupportedTabEditors = new LinkedList<>();
+	private List<CategoryParameterEditor> paramEditors = new ArrayList<>();
+	private List<CategoryParameterEditor> unsupportedTabEditors = new LinkedList<>();
 	private Map<String, TabItem> protocolTabItems = new HashMap<>();
 
 	private Listener listener;
@@ -110,22 +111,28 @@ public class SampleConfigEditorWidget {
 		addTabItemsForNewProtocols(tabFolder);
 		
 		HashSet<String> parameterNames = new HashSet<>();
-		for (ProtocolParameterEditor curParamEditor : paramEditors) {
-			String protocolName = curParamEditor.getProtocolParameterDescription().getProtocolName();
-			String paramName = curParamEditor.getProtocolParameterDescription().getName();
+		for (CategoryParameterEditor curParamEditor : paramEditors) {
+			String protocolName = curParamEditor.getCategoryParameterDescription().getCategoryName();
+			String paramName = curParamEditor.getCategoryParameterDescription().getName();
 			
 			parameterNames.add(protocolName + "_" + paramName);
+
+			if (curParamEditor instanceof HiddenCategoryParameterEditor) {
+				continue;
+			}
 			
 			String newValue = sampleConfig.get(protocolName, paramName);
 			if (newValue != null) {
 				curParamEditor.setValue(newValue);
+			} else {
+				BasicLogger.log(getClass(), "Could not udpate editor sample config entry for " + protocolName + "_" + paramName, LogLevel.WARN);
 			}
 		}
 		
 
-		HashMap<String, HashMap<String, ProtocolParameterDescription>> unsupportedParamEditors = new HashMap<>();
+		HashMap<String, HashMap<String, CategoryParameterDescription>> unsupportedParamEditors = new HashMap<>();
 		
-		for (String protocol : sampleConfig.getStoredProtocols()){
+		for (String protocol : sampleConfig.getStoredCategories()){
 			for (String parameter : sampleConfig.getStoredParameters(protocol)){
 				if (parameterNames.contains(protocol + "_" + parameter)){
 					continue;
@@ -134,7 +141,7 @@ public class SampleConfigEditorWidget {
 					unsupportedParamEditors.put(protocol, new HashMap<>());
 				}
 				if (!unsupportedParamEditors.get(protocol).containsKey(parameter)){
-					unsupportedParamEditors.get(protocol).put(parameter, new StringProtocolParameter(protocol, parameter, protocol + "_" + parameter));
+					unsupportedParamEditors.get(protocol).put(parameter, new StringCategoryParameter(protocol, parameter, protocol + "_" + parameter));
 				}
 			}
 		}	
@@ -172,7 +179,7 @@ public class SampleConfigEditorWidget {
 			
 			for (String protocol : unsupportedParamEditors.keySet()){
 				for (String parameter : unsupportedParamEditors.get(protocol).keySet()){
-					ProtocolParameterEditor editor = new StringProtocolParameterEditor(unsupportedTabItemComp, unsupportedParamEditors.get(protocol).get(parameter));
+					CategoryParameterEditor editor = new StringCategoryParameterEditor(unsupportedTabItemComp, unsupportedParamEditors.get(protocol).get(parameter));
 					editor.setActive(active);
 					if(listener != null) {
 						editor.addListener(SWT.Selection, listener);
@@ -213,7 +220,7 @@ public class SampleConfigEditorWidget {
 		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
 		lblPlatformId.setText("Platform ID");
 		txtPlatformId = new Text(tabItemComp, SWT.BORDER);
-		txtPlatformId.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
+		txtPlatformId.setFont(CategoryParameterEditorFactory.FONT_MONOSPACE);
 		txtPlatformId.setLayoutData(gdReport);
 		if(listener != null) {
 			txtPlatformId.addListener(SWT.Modify, listener);
@@ -222,7 +229,7 @@ public class SampleConfigEditorWidget {
 		Label lblSampleId = new Label(tabItemComp, SWT.NONE);
 		lblSampleId.setText("Sample ID");
 		txtSampleId = new Text(tabItemComp, SWT.BORDER);
-		txtSampleId.setFont(ProtocolParameterEditorFactory.FONT_MONOSPACE);
+		txtSampleId.setFont(CategoryParameterEditorFactory.FONT_MONOSPACE);
 		txtSampleId.setLayoutData(gdReport);
 		if(listener != null) {
 			txtSampleId.addListener(SWT.Modify, listener);
@@ -250,23 +257,23 @@ public class SampleConfigEditorWidget {
 	}
 
 	private void addTabItemsForNewProtocols(TabFolder tabFolder) {
-		ProtocolFactory[] pFactories = org.globaltester.protocol.Activator.getAvailableProtocolFactories();
+		CategoryFactory[] pFactories = org.globaltester.sampleconfiguration.Activator.getAvailableCategoryFactories();
 		
 		//sort protocol factories by name
-		Arrays.sort(pFactories, new Comparator<ProtocolFactory>() {
+		Arrays.sort(pFactories, new Comparator<CategoryFactory>() {
 			@Override
-			public int compare(ProtocolFactory factory1, ProtocolFactory factory2) {
+			public int compare(CategoryFactory factory1, CategoryFactory factory2) {
 				return factory1.getName().compareToIgnoreCase(factory2.getName());
 			}
 		});
 		
-		for (ProtocolFactory curProtocolFactory : pFactories) {
+		for (CategoryFactory curProtocolFactory : pFactories) {
 			if (curProtocolFactory == null) continue;
 			getProtocolTabItem(tabFolder, curProtocolFactory);
 		}
 	}
 
-	private synchronized TabItem getProtocolTabItem(TabFolder tabFolder, ProtocolFactory curProtocolFactory) {
+	private synchronized TabItem getProtocolTabItem(TabFolder tabFolder, CategoryFactory curProtocolFactory) {
 		TabItem curTabItem = protocolTabItems.get(curProtocolFactory.getName()); 
 		if ( curTabItem != null) return curTabItem;
 		
@@ -282,9 +289,9 @@ public class SampleConfigEditorWidget {
 		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
 			
-		for (ProtocolParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
+		for (CategoryParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
 			if (curParamDescriptor != null) {
-				ProtocolParameterEditor editor = ProtocolParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
+				CategoryParameterEditor editor = CategoryParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
 				if(listener != null) {
 					editor.addListener(SWT.Selection, listener);
 					editor.addListener(SWT.Modify, listener);
@@ -321,9 +328,9 @@ public class SampleConfigEditorWidget {
 		sampleConfig.setPlatformId(txtPlatformId.getText());
 		
 		//flush all ProtocolParameter values to the SampleConfig object
-		for (ProtocolParameterEditor curParam : paramEditors) {
-			String protocolName = curParam.getProtocolParameterDescription().getProtocolName();
-			String paramName = curParam.getProtocolParameterDescription().getName();
+		for (CategoryParameterEditor curParam : paramEditors) {
+			String protocolName = curParam.getCategoryParameterDescription().getCategoryName();
+			String paramName = curParam.getCategoryParameterDescription().getName();
 			String paramValue = curParam.getValue();
 			if (paramValue != null) {
 				sampleConfig.put(protocolName, paramName, paramValue);
@@ -332,11 +339,7 @@ public class SampleConfigEditorWidget {
 		
 
 		// save the SampleConfig
-		try {
-			sampleConfig.saveToProject();
-		} catch (CoreException e) {
-			GtErrorLogger.log(Activator.PLUGIN_ID, e);
-		}
+		sampleConfig.saveToProject();
 
 	}
 	
@@ -357,11 +360,11 @@ public class SampleConfigEditorWidget {
 		this.active = active;
 		setActive(active, descr, name, txtPlatformId, txtSampleId);
 		
-		for (ProtocolParameterEditor curParam : paramEditors) {
+		for (CategoryParameterEditor curParam : paramEditors) {
 			curParam.setActive(active);
 		}
 		
-		for (ProtocolParameterEditor curParam : unsupportedTabEditors) {
+		for (CategoryParameterEditor curParam : unsupportedTabEditors) {
 			curParam.setActive(active);
 		}
 	}

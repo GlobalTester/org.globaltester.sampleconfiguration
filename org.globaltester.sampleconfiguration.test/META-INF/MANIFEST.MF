@@ -6,4 +6,5 @@ Bundle-Version: 3.3.1.qualifier
 Bundle-Vendor: secunet Security Networks AG
 Fragment-Host: org.globaltester.sampleconfiguration;bundle-version="3.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.eclipse.core.resources

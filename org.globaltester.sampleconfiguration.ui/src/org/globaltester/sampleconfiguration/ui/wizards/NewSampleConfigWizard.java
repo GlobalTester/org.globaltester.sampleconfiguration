@@ -3,7 +3,6 @@ package org.globaltester.sampleconfiguration.ui.wizards;
 import java.net.URI;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -13,11 +12,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.globaltester.logging.legacy.logger.GtErrorLogger;
-import org.globaltester.sampleconfiguration.SampleConfig;
-import org.globaltester.sampleconfiguration.ui.Activator;
-import org.globaltester.sampleconfiguration.ui.UiImages;
 import org.globaltester.sampleconfiguration.GtSampleConfigProject;
+import org.globaltester.sampleconfiguration.SampleConfig;
+import org.globaltester.sampleconfiguration.ui.UiImages;
 
 public class NewSampleConfigWizard extends Wizard implements INewWizard, IPageChangingListener {
 	
@@ -42,11 +39,8 @@ public class NewSampleConfigWizard extends Wizard implements INewWizard, IPageCh
 	    
 	    SampleConfig createdSampleConfig = sampleConfigInitPage.getSampleConfig();
 	    createdSampleConfig.setProject(createdProject);
-	    try {
-			createdSampleConfig.saveToProject();
-		} catch (CoreException e) {
-			GtErrorLogger.log(Activator.PLUGIN_ID, e);
-		}
+	    
+		createdSampleConfig.saveToProject();
 
 	    return true;
 	}

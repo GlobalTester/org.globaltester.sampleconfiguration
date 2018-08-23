@@ -3,6 +3,8 @@ package org.globaltester.sampleconfiguration.profiles.parser;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.globaltester.logging.BasicLogger;
+import org.globaltester.logging.tags.LogLevel;
 import org.globaltester.sampleconfiguration.profiles.Profile;
 import org.globaltester.sampleconfiguration.profiles.expressions.AndProfileExpression;
 import org.globaltester.sampleconfiguration.profiles.expressions.NotProfileExpression;
@@ -17,8 +19,8 @@ import org.globaltester.sampleconfiguration.profiles.expressions.ValueProfileExp
  * <code>NOT(expression)</code></br>
  * <code>AND(expression1,expression2...expression_n)</code></br>
  * <code>OR(expression1,expression2...expression_n)</code></br>
- * <code>VALUE(true)</code></br>
- * <code>VALUE(false)</code></br>
+ * <code>true</code></br>
+ * <code>false</code></br>
  * </br>
  * The available expression types represent boolean operations and are evaluated
  * accordingly
@@ -33,10 +35,10 @@ public class ProfileExpressionParser {
 		return parseRecursive(expressionString);
 	}
 
-	protected static int getGroupLength(String expressionString, int initialOffset) {
+	protected static int getGroupLength(String expressionString, int initialOffset) throws ParseException {
 		int offset = initialOffset;
 		if (expressionString.charAt(offset) != '(') {
-			throw new IllegalArgumentException("This method needs to be called with the starting offset of a group");
+			throw new ParseException("This method needs to be called with the starting offset of a group");
 		}
 
 		int openedGroups = 0;
@@ -58,6 +60,11 @@ public class ProfileExpressionParser {
 
 	private static ProfileExpression[] parseContent(String content) {
 		List<ProfileExpression> expressions = new LinkedList<>();
+		
+		if ((content.contains(")") ^ content.contains("("))) {
+			return new ProfileExpression [] { new UnparseableProfileExpression(content)};
+		}
+		
 		while (content.length() > 0) {
 			int tokenEnd = content.indexOf(',');
 
@@ -76,9 +83,16 @@ public class ProfileExpressionParser {
 				expressions.add(parseRecursive(content.substring(0, tokenEnd)));
 				content = content.substring(tokenEnd);
 			} else {
-				int length = getGroupLength(content, groupBegin);
-				expressions.add(parseRecursive(content.substring(0, groupBegin + length)));
-				content = content.substring(groupBegin + length);
+				int length;
+				try {
+					length = getGroupLength(content, groupBegin);
+					expressions.add(parseRecursive(content.substring(0, groupBegin + length)));
+					content = content.substring(groupBegin + length);
+				} catch (ParseException e) {
+					String message = "Error during parsing of profile substring " + content;
+					BasicLogger.logException(ProfileExpression.class, message, e, LogLevel.WARN);
+					expressions.add(new UnparseableProfileExpression(content));
+				}
 			}
 		}
 
@@ -90,16 +104,36 @@ public class ProfileExpressionParser {
 		if (expressionString.isEmpty()) {
 			return new ValueProfileExpression(true);
 		}
-		if (!expressionString.endsWith(")")) {
-			if (expressionString.contains("(")) {
-				throw new IllegalArgumentException("Found unexpected brace in expression leaf");
-			}
-			return new Profile(expressionString);
+
+		if (expressionString.contains(")") ^ expressionString.contains("(")) {
+			return new UnparseableProfileExpression(expressionString);
 		}
+		
+		if (!expressionString.contains("(") && !expressionString.contains(")")) {
+
+			switch (expressionString) {
+			case "true":
+				return new ValueProfileExpression(true);
+			case "false":
+				return new ValueProfileExpression(false);
+			default:
+				try {
+					return new Profile(expressionString);
+				} catch (ParseException e) {
+					String reason = "Could not create profile for string " + expressionString;
+					BasicLogger.logException(ProfileExpressionParser.class, reason, e, LogLevel.WARN);
+					return new UnparseableProfileExpression(expressionString);
+				}
+			}
+		}
+		
 		int firstBrace = expressionString.indexOf('(');
 
 		String operator = expressionString.substring(0, firstBrace);
-		String content = expressionString.substring(firstBrace + 1, expressionString.length() - 1);
+		String content = "";
+		if (firstBrace + 1 < expressionString.length()) {
+			content = expressionString.substring(firstBrace + 1, expressionString.length() - 1);	
+		}
 
 		switch (operator) {
 		case "AND":
@@ -108,10 +142,8 @@ public class ProfileExpressionParser {
 			return new OrProfileExpression(parseContent(content));
 		case "NOT":
 			return new NotProfileExpression(parseRecursive(content));
-		case "VALUE":
-			return new ValueProfileExpression(Boolean.parseBoolean(content));
 		default:
-			return null;
+			return new UnparseableProfileExpression(expressionString);
 		}
 	}
 

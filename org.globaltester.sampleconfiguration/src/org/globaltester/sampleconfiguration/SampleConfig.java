@@ -15,7 +15,10 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.globaltester.base.xml.XMLHelper;
-import org.globaltester.logging.legacy.logger.GtErrorLogger;
+import org.globaltester.logging.BasicLogger;
+import org.globaltester.logging.tags.LogLevel;
+import org.globaltester.sampleconfiguration.category.CategoryFactory;
+import org.globaltester.sampleconfiguration.category.parameter.CategoryParameterDescription;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -41,7 +44,7 @@ public class SampleConfig implements IResourceChangeListener {
 
 	/**
 	 * Creates a new instance which is populated with default values provided by
-	 * protocol implementations.
+	 * category implementations.
 	 */
 	public SampleConfig() {
 		this.project = null;
@@ -63,11 +66,7 @@ public class SampleConfig implements IResourceChangeListener {
 		if (getSampleConfigIfile().exists()) {
 			initFromIFile();
 		} else {
-			try {
-				saveToProject();
-			} catch (CoreException e) {
-				GtErrorLogger.log(Activator.PLUGIN_ID, e);
-			}
+			saveToProject();
 		}
 
 		SampleConfigManager.register(this);
@@ -93,26 +92,45 @@ public class SampleConfig implements IResourceChangeListener {
 	/**
 	 * Returns a single parameter from this {@link SampleConfig}
 	 * 
-	 * @param protocol
+	 * @param category
 	 * @param key
 	 * @return
 	 */
-	public String get(String protocol, String key) {
-		if (!configParams.containsKey(protocol)){
+	public String get(String category, String key) {
+		boolean alwaysGenerate = true;
+		if ((!configParams.containsKey(category) || !configParams.get(category).containsKey(key)) || alwaysGenerate ){
+			CategoryFactory[] pFactories = org.globaltester.sampleconfiguration.Activator.getAvailableCategoryFactories();
+			
+			boolean factoryFound = false;
+			for (CategoryFactory curCategoryFactory : pFactories) {
+				if (curCategoryFactory == null || !curCategoryFactory.getName().equals(category)) continue;
+				for (CategoryParameterDescription description : curCategoryFactory.getParameterDescriptors()) {
+					if (category.equals(description.getCategoryName()) && key.equals(description.getName()) && description.getGenerator() != null) {
+						description.getGenerator().generate(category, key, this);
+						factoryFound = true;
+						break;
+					}
+				}
+			}
+			if (!factoryFound) {
+				BasicLogger.log(getClass(), "Could not find factory for generation of sample config entry for " + category + "_" + key, LogLevel.WARN);	
+			}
+		}
+		if (!configParams.containsKey(category)){
 			return null;
 		}
-		return configParams.get(protocol).get(key);
+		return configParams.get(category).get(key);
 	}
 
 	/**
 	 * Returns a single parameter from this {@link SampleConfig} converted to boolean.
 	 * 
-	 * @param protocol
+	 * @param category
 	 * @param key
 	 * @return
 	 */
-	public boolean getBoolean(String protocol, String key) {
-		return Boolean.parseBoolean(get(protocol, key));
+	public boolean getBoolean(String category, String key) {
+		return Boolean.parseBoolean(get(category, key));
 	}
 	
 	public Set<String> getStored(){
@@ -122,15 +140,15 @@ public class SampleConfig implements IResourceChangeListener {
 	/**
 	 * Add a single parameter in this {@link SampleConfig}
 	 * 
-	 * @param protocol
+	 * @param category
 	 * @param key
 	 * @param value
 	 */
-	public void put(String protocol, String key, String value) {
-		if (!configParams.containsKey(protocol)){
-			configParams.put(protocol, new HashMap<>());
+	public void put(String category, String key, String value) {
+		if (!configParams.containsKey(category)){
+			configParams.put(category, new HashMap<>());
 		}
-		configParams.get(protocol).put(key, value);
+		configParams.get(category).put(key, value);
 	}
 	
 	public String getName() {
@@ -162,20 +180,25 @@ public class SampleConfig implements IResourceChangeListener {
 		return project;
 	}
 
-	public void saveToProject() throws CoreException {
+	public void saveToProject() {
 		// do not save if project is not defined
 		if (project == null)
 			return;
 
 		IFile iFile = getSampleConfigIfile();
-		if (!iFile.exists()) {
-			iFile.create(null, false, null);
+		try {
+			if (!iFile.exists()) {
+				iFile.create(null, false, null);
+			}
+
+			Element root;
+			root = getXmlRepresentation();
+
+			// write to file
+			XMLHelper.saveDoc(iFile, root);
+		} catch (CoreException e) {
+			BasicLogger.logException(getClass(),  "Saving the sample config failed", e);
 		}
-
-		Element root = getXmlRepresentation();
-
-		// write to file
-		XMLHelper.saveDoc(iFile, root);
 	}
 
 	public IFile getSampleConfigIfile() {
@@ -212,11 +235,11 @@ public class SampleConfig implements IResourceChangeListener {
 
 		// add configParams
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
-		for (String curProtocol : configParams.keySet()) {
-			for (String curParam : configParams.get(curProtocol).keySet()){
+		for (String curCategory : configParams.keySet()) {
+			for (String curParam : configParams.get(curCategory).keySet()){
 				Element curParamElem = new Element(XML_TAG_PARAMETER);
-				curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curProtocol + "_" + curParam);
-				String curParamValue = (String) configParams.get(curProtocol).get(curParam);
+				curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curCategory + "_" + curParam);
+				String curParamValue = (String) configParams.get(curCategory).get(curParam);
 				if (curParamValue.contains("<")){
 					curParamElem.addContent(new CDATA(curParamValue));
 				} else {
@@ -252,12 +275,12 @@ public class SampleConfig implements IResourceChangeListener {
 					String curParamValue = curParamElem.getTextTrim();
 					
 					int divider = curParamName.indexOf("_");
-					String protocolName = curParamName.substring(0, divider);
+					String categoryName = curParamName.substring(0, divider);
 					String parameterName = curParamName.substring(divider + 1);
-					if (!configParams.containsKey(protocolName)){
-						configParams.put(protocolName, new HashMap<>());
+					if (!configParams.containsKey(categoryName)){
+						configParams.put(categoryName, new HashMap<>());
 					}
-					configParams.get(protocolName).put(parameterName, curParamValue);
+					configParams.get(categoryName).put(parameterName, curParamValue);
 				}
 			}
 		}
@@ -313,15 +336,15 @@ public class SampleConfig implements IResourceChangeListener {
 				+ ", platformId=" + platformId + ", sampleId=" + sampleId + ", descr=" + descr + "]";
 	}
 
-	public Set<String> getStoredProtocols() {
+	public Set<String> getStoredCategories() {
 		return configParams.keySet();
 	}
 
-	public Set<String> getStoredParameters(String protocol) {
-		if (!configParams.containsKey(protocol)){
-			throw new IllegalArgumentException("This protocol is not part of this sample config");
+	public Set<String> getStoredParameters(String category) {
+		if (!configParams.containsKey(category)){
+			throw new IllegalArgumentException("This category is not part of this sample config");
 		}
-		return configParams.get(protocol).keySet();
+		return configParams.get(category).keySet();
 	}
 
 	/**
@@ -344,12 +367,12 @@ public class SampleConfig implements IResourceChangeListener {
 	 * Returns a single parameter from this {@link SampleConfig} converted as
 	 * absolute path.
 	 * 
-	 * @param protocol
+	 * @param category
 	 * @param key
-	 * @return the absolute path as string for this protocol and key or null if not available
+	 * @return the absolute path as string for this category and key or null if not available
 	 */
-	public String getAbsolutePath(String protocol, String key) {
-		String configValue = get(protocol, key);
+	public String getAbsolutePath(String category, String key) {
+		String configValue = get(category, key);
 		if (configValue == null) {
 			return null;
 		}
