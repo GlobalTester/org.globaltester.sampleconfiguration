@@ -22,14 +22,24 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		start(bundleContext, this);
+	}
+
+	private synchronized static void start(BundleContext bundleContext, Activator instance) {
 		context = bundleContext;
-		defaultInstance = this;
-		factoryTracker = new ServiceTracker<>(context, CategoryFactory.class, null);
-		factoryTracker.open();
+		defaultInstance = instance;
+		if (factoryTracker == null) {
+			factoryTracker = new ServiceTracker<>(context, CategoryFactory.class, null);
+			factoryTracker.open();
+		}
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		stop();
+	}
+
+	private synchronized static void stop() {
 		if (factoryTracker != null) {
 			factoryTracker.close();
 			factoryTracker = null;
