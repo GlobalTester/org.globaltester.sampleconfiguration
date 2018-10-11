@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 		start(bundleContext, this);
 	}
 
-	private synchronized static void start(BundleContext bundleContext, Activator instance) {
+	private static synchronized void start(BundleContext bundleContext, Activator instance) {
 		context = bundleContext;
 		defaultInstance = instance;
 		if (factoryTracker == null) {
@@ -39,7 +39,7 @@ public class Activator implements BundleActivator {
 		stop();
 	}
 
-	private synchronized static void stop() {
+	private static synchronized void stop() {
 		if (factoryTracker != null) {
 			factoryTracker.close();
 			factoryTracker = null;
