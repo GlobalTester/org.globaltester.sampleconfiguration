@@ -13,4 +13,9 @@ public class BooleanCategoryParameter extends AbstractCategoryParameterDescripti
 		super(categoryName, name, description);
 	}
 
+	public BooleanCategoryParameter(String categoryName, String name, String description,
+			ParameterGenerator generator) {
+		super(categoryName, name, description, generator);
+	}
+
 }

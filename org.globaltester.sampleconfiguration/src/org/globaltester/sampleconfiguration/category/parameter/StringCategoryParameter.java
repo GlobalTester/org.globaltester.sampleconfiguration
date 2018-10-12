@@ -13,4 +13,9 @@ public class StringCategoryParameter extends AbstractCategoryParameterDescriptio
 		super(categoryName, name, description);
 	}
 
+	public StringCategoryParameter(String categoryName, String name, String description,
+			ParameterGenerator generator) {
+		super(categoryName, name, description, generator);
+	}
+
 }

@@ -15,6 +15,7 @@ public abstract class AbstractCategoryParameterDescription implements CategoryPa
 	protected String categoryName = "";
 	protected String name = "";
 	protected String description = "";
+	protected ParameterGenerator generator;
 
 	public AbstractCategoryParameterDescription(String categoryName, String name) {
 		this.categoryName = categoryName;
@@ -24,6 +25,11 @@ public abstract class AbstractCategoryParameterDescription implements CategoryPa
 	public AbstractCategoryParameterDescription(String categoryName, String name, String description) {
 		this(categoryName, name);
 		this.description = description;
+	}
+
+	public AbstractCategoryParameterDescription(String categoryName, String name, String description, ParameterGenerator generator) {
+		this(categoryName, name, description);
+		this.generator = generator;
 	}
 
 	@Override
@@ -43,7 +49,7 @@ public abstract class AbstractCategoryParameterDescription implements CategoryPa
 	
 	@Override
 	public ParameterGenerator getGenerator() {
-		return null;
+		return generator;
 	}
 
 	@Override

@@ -386,6 +386,15 @@ public class SampleConfig implements IResourceChangeListener {
 		}
 		return path.toFile().getAbsolutePath();
 	}
+
+	public boolean contains(String category, String key) {
+		HashMap<String, String> hashMap = configParams.get(category);
+		if (hashMap == null) {
+			return false;
+		} else {
+			return hashMap.containsKey(key);
+		}
+	}
 	
 	
 }
