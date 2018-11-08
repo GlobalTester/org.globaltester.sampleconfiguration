@@ -97,30 +97,29 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @return
 	 */
 	public String get(String category, String key) {
-		boolean alwaysGenerate = true;
-		if ((!configParams.containsKey(category) || !configParams.get(category).containsKey(key)) || alwaysGenerate ){
-			CategoryFactory[] pFactories = org.globaltester.sampleconfiguration.Activator.getAvailableCategoryFactories();
-			
-			boolean factoryFound = false;
-			for (CategoryFactory curCategoryFactory : pFactories) {
-				if (curCategoryFactory == null || !curCategoryFactory.getName().equals(category)) continue;
-				for (CategoryParameterDescription description : curCategoryFactory.getParameterDescriptors()) {
-					if (category.equals(description.getCategoryName()) && key.equals(description.getName()) && description.getGenerator() != null) {
-						description.getGenerator().generate(category, key, this);
-						factoryFound = true;
-						break;
-					}
-				}
-			}
-			if (!factoryFound) {
-				BasicLogger.log(getClass(), "No factory available for SampleConfig entry: " + category + "_" + key, LogLevel.TRACE);	
-			}
-		}
+		checkFactories(category, key);
+		
 		if (!configParams.containsKey(category)){
 			BasicLogger.log(getClass(), "Requested SampleConfig entry could neither be found nor generated: " + category + "_" + key, LogLevel.WARN);
 			return null;
 		}
 		return configParams.get(category).get(key);
+	}
+
+	private void checkFactories(String category, String key) {
+		CategoryFactory[] pFactories = org.globaltester.sampleconfiguration.Activator.getAvailableCategoryFactories();
+		
+		for (CategoryFactory curCategoryFactory : pFactories) {
+			if (curCategoryFactory == null || !curCategoryFactory.getName().equals(category)) continue;
+			for (CategoryParameterDescription description : curCategoryFactory.getParameterDescriptors()) {
+				if (category.equals(description.getCategoryName()) && key.equals(description.getName()) && description.getGenerator() != null) {
+					description.getGenerator().generate(category, key, this);
+					return;
+				}
+			}
+		}
+
+		BasicLogger.log(getClass(), "No factory available for SampleConfig entry: " + category + "_" + key, LogLevel.TRACE);	
 	}
 
 	/**
