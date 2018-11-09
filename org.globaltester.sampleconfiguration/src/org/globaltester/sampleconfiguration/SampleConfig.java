@@ -364,6 +364,10 @@ public class SampleConfig implements IResourceChangeListener {
 		
 	}
 	
+	public byte[] getBinaryData(String category, String key) throws IOException {
+		return Files.readAllBytes(Paths.get(getAbsolutePath(category, key)));
+	}
+	
 	/**
 	 * Returns a single parameter from this {@link SampleConfig} converted as
 	 * absolute path.
