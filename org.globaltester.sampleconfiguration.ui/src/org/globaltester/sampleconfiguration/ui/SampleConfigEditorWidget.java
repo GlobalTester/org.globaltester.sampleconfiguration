@@ -28,9 +28,11 @@ import org.globaltester.logging.tags.LogLevel;
 import org.globaltester.sampleconfiguration.SampleConfig;
 import org.globaltester.sampleconfiguration.category.CategoryFactory;
 import org.globaltester.sampleconfiguration.category.parameter.CategoryParameterDescription;
+import org.globaltester.sampleconfiguration.category.parameter.HiddenCategoryParameter;
 import org.globaltester.sampleconfiguration.category.parameter.StringCategoryParameter;
 import org.globaltester.sampleconfiguration.ui.editors.CategoryParameterEditor;
 import org.globaltester.sampleconfiguration.ui.editors.CategoryParameterEditorFactory;
+import org.globaltester.sampleconfiguration.ui.editors.DefaultHiddenParameterEditor;
 import org.globaltester.sampleconfiguration.ui.editors.HiddenCategoryParameterEditor;
 import org.globaltester.sampleconfiguration.ui.editors.StringCategoryParameterEditor;
 
@@ -276,6 +278,12 @@ public class SampleConfigEditorWidget {
 	private synchronized TabItem getProtocolTabItem(TabFolder tabFolder, CategoryFactory curProtocolFactory) {
 		TabItem curTabItem = protocolTabItems.get(curProtocolFactory.getName()); 
 		if ( curTabItem != null) return curTabItem;
+
+		List<CategoryParameterDescription> parameterDescriptors = curProtocolFactory.getParameterDescriptors();
+				
+		if (!createHiddenEditors(parameterDescriptors)) {
+			return null;
+		}
 		
 		curTabItem = new TabItem(tabFolder, SWT.NONE);
 		curTabItem.setText(curProtocolFactory.getName());
@@ -289,16 +297,7 @@ public class SampleConfigEditorWidget {
 		curTabItem.setControl(scroller);
 		tabItemComp.setLayout(new GridLayout(2, false));
 			
-		for (CategoryParameterDescription curParamDescriptor : curProtocolFactory.getParameterDescriptors()) {
-			if (curParamDescriptor != null) {
-				CategoryParameterEditor editor = CategoryParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
-				if(listener != null) {
-					editor.addListener(SWT.Selection, listener);
-					editor.addListener(SWT.Modify, listener);
-				}
-				paramEditors.add(editor);
-			}
-		}
+		createVisibleEditors(parameterDescriptors, tabItemComp);
 		
 		scroller.setMinHeight(tabItemComp.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
@@ -313,6 +312,42 @@ public class SampleConfigEditorWidget {
 		protocolTabItems.put(curProtocolFactory.getName(), curTabItem);
 		
 		return curTabItem;
+	}
+
+	/**
+	 * Creates editors that are visible to the user
+	 * @param parameterDescriptors
+	 * @param tabItemComp
+	 */
+	private void createVisibleEditors(List<CategoryParameterDescription> parameterDescriptors, Composite tabItemComp) {
+		for (CategoryParameterDescription curParamDescriptor : parameterDescriptors) {
+			if (curParamDescriptor != null && !(curParamDescriptor instanceof HiddenCategoryParameter)) {
+				CategoryParameterEditor editor = CategoryParameterEditorFactory.createEditor(tabItemComp, curParamDescriptor);
+				if(listener != null) {
+					editor.addListener(SWT.Selection, listener);
+					editor.addListener(SWT.Modify, listener);
+				}
+				paramEditors.add(editor);
+			}
+		}
+	}
+
+	/**
+	 * @param parameterDescriptors
+	 * @return true, iff a descriptor was found that is not hidden from the user
+	 */
+	private boolean createHiddenEditors(List<CategoryParameterDescription> parameterDescriptors) {
+		boolean foundNotHiddenDescriptor = false;
+		for (CategoryParameterDescription curParamDescriptor : parameterDescriptors) {
+			if (curParamDescriptor != null) {
+				if (curParamDescriptor instanceof HiddenCategoryParameter) {
+					paramEditors.add(new DefaultHiddenParameterEditor(curParamDescriptor));
+				} else {
+					foundNotHiddenDescriptor = true;
+				}
+			}
+		}
+		return foundNotHiddenDescriptor;
 	}
 
 	public SampleConfig getSampleConfig() {
