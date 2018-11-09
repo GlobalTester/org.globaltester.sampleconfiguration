@@ -118,8 +118,9 @@ public class SampleConfig implements IResourceChangeListener {
 				}
 			}
 		}
-
-		BasicLogger.log(getClass(), "No factory available for SampleConfig entry: " + category + "_" + key, LogLevel.TRACE);	
+		if (!contains(category, key)) {
+			BasicLogger.log(getClass(), "No factory available for SampleConfig entry: " + category + "_" + key, LogLevel.TRACE);	
+		}	
 	}
 
 	/**
