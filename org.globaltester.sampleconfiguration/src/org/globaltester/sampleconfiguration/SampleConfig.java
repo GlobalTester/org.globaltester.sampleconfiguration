@@ -349,7 +349,7 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	/**
-	 * Store binaryData within the 
+	 * Store binaryData within the SampleConfig
 	 * @param fileName
 	 * @param value
 	 * @throws IOException 
@@ -359,6 +359,25 @@ public class SampleConfig implements IResourceChangeListener {
 		
 		IFile iFile = project.getFile(fileName);
 		Path file = iFile.getLocation().toFile().toPath();
+		
+		storeBinaryData(file, bytes);
+	}
+
+	/**
+	 * Store binaryData within the SampleConfig
+	 * @param fileName
+	 * @param value
+	 * @throws IOException 
+	 */
+	public void storeBinaryData(Path path, byte[] bytes) throws IOException {
+		if (project == null) return;
+		
+		Path file = path;
+		if (!path.isAbsolute()) {
+			IFile iFile = project.getFile(path.toString());
+			file = iFile.getLocation().toFile().toPath(); 
+		}
+		
 		Files.createDirectories(file.getParent());
 		Files.write(file, bytes);
 		
@@ -398,6 +417,20 @@ public class SampleConfig implements IResourceChangeListener {
 		} else {
 			return hashMap.containsKey(key);
 		}
+	}
+
+	public void putPath(String category, String key, Path path) {
+		String value = path.toString();
+		
+		if (project != null) {
+			Path projectPath = project.getLocation().toFile().toPath();
+			
+			if (path.startsWith(projectPath)) {
+				value = projectPath.relativize(path).toString();
+			}
+		} 
+				
+		put(category, key, value);
 	}
 	
 	

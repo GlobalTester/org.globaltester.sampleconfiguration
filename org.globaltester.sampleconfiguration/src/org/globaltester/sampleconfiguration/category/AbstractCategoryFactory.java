@@ -9,7 +9,7 @@ import org.globaltester.sampleconfiguration.category.parameter.CategoryParameter
 public abstract class AbstractCategoryFactory implements CategoryFactory {
 	
 	private String name;
-	private List<CategoryParameterDescription> paramDescriptions = new ArrayList<>();
+	protected List<CategoryParameterDescription> paramDescriptions = new ArrayList<>();
 	
 	public AbstractCategoryFactory(String name) {
 		this.name = name;
