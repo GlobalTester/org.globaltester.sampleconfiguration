@@ -9,11 +9,13 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.globaltester.base.resources.GtResourceHelper;
 import org.globaltester.base.xml.XMLHelper;
 import org.globaltester.logging.BasicLogger;
 import org.globaltester.logging.tags.LogLevel;
@@ -34,6 +36,26 @@ public class SampleConfig implements IResourceChangeListener {
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
 
 	private static final String UNKNOWN = "_unknown_";
+	
+	private static HashMap<IProject, SampleConfig> projectMap = new HashMap<>();
+
+	public static synchronized SampleConfig getSampleConfigForProject(IProject project) {
+		if (!projectMap.containsKey(project)) {
+			projectMap.put(project, new SampleConfig(project));
+		}
+		return projectMap.get(project);
+	}
+
+	public static SampleConfig getSampleConfigForProject(String projectName) {
+		return getSampleConfigForProject(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
+	}
+
+	public static Set<String> getAvailableConfigNames() {
+		return GtResourceHelper
+				.getProjectNamesWithNature(GtSampleConfigNature.NATURE_ID);
+	}
+	
+	
 
 	private HashMap<String, HashMap<String, String>> configParams = new HashMap<>();
 	private IProject project;
@@ -43,25 +65,13 @@ public class SampleConfig implements IResourceChangeListener {
 	private String descr;
 
 	/**
-	 * Creates a new instance which is populated with default values provided by
-	 * category implementations.
+	 * Creates a new instance which is linked to and persisted in the given {@link IProject}
 	 */
-	public SampleConfig() {
-		this.project = null;
-		initWithDefaulValues();
-	}
-
-	private void initWithDefaulValues() {
-		descr = "Default configuration";
-		platformId = "00";
-		sampleId = "12345";
-	}
-
-	public SampleConfig(IProject proj) {
+	private SampleConfig(IProject proj) {
 		this.project = proj;
 		this.descr = "";
-		this.sampleId = "";
-		this.platformId = "";
+		this.sampleId = "00";
+		this.platformId = "12345";
 
 		if (getSampleConfigIfile().exists()) {
 			initFromIFile();
@@ -69,18 +79,21 @@ public class SampleConfig implements IResourceChangeListener {
 				saveToProject();
 		}
 
-		SampleConfigManager.register(this);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 			      this, IResourceChangeEvent.POST_CHANGE);
 	}
 
+	/**
+	 * Create a new instance, which is not linked to an {@link IProject} and thus read only
+	 * @param sampleConfigElement
+	 */
 	public SampleConfig(Element sampleConfigElement) {
-		this();
-
 		extractFromXml(sampleConfigElement);
 	}
 
-	private void initFromIFile() {
+	private synchronized void initFromIFile() {
+		if (!isModificationAllowed()) throw new IllegalStateException();
+		
 		IFile iFile = getSampleConfigIfile();
 		if (iFile.exists()) {
 			Document doc = XMLHelper.readDocument(iFile);
@@ -150,6 +163,7 @@ public class SampleConfig implements IResourceChangeListener {
 			configParams.put(category, new HashMap<>());
 		}
 		configParams.get(category).put(key, value);
+		saveToProject();
 	}
 	
 	public String getName() {
@@ -199,6 +213,12 @@ public class SampleConfig implements IResourceChangeListener {
 		XMLHelper.saveDoc(iFile, root);
 		} catch (CoreException e) {
 			BasicLogger.logException(getClass(),  "Saving the sample config failed", e);
+		}
+		
+		try {
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			BasicLogger.logException("Unable to refresh SampleConfig project. Not all resources may be up to date.", e, LogLevel.DEBUG);
 		}
 	}
 
@@ -266,6 +286,7 @@ public class SampleConfig implements IResourceChangeListener {
 		sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
 		
 		// extract configParams
+		configParams.clear();
 		Element paramsElem = root.getChild(XML_TAG_CONFIG_PARAMS);
 		if (paramsElem != null) {
 			for (Object curParamObj : paramsElem.getChildren(XML_TAG_PARAMETER)) {
@@ -288,19 +309,27 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	public void setPlatformId(String platformId) {
+		if (!isModificationAllowed()) throw new IllegalStateException();
 		this.platformId = platformId;
+		saveToProject();
 	}
 
 	public void setSampleId(String sampleId) {
+		if (!isModificationAllowed()) throw new IllegalStateException();
 		this.sampleId = sampleId;
+		saveToProject();
 	}
 
 	public void setProject(IProject newProject) {
+		if (!isModificationAllowed()) throw new IllegalStateException();
 		this.project = newProject;
+		saveToProject();
 	}
 
 	public void setDescription(String newDescr) {
+		if (!isModificationAllowed()) throw new IllegalStateException();
 		this.descr = newDescr;
+		saveToProject();
 	}
 
 	public boolean isStoredAsProject() {
@@ -311,20 +340,22 @@ public class SampleConfig implements IResourceChangeListener {
 	public void resourceChanged(IResourceChangeEvent event) {
 		IFile file = getSampleConfigIfile();
 		if (file != null) {
-			IResourceDelta campaignExecutionDelta = event.getDelta()
+			IResourceDelta eventDelta = event.getDelta()
 					.findMember(file.getFullPath());
 
-			if (campaignExecutionDelta != null) {
-				if (campaignExecutionDelta.getKind() == IResourceDelta.REMOVED) {
-					// remove this form SampleConfigManager
-					SampleConfigManager.remove(this);
+			if (eventDelta != null) {
+				if (eventDelta.getKind() == IResourceDelta.REMOVED) {
+					// remove this form SampleConfig from project mapping
+					projectMap.remove(this.getProject());
 					
-					//remove this from Workspace
+					//remove this listener from Workspace
 					ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 					
 				} else {
-					// update the editor to reflect resource changes
-					initFromIFile();
+					if (isModificationAllowed()) {
+						// update the editor to reflect resource changes (if not locked by another ThreadGroup)
+						initFromIFile();
+					} 
 				}
 			}
 		}
@@ -407,6 +438,7 @@ public class SampleConfig implements IResourceChangeListener {
 			IProject sampleConfigProject = getSampleConfigIfile().getProject();
 			path = Paths.get(sampleConfigProject.getLocation().append(path.toString()).toOSString());
 		}
+		//FIXME toFile?
 		return path.toFile().getAbsolutePath();
 	}
 
@@ -433,5 +465,19 @@ public class SampleConfig implements IResourceChangeListener {
 		put(category, key, value);
 	}
 	
+	ThreadGroup lockedThreadGroup = null;
+
+	public synchronized void lock() {
+		lockedThreadGroup = Thread.currentThread().getThreadGroup();
+	}
+
+	public synchronized void unlock() {
+		if (lockedThreadGroup == Thread.currentThread().getThreadGroup()) {
+			lockedThreadGroup = null;
+		}
+	}
 	
+	private boolean isModificationAllowed() {
+		return lockedThreadGroup == null ? true : lockedThreadGroup == Thread.currentThread().getThreadGroup();
+	}
 }

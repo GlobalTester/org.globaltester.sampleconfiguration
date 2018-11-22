@@ -26,7 +26,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.globaltester.base.ui.GtUiHelper;
 import org.globaltester.logging.legacy.logger.GtErrorLogger;
 import org.globaltester.sampleconfiguration.SampleConfig;
-import org.globaltester.sampleconfiguration.SampleConfigManager;
 
 public class SampleConfigSelector {
 
@@ -57,7 +56,7 @@ public class SampleConfigSelector {
 		configSelection = new Combo(mainComp, SWT.DROP_DOWN | SWT.READ_ONLY);
 		configSelection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		String[] configs = SampleConfigManager.getAvailableConfigNames()
+		String[] configs = SampleConfig.getAvailableConfigNames()
 				.toArray(new String[] {});
 		Arrays.sort(configs);
 		configSelection.setItems(configs);
@@ -107,14 +106,14 @@ public class SampleConfigSelector {
 			btnNew.setText("New");
 			btnNew.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					Set<String> configs = SampleConfigManager.getAvailableConfigNames();
+					Set<String> configs = SampleConfig.getAvailableConfigNames();
 					try {
 						GtUiHelper
 								.openWizard(Activator.NEW_SAMPLECONFIG_WIAZRD_ID);
 					} catch (CoreException ex) {
 						GtErrorLogger.log(Activator.PLUGIN_ID, ex);
 					}
-					Set<String> configsWithNewElement = SampleConfigManager.getAvailableConfigNames();
+					Set<String> configsWithNewElement = SampleConfig.getAvailableConfigNames();
 					String[] configNames = configsWithNewElement.toArray(new String[] {});
 					
 					configsWithNewElement.removeAll(configs);
@@ -134,7 +133,7 @@ public class SampleConfigSelector {
 				selectedConfigName = configSelection.getText();
 			}
 		});
-		return SampleConfigManager.get(selectedConfigName);
+		return SampleConfig.getSampleConfigForProject(selectedConfigName);
 	}
 
 	public void setLayoutData(Object layoutData) {

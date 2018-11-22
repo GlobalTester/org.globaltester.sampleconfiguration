@@ -22,7 +22,6 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.globaltester.logging.legacy.logger.GtErrorLogger;
 import org.globaltester.sampleconfiguration.SampleConfig;
-import org.globaltester.sampleconfiguration.SampleConfigManager;
 
 public class SampleConfigEditor extends EditorPart implements IResourceChangeListener{
 
@@ -50,7 +49,7 @@ public class SampleConfigEditor extends EditorPart implements IResourceChangeLis
 			if ((file == null) | (!file.exists())) {
 				throw new PartInitException("Wrong input - File does not exist");
 			}
-			config = SampleConfigManager.get(file.getParent().getName());
+			config = SampleConfig.getSampleConfigForProject(file.getProject());
 			if(config == null) {
 				throw new PartInitException(
 						"Wrong Input - Selected resource does not represent a SampleConfiguration.");

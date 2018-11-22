@@ -1,5 +1,7 @@
 package org.globaltester.sampleconfiguration.ui.wizards;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -9,13 +11,11 @@ import org.globaltester.sampleconfiguration.ui.SampleConfigEditorWidget;
 
 public class WizardNewSampleConfigInitPage extends WizardPage {
 
-	private SampleConfig sampleConfig;
 	private SampleConfigEditorWidget editorWidget;
 
 	public WizardNewSampleConfigInitPage(String pageName) {
 		super(pageName);
 
-		sampleConfig = new SampleConfig();
 	}
 
 	@Override
@@ -29,14 +29,21 @@ public class WizardNewSampleConfigInitPage extends WizardPage {
 		editorWidget = new SampleConfigEditorWidget(container);
 		editorWidget.setActive(true);
 		editorWidget.hideName();
-		editorWidget.setInput(sampleConfig);
 	}
 	
+	@Override
+	public IWizardPage getPreviousPage() {
+		//do not allow 
+		return null;
+	}
 	
-
-	public SampleConfig getSampleConfig() {
+	public void doSave() {
 		editorWidget.doSave();
-		return sampleConfig;
+	}
+
+	public void setProject(IProject project) {
+		editorWidget.setInput(SampleConfig.getSampleConfigForProject(project));
+		
 	}
 
 }
