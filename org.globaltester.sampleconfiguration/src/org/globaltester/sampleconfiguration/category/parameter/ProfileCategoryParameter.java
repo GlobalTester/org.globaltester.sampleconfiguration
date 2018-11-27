@@ -1,5 +1,7 @@
 package org.globaltester.sampleconfiguration.category.parameter;
 
+import org.globaltester.sampleconfiguration.category.parameter.generator.ProfileParameterGenerator;
+
 /**
  * Profile that defines whether testcases are executable on the given sample.
  * 
@@ -9,7 +11,12 @@ package org.globaltester.sampleconfiguration.category.parameter;
 public class ProfileCategoryParameter extends BooleanCategoryParameter {
 
 	public ProfileCategoryParameter(String categoryName, String name, String description) {
-		super(categoryName, name, description);
+		this(categoryName, name, description, new ProfileParameterGenerator());
+	}
+
+	public ProfileCategoryParameter(String categoryName, String name, String description,
+			ParameterGenerator generator) {
+		super(categoryName, name, description, generator);
 	}
 	
 }

@@ -21,7 +21,9 @@ import org.globaltester.logging.BasicLogger;
 import org.globaltester.logging.tags.LogLevel;
 import org.globaltester.sampleconfiguration.category.CategoryFactory;
 import org.globaltester.sampleconfiguration.category.parameter.CategoryParameterDescription;
+import org.jdom.Attribute;
 import org.jdom.CDATA;
+import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -34,6 +36,7 @@ public class SampleConfig implements IResourceChangeListener {
 	private static final String XML_TAG_CONFIG_PARAMS = "ConfigurationParams";
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
+	private static final String XML_ATTRIB_PARAM_GENERATED = "generated";
 
 	private static final String UNKNOWN = "_unknown_";
 	
@@ -62,7 +65,7 @@ public class SampleConfig implements IResourceChangeListener {
 	
 	
 
-	private HashMap<String, HashMap<String, String>> configParams = new HashMap<>();
+	private HashMap<String, HashMap<String, SampleConfigParameterValue>> configParams = new HashMap<>();
 	private IProject project;
 	private String originalName;
 	private String platformId;
@@ -115,9 +118,22 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @return
 	 */
 	public String get(String category, String key) {
+		SampleConfigParameterValue paramValue = getParameterValue(category, key);
+		
+		return paramValue == null ? null : paramValue.getValue();
+	}
+
+	/**
+	 * Returns a single parameter from this {@link SampleConfig}
+	 * 
+	 * @param category
+	 * @param key
+	 * @return
+	 */
+	public SampleConfigParameterValue getParameterValue(String category, String key) {
 		checkFactories(category, key);
 		
-		if (!configParams.containsKey(category)){
+		if (!contains(category, key)){
 			BasicLogger.log(getClass(), "Requested SampleConfig entry could neither be found nor generated: " + category + "_" + key, LogLevel.WARN);
 			return null;
 		}
@@ -164,9 +180,14 @@ public class SampleConfig implements IResourceChangeListener {
 	 * @param value
 	 */
 	public void put(String category, String key, String value) {
+		put(category, key, new SampleConfigParameterValue(value));
+	}
+	
+	public void put(String category, String key, SampleConfigParameterValue value) {
 		if (!configParams.containsKey(category)){
 			configParams.put(category, new HashMap<>());
 		}
+		
 		configParams.get(category).put(key, value);
 		saveToProject();
 	}
@@ -263,15 +284,23 @@ public class SampleConfig implements IResourceChangeListener {
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
 		for (String curCategory : configParams.keySet()) {
 			for (String curParam : configParams.get(curCategory).keySet()){
-				Element curParamElem = new Element(XML_TAG_PARAMETER);
-				curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curCategory + "_" + curParam);
-				String curParamValue = (String) configParams.get(curCategory).get(curParam);
-				if (curParamValue.contains("<")){
-					curParamElem.addContent(new CDATA(curParamValue));
-				} else {
-					curParamElem.addContent(curParamValue);	
+				SampleConfigParameterValue curParamValue = configParams.get(curCategory).get(curParam);
+				if (curParamValue != null) {
+					Element curParamElem = new Element(XML_TAG_PARAMETER);
+					curParamElem.setAttribute(XML_ATTRIB_PARAM_NAME, curCategory + "_" + curParam);
+					
+					if (curParamValue.isGenerated()) {
+						curParamElem.setAttribute(XML_ATTRIB_PARAM_GENERATED, "true");	
+					}
+					
+					String valueString = curParamValue.getValue();
+					if (valueString.contains("<")){
+						curParamElem.addContent(new CDATA(valueString));
+					} else {
+						curParamElem.addContent(valueString);	
+					}
+					configParamsElem.addContent(curParamElem);
 				}
-				configParamsElem.addContent(curParamElem);	
 			}
 		}
 		root.addContent(configParamsElem);
@@ -297,13 +326,24 @@ public class SampleConfig implements IResourceChangeListener {
 			for (Object curParamObj : paramsElem.getChildren(XML_TAG_PARAMETER)) {
 				if (curParamObj instanceof Element) {
 					Element curParamElem = (Element) curParamObj;
+					
+					SampleConfigParameterValue curParamValue = new SampleConfigParameterValue(curParamElem.getTextTrim());
+					
+					Attribute attribGenerated = curParamElem.getAttribute(XML_ATTRIB_PARAM_GENERATED);
+					try {
+						if (attribGenerated != null && attribGenerated.getBooleanValue()) {
+							curParamValue.setGenerated(true);
+						}
+					} catch (DataConversionException e) {
+						BasicLogger.logException("Unable to decode attribute generated as boolean", e, LogLevel.DEBUG);
+					}
+					
 					String curParamName = curParamElem
 							.getAttributeValue(XML_ATTRIB_PARAM_NAME);
-					String curParamValue = curParamElem.getTextTrim();
-					
 					int divider = curParamName.indexOf("_");
 					String categoryName = curParamName.substring(0, divider);
 					String parameterName = curParamName.substring(divider + 1);
+							
 					if (!configParams.containsKey(categoryName)){
 						configParams.put(categoryName, new HashMap<>());
 					}
@@ -443,12 +483,11 @@ public class SampleConfig implements IResourceChangeListener {
 			IProject sampleConfigProject = getSampleConfigIfile().getProject();
 			path = Paths.get(sampleConfigProject.getLocation().append(path.toString()).toOSString());
 		}
-		//FIXME toFile?
 		return path.toFile().getAbsolutePath();
 	}
 
 	public boolean contains(String category, String key) {
-		HashMap<String, String> hashMap = configParams.get(category);
+		HashMap<String, SampleConfigParameterValue> hashMap = configParams.get(category);
 		if (hashMap == null) {
 			return false;
 		} else {
