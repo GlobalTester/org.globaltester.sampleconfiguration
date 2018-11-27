@@ -47,7 +47,12 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	public static SampleConfig getSampleConfigForProject(String projectName) {
-		return getSampleConfigForProject(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
+		if (projectName == null) return null;
+		
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		if (project == null) return null;
+		
+		return getSampleConfigForProject(project);
 	}
 
 	public static Set<String> getAvailableConfigNames() {
