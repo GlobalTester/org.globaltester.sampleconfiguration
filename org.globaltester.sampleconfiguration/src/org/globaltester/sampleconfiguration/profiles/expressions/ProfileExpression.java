@@ -19,5 +19,5 @@ public interface ProfileExpression {
 	 *            The {@link SampleConfig} to be used
 	 * @return true, if the expression evaluates to true
 	 */
-	public boolean evaluate(SampleConfig config);
+	public boolean evaluate(SampleConfig config) throws ProfileEvaluationException;
 }

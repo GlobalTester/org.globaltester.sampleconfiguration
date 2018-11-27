@@ -16,7 +16,7 @@ public class NotProfileExpression extends AbstractProfileExpression {
 	}
 	
 	@Override
-	public boolean evaluate(SampleConfig config) {
+	public boolean evaluate(SampleConfig config) throws ProfileEvaluationException {
 		return ! expression.evaluate(config);
 	}
 

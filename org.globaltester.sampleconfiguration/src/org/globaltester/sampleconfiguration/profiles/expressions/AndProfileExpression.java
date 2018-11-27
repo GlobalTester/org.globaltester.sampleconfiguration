@@ -19,7 +19,7 @@ public class AndProfileExpression extends AbstractProfileExpression{
 	}
 	
 	@Override
-	public boolean evaluate(SampleConfig config) {
+	public boolean evaluate(SampleConfig config) throws ProfileEvaluationException {
 		for (ProfileExpression current : expressions){
 			if (current.evaluate(config) == false){
 				return false;
