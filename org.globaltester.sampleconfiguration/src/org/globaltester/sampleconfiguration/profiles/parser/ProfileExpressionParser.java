@@ -90,7 +90,7 @@ public class ProfileExpressionParser {
 					content = content.substring(groupBegin + length);
 				} catch (ParseException e) {
 					String message = "Error during parsing of profile substring " + content;
-					BasicLogger.logException(ProfileExpression.class, message, e, LogLevel.WARN);
+					BasicLogger.logException(ProfileExpression.class, message, e, LogLevel.TRACE);
 					expressions.add(new UnparseableProfileExpression(content));
 				}
 			}
@@ -121,7 +121,7 @@ public class ProfileExpressionParser {
 					return new Profile(expressionString);
 				} catch (ParseException e) {
 					String reason = "Could not create profile for string " + expressionString;
-					BasicLogger.logException(ProfileExpressionParser.class, reason, e, LogLevel.WARN);
+					BasicLogger.logException(ProfileExpressionParser.class, reason, e, LogLevel.TRACE);
 					return new UnparseableProfileExpression(expressionString);
 				}
 			}
