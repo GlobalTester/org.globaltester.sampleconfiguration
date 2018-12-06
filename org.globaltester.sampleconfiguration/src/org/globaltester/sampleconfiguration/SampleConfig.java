@@ -182,6 +182,10 @@ public class SampleConfig implements IResourceChangeListener {
 	public void put(String category, String key, String value) {
 		put(category, key, new SampleConfigParameterValue(value));
 	}
+
+	public void put(String category, String key, boolean value) {
+		put(category, key, new SampleConfigParameterValue(Boolean.toString(value)));
+	}
 	
 	public void put(String category, String key, SampleConfigParameterValue value) {
 		if (!configParams.containsKey(category)){
