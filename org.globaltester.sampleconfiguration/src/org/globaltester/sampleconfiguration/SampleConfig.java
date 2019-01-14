@@ -50,7 +50,7 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	public static SampleConfig getSampleConfigForProject(String projectName) {
-		if (projectName == null) return null;
+		if ((projectName == null)||(projectName.trim().length()==0)) return null;
 		
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		if (project == null) return null;

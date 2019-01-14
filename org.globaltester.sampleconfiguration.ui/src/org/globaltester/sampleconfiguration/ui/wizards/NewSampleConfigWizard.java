@@ -36,6 +36,7 @@ public class NewSampleConfigWizard extends Wizard implements INewWizard, IPageCh
 
 	@Override
 	public boolean performFinish() {
+		createProjectIfNeeded();
 	    sampleConfigInitPage.doSave();
 	    
 	    return true;
@@ -72,6 +73,10 @@ public class NewSampleConfigWizard extends Wizard implements INewWizard, IPageCh
 	
 	@Override
 	public void handlePageChanging(PageChangingEvent event) {
+		createProjectIfNeeded();
+	}
+
+	private void createProjectIfNeeded() {
 		if (project == null) {
 			String name = projectCreationPage.getProjectName();
 		    URI location = (projectCreationPage.useDefaults()) ? null : projectCreationPage.getLocationURI();
