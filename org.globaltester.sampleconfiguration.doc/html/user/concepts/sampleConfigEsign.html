@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>eSign Application</h1>
+	
+	<p>
+	The tab <b>eSIGN</b> allows to provide details on supported features of the eSign application.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigEsign.png" align="middle"></div>
+	
+	<p>
+	The section <b>Protocol support</b> allows to select whether or not the sample contains an eSign application at all.
+	If you don't check the box <b>eSIGN</b> the other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Preferred parameters</b> contains configuration options required to perform the relevant eSign test cases.
+	<b>eSign-PIN</b> shall contain the value of the eSign PIN to be used. This value will be used to set the Pin during the tests and to use the eSign keys in later tests.
+	<b>eSign-PIN reference</b> defines the password reference to use for eSign.
+	<b>DigitalSignatureTemplate</b> shall contain the DigitalSignatureTemplate required for the key management function as HexString. This needs to contain at least the key reference. 
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications the eSign tests cases heavily rely on each other. So either execute the whole test suite on a vanilla sample or have close look at the testcases and make sure all dependencies are met when executing them out of order.
+	</p>
+	
+</body>
+</html>

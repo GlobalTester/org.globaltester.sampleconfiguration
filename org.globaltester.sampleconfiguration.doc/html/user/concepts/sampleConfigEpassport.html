@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>ePassport Application</h1>
+	
+	<p>
+	The tab <b>ePassport</b> allows to provide details on supported features of the ePassport application.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigEpassport.png" align="middle"></div>
+	
+	<p>
+	The section <b>Supported profiles</b> allows to select whether or not the sample contains an ePassport application at all.
+	If you don't check the box <b>ePassport</b> most other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Supported data groups</b> allows to select which datagroups are present within the ePassport application on the sample.
+	</p>
+	
+	<p>
+	The section <b>Preferred parameters</b>  allows to configure access conditions.
+	<b>Preferred method to open ePassport</b> defines how to establish secure messaging with the ePassport (if the testcase does not explicitly state what method to use).
+	<b>Protection of data groups for Passive Authentication</b> defines how to establish the secure messaging channel for read access to datagroups within the testcases for Passive Authentication. Selecting EAC here will perform CA and TA before accessing datagroups in those testcases.
+	<b>APDU to test secure messaging</b> shall contain an APDU that passes successfully when a valid secure messaging is established and fails otherwise. If not provided this defaults to <code>00 B0 81 00 00</code>.
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications samples that support more than one opening method need to be tested using each of them!
+	This implies you need to run the appropriate tests (with all parameters in the section <b>Preferred parameters</b> set) for different configurations.
+	</p>
+
+	<p>
+	The section <b>Sample configuration files</b> enables you to perform layer 7 tests without access to a physical sample.
+	If you provide a directory here and tick the checkbox to use it datagroups are read from the directory and a card is not accessed at all.
+	</p>
+
+	<p>
+	The section <b>PA Certificates</b> contains configuration options required to perform Passive Authentication.
+	Please provide the paths to the named certificates in the appropriate fields.
+	</p>
+	
+	
+</body>
+</html>

@@ -10,6 +10,8 @@
       </toc>
       <toc
             file="toc/user/createsample.xml">
+      </toc><toc
+            file="toc/user/configOptions.xml">
       </toc>
    </extension>
 

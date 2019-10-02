@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>Active Authentication</h1>
+	
+	<p>
+	The tab <b>AA</b> allows to provide details about <b>ActiveAuthentication</b>.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigAA.png" align="middle"></div>
+	
+	<p>
+	The section <b>Protocol support</b> allows to select whether or not the sample supports ActiveAuthentication at all.
+	If you don't check the box <b>AA</b> all other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Supported features</b> allows to select which variants of ActiveAuthentication are supported by the sample.
+	Select <b>ECDSA</b> if your sample uses elliptic curves for ActiveAuthentication or <b>RSA</b> for RSA based ActiveAuthentication. 
+	</p>
+	
+	<p>
+	The section <b>Required options</b> is needed for mechanism specific configurations.
+	The switch <b>Use extended length for AA</b> needs to be checked iff the personalisation of your sample enforces APDUs that exceed the length of short APDUs,
+	i.e. when you use large RSA keys. 
+	</p>
+	
+</body>
+</html>

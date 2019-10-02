@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>Chip Authentication v1</h1>
+	
+	<p>
+	The tab <b>CAv1</b> allows to provide details needed for <b>ChipAuthentication v1</b>.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigCa1.png" align="middle"></div>
+	
+	<p>
+	The section <b>Protocol support</b> allows to select whether or not the sample supports chip authentication in version 1 at all.
+	If you don't check the box <b>CA</b> all other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Supported features</b> describes which variants of chip authentication are supported according to the following descriptions:<br>
+	<b>KAT</b> Chip authentication using MSE:SetKAT<br>
+	<b>ATGA</b> Chip authentication using MSE:SetAT followed by GeneralAuthenticate<br>
+	<b>DH</b> Chip authentication based on Diffie-Hellman<br>
+	<b>ECDH</b> Chip authentication based on elliptic curve cryptography<br>
+	<b>KeyRef</b> selection of CA key via key reference<br>
+	</p>
+	
+	<p>
+	The section <b>Preferred parameters</b> allows to provide needed input for the tests.
+	The field <b>Preferred KeyRef CA</b> allows to specify a key reference that shall be used during the tests.
+	The field <b>Invalid KeyRef CA</b> allows to specify a key reference that the chip will reject, this is used to check chip behavior when invalid key references are supplied.
+	The checkbox <b>Force use of preferred keyRef CA</b> can be used to circumvent all automatic selection mechanisms for chip authentication key references.
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications samples that support more than one key for chip authentication need to be tested using each of the keys!
+	This implies you need to run the appropriate tests (with all parameters in the section <b>Preferred parameters</b> set) for different configurations. Please make sure to set the force flag in this case.
+	</p>
+	
+	
+</body>
+</html>

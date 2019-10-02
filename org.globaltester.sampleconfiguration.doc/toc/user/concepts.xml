@@ -5,6 +5,9 @@
  <topic href="html/user/concepts/TestData.html" label="TestData">
     <topic href="html/user/concepts/sampleConfiguration.html" label="SampleConfiguration">
         <anchor id="Concepts.SampleConfiguration"/>
+        <topic label="Configuration options">
+           <anchor id="configurationOptions"/>
+        </topic>
 	</topic>
 	<anchor id="testdata"/>
     </topic>

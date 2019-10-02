@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>EACv1 Certificates</h1>
+	
+	<p>
+	The tab <b>EACv1 Certificates</b> allows to provide details on certificates needed for <b>TerminalAuthentication v1</b>.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigEac1Certificates.png" align="middle"></div>
+	
+	<p>
+	The dropdown <b>Choose which certificates to use</b> shall be self-explanatory.
+	Based on the selection here you need to either fill the next section or the one after that.
+	You can select between either <b>static certificates</b> or <b>generated certificates</b>.
+	</p>
+	
+	<p>
+	Selection of <b>generated certificates</b> above allows all testcases to be executed but requires a few steps for preparation.
+	First you need to define the directory path where the required certificate chains shall be generated. 
+	This can be entered/selected in the field <b>Certificates directory</b>.<br/>
+	In order to make all required certificates available within that folder you need to configure appropriate root certificates within the preferences (See <a href="../../../../com.secunet.globaltester.prove.epp.doc/html/eacV1_certificates.html">here</a> 
+	 for details). Afterwards you need to run the generation scripts from your script bundle.
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications samples that support migration of TA cryptosystem need to be tested for each allowed target cryptosystem!
+	This implies you need to run the whole test set again after the migration based on the new configuration. This new configuration will require you to build a new appropriate SampleConfig.
+	</p>
+	
+	<p>
+	Selection of <b>static certificates</b> reduces the number of executable testcases (essentially only those with positive TA) but is still feasible if you can't provide root certificates/keys.
+	The fields <b>DV certificate</b> and <b>IS certificate</b> shall point to the appropriate certificates.
+	The field <b>IS key</b> shall point to the matching terminal private key.
+	</p>
+	
+	
+</body>
+</html>

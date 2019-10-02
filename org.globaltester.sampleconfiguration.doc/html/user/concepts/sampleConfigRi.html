@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>Restricted identification</h1>
+	
+	<p>
+	The tab <b>RI</b> allows to provide details needed for <b>Restricted Identification</b> tests.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigRi.png" align="middle"></div>
+	
+	<p>
+	The section <b>Protocol support</b> allows to select whether or not the sample supports restricted identification at all.
+	If you don't check the box <b>RI</b> all other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Supported features</b> describes which variants of RI are supported according to the following descriptions:<br>
+	<b>DP</b> sample provides optional RestrictedIdentificationDomainParameterInfo data structure<br>
+	</p>
+	
+	<p>
+	The section <b>Preferred parameters</b> allows to enforce use of specific keys for the tests.
+	The field <b>Key ID</b> force the use of a specific key to be used.
+	The field <b>key is "authorized only"</b> needs to be checked iff the key can only be used by authorized terminals.
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications samples that support more than one RI key need to be tested using each key!
+	This implies you need to run the appropriate tests (with all parameters in the section <b>Preferred parameters</b> set) for different keys.
+	</p>
+
+	
+</body>
+</html>

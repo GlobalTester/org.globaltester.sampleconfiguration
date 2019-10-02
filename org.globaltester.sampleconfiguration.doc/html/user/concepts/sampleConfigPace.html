@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AA</title>
+</head>
+<body>
+	<h1>PACE</h1>
+	
+	<p>
+	The tab <b>PACE</b> allows to provide details needed for <b>PACE</b> during the test execution.
+	</p>
+	
+	<div class="mediaobject" align="center"><img src="img/sampleConfigPace.png" align="middle"></div>
+	
+	<p>
+	The section <b>Protocol support</b> allows to select whether or not the sample supports PACE at all.
+	If you don't check the box <b>PACE</b> all other options on this tab are irrelevant. 
+	</p>
+	
+	<p>
+	The section <b>Supported passwords</b> allows to select which passwords (according to BSI TR-03110) are supported.
+	</p>
+	
+	<p>
+	The section <b>Supported features</b> describes which variants of PACE are supported according to the following descriptions:<br>
+	<b>ECDH</b> PACE based on elliptic curve cryptography<br>
+	<b>DH</b> PACE based on Diffie-Hellman<br>
+	<b>GM</b> PACE with generic mapping<br>
+	<b>IM</b> PACE with integrated mapping<br>
+	<b>CAM</b> PACE with chip authentication mapping<br>
+	</p>
+	
+	<p>
+	The section <b>Preferred parameters</b> allows to enforce use of specific parameters for the tests.
+	The field <b>OID</b> allows to force the use of a specific PACE-OID to be used. This requires that the sample supports this OID according to EF.CardAccess.
+	The field <b>Domain Parameter</b> allows to force the use of a specific PACE domain parameter set, by providing its id as HexString. This requires that the sample supports this domain parameters according to EF.CardAccess.
+	The field <b>Invalid Password ID</b> needs to specify a password id that the chip will reject.
+	The checkbox <b>Force static binding between PACE and TAv1</b> must be checked iff the sample uses Documentnumber instead of PACE ephemeral key in TA.
+	</p>
+	
+	<p>
+	<b>NOTE:</b> In accordance with the implemented test specifications samples that support more than one PACE configuration need to be tested using each of these!
+	This implies you need to run the appropriate tests (with all parameters in the section <b>Preferred parameters</b> set) for different configurations.
+	</p>
+	
+</body>
+</html>
