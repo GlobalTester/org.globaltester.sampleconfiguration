@@ -29,13 +29,13 @@ public class ProfileMapper {
 			try (BufferedReader reader = createReaderForFile(propertyFiles[i])){
 				String line;
 				while ((line = reader.readLine()) != null){
-					if (line.isEmpty()){
+					if (line.isEmpty() || line.startsWith("#")){
 						continue;
 					}
-					if (! line.startsWith("#")){
-						if (line.equals(profiles)){
-							return ProfileExpressionParser.parse(reader.readLine());
-						}
+				
+					String mappedExpression = reader.readLine();
+					if (line.equals(profiles)){
+							return ProfileExpressionParser.parse(mappedExpression);
 					}
 				}
 			} catch (IOException e) {
