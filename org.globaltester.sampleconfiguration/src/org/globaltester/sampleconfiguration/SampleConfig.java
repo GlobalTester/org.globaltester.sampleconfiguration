@@ -33,6 +33,7 @@ public class SampleConfig implements IResourceChangeListener {
 	private static final String XML_TAG_DESCRIPTION = "Description";
 	private static final String XML_TAG_PLATFORM_ID = "PlatformId";
 	private static final String XML_TAG_SAMPLE_ID = "SampleId";
+	private static final String XML_TAG_TEST_SETUP = "TestSetup";
 	private static final String XML_TAG_CONFIG_PARAMS = "ConfigurationParams";
 	private static final String XML_TAG_PARAMETER = "Parameter";
 	private static final String XML_ATTRIB_PARAM_NAME = "paramName";
@@ -70,6 +71,7 @@ public class SampleConfig implements IResourceChangeListener {
 	private String originalName;
 	private String platformId;
 	private String sampleId;
+	private String testSetup;
 	private String descr;
 
 	/**
@@ -220,6 +222,13 @@ public class SampleConfig implements IResourceChangeListener {
 		}
 		return platformId;
 	}
+	
+	public String getTestSetup() {
+		if (testSetup == null) {
+			testSetup = "";
+		}
+		return testSetup;
+	}
 
 	public IProject getProject() {
 		return project;
@@ -283,6 +292,9 @@ public class SampleConfig implements IResourceChangeListener {
 		Element sampleElem = new Element(XML_TAG_SAMPLE_ID);
 		sampleElem.addContent(sampleId);
 		root.addContent(sampleElem);
+		Element setupElem = new Element(XML_TAG_TEST_SETUP);
+		setupElem.addContent(testSetup);
+		root.addContent(setupElem);
 
 		// add configParams
 		Element configParamsElem = new Element(XML_TAG_CONFIG_PARAMS);
@@ -322,6 +334,7 @@ public class SampleConfig implements IResourceChangeListener {
 		descr = root.getChildTextTrim(XML_TAG_DESCRIPTION);
 		platformId = root.getChildTextTrim(XML_TAG_PLATFORM_ID);
 		sampleId = root.getChildTextTrim(XML_TAG_SAMPLE_ID);
+		testSetup = root.getChildTextTrim(XML_TAG_TEST_SETUP);
 		
 		// extract configParams
 		configParams.clear();
@@ -378,6 +391,12 @@ public class SampleConfig implements IResourceChangeListener {
 	public void setDescription(String newDescr) {
 		if (!isModificationAllowed()) throw new IllegalStateException();
 		this.descr = newDescr;
+		saveToProject();
+	}
+
+	public void setTestSetup(String newTestSetup) {
+		if (!isModificationAllowed()) throw new IllegalStateException();
+		this.testSetup = newTestSetup;
 		saveToProject();
 	}
 

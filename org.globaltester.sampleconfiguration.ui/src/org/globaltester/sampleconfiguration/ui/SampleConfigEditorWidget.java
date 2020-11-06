@@ -45,6 +45,7 @@ public class SampleConfigEditorWidget {
 	private Text name;
 	private Text txtPlatformId;
 	private Text txtSampleId;
+	private Text txtTestSetup;
 	private Text descr;
 
 	private List<CategoryParameterEditor> paramEditors = new ArrayList<>();
@@ -105,6 +106,8 @@ public class SampleConfigEditorWidget {
 			txtPlatformId.setText(getSampleConfig().getPlatformId());
 		if (getSampleConfig().getSampleId() != null)
 			txtSampleId.setText(getSampleConfig().getSampleId());
+		if (getSampleConfig().getTestSetup() != null)
+			txtTestSetup.setText(getSampleConfig().getTestSetup());
 	}
 
 	private void updateProtocolParameterEditors() {
@@ -220,7 +223,7 @@ public class SampleConfigEditorWidget {
 		
 		GridData gdReport = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		Label lblPlatformId = new Label(tabItemComp, SWT.NONE);
-		lblPlatformId.setText("Platform ID");
+		lblPlatformId.setText("Platform ID:");
 		txtPlatformId = new Text(tabItemComp, SWT.BORDER);
 		txtPlatformId.setFont(CategoryParameterEditorFactory.FONT_MONOSPACE);
 		txtPlatformId.setLayoutData(gdReport);
@@ -229,7 +232,7 @@ public class SampleConfigEditorWidget {
 		}
 		
 		Label lblSampleId = new Label(tabItemComp, SWT.NONE);
-		lblSampleId.setText("Sample ID");
+		lblSampleId.setText("Sample ID:");
 		txtSampleId = new Text(tabItemComp, SWT.BORDER);
 		txtSampleId.setFont(CategoryParameterEditorFactory.FONT_MONOSPACE);
 		txtSampleId.setLayoutData(gdReport);
@@ -237,14 +240,26 @@ public class SampleConfigEditorWidget {
 			txtSampleId.addListener(SWT.Modify, listener);
 		}
 		
+		Label lblTestSetup = new Label(tabItemComp, SWT.NONE);
+		lblTestSetup.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
+		lblTestSetup.setText("Test setup:");
+		txtTestSetup = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+		txtTestSetup.setFont(CategoryParameterEditorFactory.FONT_MONOSPACE);
+		GridData txtTestSetupGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		txtTestSetupGd.heightHint = 50;
+		txtTestSetup.setLayoutData(txtTestSetupGd);
+		if(listener != null) {
+			txtTestSetup.addListener(SWT.Modify, listener);
+		}
+		
 		Label lblDescription = new Label(tabItemComp, SWT.NONE);
 		lblDescription.setLayoutData(new GridData(SWT.TOP, SWT.LEFT, false, false, 1, 1));
 		lblDescription.setText("Description:");
 		
 		descr = new Text(tabItemComp, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-		GridData lblDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		lblDescrGd.heightHint = 50;
-		descr.setLayoutData(lblDescrGd);
+		GridData txtDescrGd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		txtDescrGd.heightHint = 50;
+		descr.setLayoutData(txtDescrGd);
 		if(listener != null) {
 			descr.addListener(SWT.Modify, listener);
 		}
@@ -358,6 +373,7 @@ public class SampleConfigEditorWidget {
 		if (sampleConfig == null){
 			return;
 		}
+		sampleConfig.setTestSetup(txtTestSetup.getText());
 		sampleConfig.setDescription(descr.getText());
 		sampleConfig.setSampleId(txtSampleId.getText());
 		sampleConfig.setPlatformId(txtPlatformId.getText());
@@ -393,7 +409,7 @@ public class SampleConfigEditorWidget {
 	 */
 	public void setActive(boolean active) {
 		this.active = active;
-		setActive(active, descr, name, txtPlatformId, txtSampleId);
+		setActive(active, txtTestSetup,descr, name, txtPlatformId, txtSampleId);
 		
 		for (CategoryParameterEditor curParam : paramEditors) {
 			curParam.setActive(active);
