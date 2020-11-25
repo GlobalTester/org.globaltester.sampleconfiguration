@@ -16,6 +16,12 @@ import org.globaltester.sampleconfiguration.category.parameter.CategoryParameter
  *
  */
 public interface CategoryFactory {
+	
+	
+	/**
+	 * @return true, iff this category is usable
+	 */
+	public boolean isUsable();
 
 	/**
 	 * The human readable category name

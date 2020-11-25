@@ -1,6 +1,10 @@
 package org.globaltester.sampleconfiguration;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.globaltester.sampleconfiguration.category.CategoryFactory;
 import org.osgi.framework.BundleActivator;
@@ -63,9 +67,16 @@ public class Activator implements BundleActivator {
 		CategoryFactory[] emptyArray = new CategoryFactory[0];
 		if (factoryTracker == null) {
 			return emptyArray;
-	}
-
-		return factoryTracker.getServices(emptyArray);
+		}
+		List<CategoryFactory> categories = Arrays.asList(factoryTracker.getServices(emptyArray));
+		Set<CategoryFactory> toBeRemoved = new HashSet<CategoryFactory>();
+		for (CategoryFactory c : categories) {
+			if (!c.isUsable()) {
+				toBeRemoved.add(c);
+			}
+		}
+		categories.removeAll(toBeRemoved);
+		return categories.toArray(emptyArray);
 	}
 
 	/**

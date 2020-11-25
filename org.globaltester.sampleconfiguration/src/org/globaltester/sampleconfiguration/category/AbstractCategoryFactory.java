@@ -33,6 +33,11 @@ public abstract class AbstractCategoryFactory implements CategoryFactory {
 	}
 	
 	@Override
+	public boolean isUsable() {
+		return true;
+	}
+	
+	@Override
 	public String toString() {
 		return this.getName() + "[" + Arrays.toString(paramDescriptions.toArray()) + "]";
 	}

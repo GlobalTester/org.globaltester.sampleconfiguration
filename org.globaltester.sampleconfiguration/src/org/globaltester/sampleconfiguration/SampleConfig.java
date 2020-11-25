@@ -146,7 +146,7 @@ public class SampleConfig implements IResourceChangeListener {
 		CategoryFactory[] pFactories = org.globaltester.sampleconfiguration.Activator.getAvailableCategoryFactories();
 		
 		for (CategoryFactory curCategoryFactory : pFactories) {
-			if (curCategoryFactory == null || !curCategoryFactory.getName().equals(category)) continue;
+			if (curCategoryFactory == null || !curCategoryFactory.isUsable() || !curCategoryFactory.getName().equals(category)) continue;
 			for (CategoryParameterDescription description : curCategoryFactory.getParameterDescriptors()) {
 				if (category.equals(description.getCategoryName()) && key.equals(description.getName()) && description.getGenerator() != null) {
 					description.getGenerator().generate(category, key, this);
