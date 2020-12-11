@@ -436,6 +436,32 @@ public class SampleConfig implements IResourceChangeListener {
 				+ ", platformId=" + platformId + ", sampleId=" + sampleId + ", descr=" + descr + "]";
 	}
 
+	public String dump() {
+		StringBuilder result = new StringBuilder();
+		result.append(this.getClass().getSimpleName());
+		result.append(System.lineSeparator());
+		result.append("Project: ").append(project);
+		result.append(System.lineSeparator());
+		result.append("Platform ID: ").append(platformId);
+		result.append(System.lineSeparator());
+		result.append("Sample ID: ").append(sampleId);
+		result.append(System.lineSeparator());
+		result.append("Description: ").append(descr);
+		result.append(System.lineSeparator());
+		result.append("Test setup: ").append(testSetup);
+		result.append(System.lineSeparator());
+		
+		result.append("Configuration values:");
+		
+		for (String categoryKey : configParams.keySet()) {
+			for (String key : configParams.get(categoryKey).keySet() ) {
+				result.append(categoryKey).append("_").append(key).append("=").append(configParams.get(categoryKey).get(key).getValue());
+				result.append(System.lineSeparator());
+			}
+		}
+		return result.toString();
+	}
+
 	public Set<String> getStoredCategories() {
 		return configParams.keySet();
 	}

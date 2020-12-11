@@ -4,7 +4,7 @@ package org.globaltester.sampleconfiguration;
  * Data structure that represents a single parameter value stored in {@link SampleConfig}
  */
 public class SampleConfigParameterValue {
-	
+
 	String value;
 	boolean generated;
 
@@ -33,6 +33,9 @@ public class SampleConfigParameterValue {
 		this.generated = generated;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "SampleConfigParameterValue [value=" + value + ", generated=" + generated + "]";
+	}
 
 }
