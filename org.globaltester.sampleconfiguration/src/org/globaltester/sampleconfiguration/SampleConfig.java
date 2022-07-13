@@ -512,6 +512,10 @@ public class SampleConfig implements IResourceChangeListener {
 		return Files.readAllBytes(Paths.get(getAbsolutePath(category, key)));
 	}
 	
+	public byte[] getBinaryData(Path path) throws IOException {
+		return Files.readAllBytes(makeAbsolute(path));
+	}
+	
 	/**
 	 * Returns a single parameter from this {@link SampleConfig} converted as
 	 * absolute path.
@@ -526,13 +530,18 @@ public class SampleConfig implements IResourceChangeListener {
 			return null;
 		}
 		
-		Path path = Paths.get(configValue); 
+		Path path = Paths.get(configValue);
+		path = makeAbsolute(path);
+		return path.toFile().getAbsolutePath();
+	}
+	
+	private Path makeAbsolute(Path path) {
 		if (!path.isAbsolute()){
 			//resolve against sample config project directory if relative path given
 			IProject sampleConfigProject = getSampleConfigIfile().getProject();
-			path = Paths.get(sampleConfigProject.getLocation().append(path.toString()).toOSString());
+			return Paths.get(sampleConfigProject.getLocation().append(path.toString()).toOSString());
 		}
-		return path.toFile().getAbsolutePath();
+		return path;
 	}
 
 	public boolean contains(String category, String key) {
