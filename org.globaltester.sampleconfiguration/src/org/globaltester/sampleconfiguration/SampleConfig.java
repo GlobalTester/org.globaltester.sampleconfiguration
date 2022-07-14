@@ -509,7 +509,13 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 	
 	public byte[] getBinaryData(String category, String key) throws IOException {
-		return Files.readAllBytes(Paths.get(getAbsolutePath(category, key)));
+		String absolutePath = getAbsolutePath(category, key);
+		if (absolutePath == null) {
+			String message = "Failed to get absolute path for " + category + "_" + key;
+			BasicLogger.log(getClass(), message, LogLevel.ERROR);
+			throw new NullPointerException(message);
+		}
+		return Files.readAllBytes(Paths.get(absolutePath));
 	}
 	
 	public byte[] getBinaryData(Path path) throws IOException {
