@@ -24,10 +24,16 @@ public interface CategoryFactory {
 	public boolean isUsable();
 
 	/**
-	 * The human readable category name
+	 * The internal category name
 	 * @return the name of the category
 	 */
 	public String getName();
+
+	/**
+	 * The human readable category name
+	 * @return the name of the category
+	 */
+	public String getUiName();
 
 	/**
 	 * Provide information about the available parameters that the created

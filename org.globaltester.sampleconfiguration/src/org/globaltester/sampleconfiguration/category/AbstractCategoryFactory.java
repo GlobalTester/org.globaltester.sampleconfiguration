@@ -9,10 +9,17 @@ import org.globaltester.sampleconfiguration.category.parameter.CategoryParameter
 public abstract class AbstractCategoryFactory implements CategoryFactory {
 	
 	private String name;
+	private String uiName;
 	protected List<CategoryParameterDescription> paramDescriptions = new ArrayList<>();
 	
 	public AbstractCategoryFactory(String name) {
 		this.name = name;
+		this.uiName = name;
+	}
+	
+	public AbstractCategoryFactory(String name, String uiName) {
+		this.name = name;
+		this.uiName = uiName;
 	}
 	
 	public final void addParameterDescription(CategoryParameterDescription description){
@@ -30,6 +37,11 @@ public abstract class AbstractCategoryFactory implements CategoryFactory {
 	@Override
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String getUiName() {
+		return uiName;
 	}
 	
 	@Override

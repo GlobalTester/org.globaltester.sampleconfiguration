@@ -301,7 +301,7 @@ public class SampleConfigEditorWidget {
 		}
 		
 		curTabItem = new TabItem(tabFolder, SWT.NONE);
-		curTabItem.setText(curProtocolFactory.getName());
+		curTabItem.setText(curProtocolFactory.getUiName());
 		
 		ScrolledComposite scroller = new ScrolledComposite(tabFolder, SWT.V_SCROLL);
 		Composite tabItemComp = new Composite(scroller, SWT.NONE);
