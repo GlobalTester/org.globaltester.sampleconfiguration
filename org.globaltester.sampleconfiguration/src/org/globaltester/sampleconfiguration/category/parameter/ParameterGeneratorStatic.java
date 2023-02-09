@@ -1,7 +1,6 @@
 package org.globaltester.sampleconfiguration.category.parameter;
 
 import org.globaltester.sampleconfiguration.SampleConfig;
-import org.globaltester.sampleconfiguration.category.parameter.ParameterGenerator;
 
 public class ParameterGeneratorStatic implements ParameterGenerator {
 
