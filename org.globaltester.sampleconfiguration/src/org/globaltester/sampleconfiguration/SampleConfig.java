@@ -126,6 +126,18 @@ public class SampleConfig implements IResourceChangeListener {
 	}
 
 	/**
+	 * Removes a single parameter from this {@link SampleConfig}
+	 * 
+	 * @param category
+	 * @param key
+	 */
+	public void remove(String category, String key) {
+		if (configParams.containsKey(category) && configParams.get(category).containsKey(key)) {
+			configParams.get(category).remove(key);
+		}
+	}
+
+	/**
 	 * Returns a single parameter from this {@link SampleConfig}
 	 * 
 	 * @param category
