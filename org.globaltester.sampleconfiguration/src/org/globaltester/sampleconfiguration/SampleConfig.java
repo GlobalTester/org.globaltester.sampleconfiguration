@@ -27,6 +27,8 @@ import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import de.persosim.simulator.utils.HexString;
+
 public class SampleConfig implements IResourceChangeListener {
 
 	private static final String XML_ATTRIB_ORIGINAL_NAME = "originalName";
@@ -527,7 +529,15 @@ public class SampleConfig implements IResourceChangeListener {
 			BasicLogger.log(getClass(), message, LogLevel.ERROR);
 			throw new NullPointerException(message);
 		}
-		return Files.readAllBytes(Paths.get(absolutePath));
+		Path path = Paths.get(absolutePath);
+		if (Files.exists(path)) {
+			BasicLogger.log(getClass(), "Did find file at path " + path, LogLevel.INFO);
+			return Files.readAllBytes(path);
+		} else {
+			String data = get(category, key);
+			BasicLogger.log(getClass(), "Did not find file, trying to parse \"" + data + "\" as hexadecimal data", LogLevel.INFO);
+			return HexString.toByteArray(data);
+		}
 	}
 	
 	public byte[] getBinaryData(Path path) throws IOException {
