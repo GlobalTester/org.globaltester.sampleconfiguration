@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.globaltester.sampleconfiguration.category.CategoryFactory;
+import org.globaltester.sampleconfiguration.category.parameter.CategoryParameterDescription;
+import org.globaltester.sampleconfiguration.category.parameter.SeparatorCategoryParameter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -71,6 +73,31 @@ public class Activator implements BundleActivator {
 		for (CategoryFactory c : services) {
 			if (c.isUsable()) {
 				usable.add(c);
+			} else {
+				usable.add(new CategoryFactory() {
+					
+					@Override
+					public boolean isUsable() {
+						return false;
+					}
+					
+					@Override
+					public String getUiName() {
+						return c.getUiName();
+					}
+					
+					@Override
+					public List<CategoryParameterDescription> getParameterDescriptors() {
+						List<CategoryParameterDescription> check = new ArrayList<CategoryParameterDescription>();
+						check.add(new SeparatorCategoryParameter(c.getName(), "Usage preconditions for this feature not fullfilled", "Usage preconditions for this feature not fullfilled"));
+						return check;
+					}
+					
+					@Override
+					public String getName() {
+						return c.getName();
+					}
+				});
 			}
 		}
 		return usable.toArray(emptyArray);
