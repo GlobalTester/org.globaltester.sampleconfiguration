@@ -1,6 +1,7 @@
 package org.globaltester.sampleconfiguration;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -542,6 +543,10 @@ public class SampleConfig implements IResourceChangeListener {
 	
 	public byte[] getBinaryData(Path path) throws IOException {
 		return Files.readAllBytes(makeAbsolute(path));
+	}
+	
+	public BigInteger getBigInteger(String category, String key) throws IOException {
+		return new BigInteger(1, getBinaryData(category, key));
 	}
 	
 	/**
