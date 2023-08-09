@@ -43,8 +43,11 @@ public class ProfileMapper {
 				return new UnparseableProfileExpression(e.getMessage());
 			}
 		}
-		
-		return ProfileExpressionParser.parse(profiles);
+		if (propertyFiles.length > 0 && !profiles.isEmpty()) {
+			return new UnparseableProfileExpression("Parsing profile \"" + profiles + "\" without a mapping is not allowed when mapping files exist");
+		} else {
+			return ProfileExpressionParser.parse(profiles);
+		}
 	}
 
 	private static BufferedReader createReaderForFile(IFile file) throws FileNotFoundException{
